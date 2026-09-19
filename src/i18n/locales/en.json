@@ -101,7 +101,8 @@
     "category": "Category",
     "amount": "Amount (€)",
     "note": "Note",
-    "date": "Date"
+    "date": "Date",
+    "wizard": "Tax check"
   },
   "set": {
     "title": "Settings",
@@ -156,7 +157,11 @@
   },
   "cash": {
     "add": "Add cash payment",
-    "title": "Cash payment"
+    "title": "Cash payment",
+    "type": "Type",
+    "expense": "Cash expense",
+    "income": "Cash income",
+    "incomeType": "Income type"
   },
   "inc": {
     "salary": "Salary",
@@ -165,5 +170,37 @@
     "refund": "Refund",
     "gift": "Gift",
     "other": "Other income"
+  },
+  "taxwiz": {
+    "title": "Tax check",
+    "start": "Start",
+    "step": "Question {n} of {total}",
+    "q1": "Marital status?",
+    "single": "Single",
+    "marriedBoth": "Married, spouse working",
+    "marriedNoIncome": "Married, spouse without income",
+    "separated": "Separated/divorced",
+    "q2": "Employers this year?",
+    "q3": "Gross annual income (€)",
+    "q4": "Working hours per week",
+    "q5": "Enrolled student?",
+    "q6": "km home→work (one way)",
+    "q7": "Homeoffice days per year?",
+    "q8": "Capital gains over ~€410 or wage-replacement benefits?",
+    "yes": "Yes",
+    "no": "No",
+    "next": "Next",
+    "back": "Back",
+    "finish": "Calculate result",
+    "resultClass": "Suggested tax class: {n}",
+    "mandatory": "A tax return is mandatory for you",
+    "optional": "Return is optional — but usually worth it",
+    "estPendler": "Estimated commuter allowance: {amount}",
+    "estHomeoffice": "Estimated home-office allowance: {amount}",
+    "werkstudent": "At ~20 h or less you benefit from the Werkstudent privilege (health-insurance free)",
+    "save": "Save result",
+    "saved": "Result saved",
+    "redo": "Redo",
+    "summary": "Tax check result"
   }
 }

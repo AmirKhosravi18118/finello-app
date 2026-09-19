@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { useI18n } from '../i18n/I18nContext'
-import { Badge, Card, Icon, Pill, SectionTitle, StatCard } from '../components/ui'
+import { Badge, Card, EmptyState, Icon, Pill, SectionTitle, StatCard } from '../components/ui'
 import { EditEntrySheet, type EntryDraft } from '../components/EditEntrySheet'
+import { AddMoneySheet } from '../components/AddMoneySheet'
 import { CATEGORIES } from '../data/demo'
 import type { CategoryId, Tx } from '../data/demo'
+import type { IncomeType } from '../data/editStore'
 import { useBankConnection } from '../bank/bankConnection'
-import { INCOME_TYPES, addCashTx, removeCashTx, saveTxEdit, tombstoneTx } from '../data/editStore'
+import { INCOME_TYPES, removeCashTx, saveTxEdit, tombstoneTx } from '../data/editStore'
 import { visibleTransactions } from '../data/incomeView'
 
 const CATEGORY_IDS = Object.keys(CATEGORIES) as CategoryId[]
@@ -17,10 +19,15 @@ export function TransactionsScreen() {
   const [importFlash, setImportFlash] = useState(0)
   const [editTx, setEditTx] = useState<Tx | null>(null)
   const [cashOpen, setCashOpen] = useState(false)
+  const [cashMode, setCashMode] = useState<'expense' | 'income'>('expense')
+  const openCash = (mode: 'expense' | 'income') => {
+    setCashMode(mode)
+    setCashOpen(true)
+  }
   const [bankFilter, setBankFilter] = useState<string | null>(null)
   const [, setVersion] = useState(0) // bump re-renders after persisted edits/cash changes
 
-  const all = visibleTransactions()
+  const all = visibleTransactions() as Array<Tx & { incomeType?: IncomeType; bankId?: string }>
   const bankName = (id?: string) => banks.find((b) => b.id === id)?.name ?? id ?? ''
   const txs = bankFilter ? all.filter((tx) => tx.bankId === bankFilter) : all
   const uncategorizedCount = txs.filter((tx) =>
@@ -39,12 +46,18 @@ export function TransactionsScreen() {
 
   const saveEdit = (draft: EntryDraft) => {
     if (!editTx) return
-    saveTxEdit(editTx.id, {
-      name: draft.name,
-      amount: draft.amount,
-      date: draft.date,
-      categoryId: draft.categoryId,
-    })
+    const inflow = editTx.amount >= 0
+    saveTxEdit(
+      editTx.id,
+      inflow
+        ? {
+            name: draft.name,
+            amount: draft.amount,
+            date: draft.date,
+            incomeType: draft.incomeType ?? 'other',
+          }
+        : { name: draft.name, amount: draft.amount, date: draft.date, categoryId: draft.categoryId },
+    )
     refresh()
   }
 
@@ -93,10 +106,20 @@ export function TransactionsScreen() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <button type="button" className="btn-primary w-full" onClick={() => setCashOpen(true)}>
-          <Icon name="hand" className="h-5 w-5" />
-          {t('cash.add')}
-        </button>
+        <div className="flex gap-2">
+          <button type="button" className="btn-ghost flex-1 !px-3" onClick={() => openCash('expense')}>
+            <Icon name="up" className="h-4.5 w-4.5 rotate-180" />
+            {t('cash.expense')}
+          </button>
+          <button
+            type="button"
+            className="tap flex min-h-11 flex-1 items-center justify-center gap-2 rounded-2xl bg-primary-soft px-3 text-sm font-bold text-primary-deep ring-1 ring-primary/30 transition active:scale-[0.97]"
+            onClick={() => openCash('income')}
+          >
+            <Icon name="down" className="h-4.5 w-4.5 rotate-180" />
+            {t('cash.income')}
+          </button>
+        </div>
         <button
           type="button"
           className="btn-ghost w-full"
@@ -118,8 +141,8 @@ export function TransactionsScreen() {
       <div>
         <SectionTitle title={t('tx.recent')} />
         {txs.length === 0 ? (
-          <Card className="p-6 text-center">
-            <p className="text-sm font-medium text-ink-soft">{t('tx.emptyTx')}</p>
+          <Card>
+            <EmptyState icon="receipt" text={t('tx.emptyTx')} />
           </Card>
         ) : (
           <div className="flex flex-col gap-2">
@@ -243,6 +266,7 @@ export function TransactionsScreen() {
         open={editTx !== null}
         onClose={() => setEditTx(null)}
         title={t('tx.edit')}
+        inflow={editTx ? editTx.amount >= 0 : false}
         initial={
           editTx
             ? {
@@ -250,6 +274,7 @@ export function TransactionsScreen() {
                 amount: editTx.amount,
                 date: editTx.date,
                 categoryId: editTx.categoryId,
+                incomeType: (editTx as Tx & { incomeType?: IncomeType }).incomeType,
               }
             : { name: '', amount: 0, date: new Date().toISOString().slice(0, 10), categoryId: null }
         }
@@ -258,21 +283,11 @@ export function TransactionsScreen() {
         showDelete
       />
 
-      <EditEntrySheet
+      <AddMoneySheet
         open={cashOpen}
         onClose={() => setCashOpen(false)}
-        title={t('cash.title')}
-        initial={{ name: '', amount: 0, date: new Date().toISOString().slice(0, 10), categoryId: null }}
-        saveLabel={t('common.add')}
-        onSave={(draft) => {
-          addCashTx({
-            name: draft.name || t('cash.title'),
-            amount: draft.amount === 0 ? 0 : -Math.abs(draft.amount),
-            date: draft.date,
-            categoryId: draft.categoryId,
-          })
-          refresh()
-        }}
+        initialMode={cashMode}
+        onSaved={refresh}
       />
     </div>
   )

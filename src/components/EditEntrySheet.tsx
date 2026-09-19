@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useI18n } from '../i18n/I18nContext'
 import { Icon, Modal, Pill } from './ui'
 import { CATEGORIES, type CategoryId } from '../data/demo'
+import { INCOME_TYPES, type IncomeType } from '../data/editStore'
 
 const CATEGORY_IDS = Object.keys(CATEGORIES) as CategoryId[]
 
@@ -10,9 +11,11 @@ export interface EntryDraft {
   amount: number
   date: string
   categoryId: CategoryId | null
+  incomeType?: IncomeType
 }
 
-/** Generic detail/edit sheet for transactions, expenses and cash entries (WP5). */
+/** Generic detail/edit sheet for transactions, expenses and cash entries (WP5).
+ *  Positive (inflow) rows edit their income type instead of an expense category. */
 export function EditEntrySheet({
   open,
   onClose,
@@ -20,6 +23,7 @@ export function EditEntrySheet({
   initial,
   allowCategoryClear = true,
   showDelete = false,
+  inflow = false,
   onSave,
   onDelete,
   saveLabel,
@@ -30,6 +34,7 @@ export function EditEntrySheet({
   initial: EntryDraft
   allowCategoryClear?: boolean
   showDelete?: boolean
+  inflow?: boolean
   onSave: (draft: EntryDraft) => void
   onDelete?: () => void
   saveLabel?: string
@@ -85,24 +90,43 @@ export function EditEntrySheet({
             />
           </div>
         </div>
-        <div>
-          <p className="mb-1.5 ps-1 text-xs font-bold text-ink-soft">{t('tx.assignCategory')}</p>
-          <div className="flex max-h-36 flex-wrap gap-2 overflow-y-auto">
-            {allowCategoryClear && (
-              <Pill active={draft.categoryId === null} onClick={() => set({ categoryId: null })}>
-                —
-              </Pill>
-            )}
-            {CATEGORY_IDS.map((id) => (
-              <Pill key={id} active={draft.categoryId === id} onClick={() => set({ categoryId: id })}>
-                <span className="flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full" style={{ backgroundColor: CATEGORIES[id].color }} />
-                  {t(`cat.${id}`)}
-                </span>
-              </Pill>
-            ))}
+        {inflow ? (
+          <div>
+            <p className="mb-1.5 ps-1 text-xs font-bold text-ink-soft">{t('cash.incomeType')}</p>
+            <div className="flex max-h-36 flex-wrap gap-2 overflow-y-auto">
+              {INCOME_TYPES.map((id) => (
+                <Pill key={id} active={draft.incomeType === id} onClick={() => set({ incomeType: id })}>
+                  <span className="flex items-center gap-1.5">
+                    <span className="h-2 w-2 rounded-full bg-primary" />
+                    {t(`inc.${id}`)}
+                  </span>
+                </Pill>
+              ))}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div>
+            <p className="mb-1.5 ps-1 text-xs font-bold text-ink-soft">{t('tx.assignCategory')}</p>
+            <div className="flex max-h-36 flex-wrap gap-2 overflow-y-auto">
+              {allowCategoryClear && (
+                <Pill active={draft.categoryId === null} onClick={() => set({ categoryId: null })}>
+                  —
+                </Pill>
+              )}
+              {CATEGORY_IDS.map((id) => (
+                <Pill key={id} active={draft.categoryId === id} onClick={() => set({ categoryId: id })}>
+                  <span className="flex items-center gap-1.5">
+                    <span
+                      className="h-2 w-2 rounded-full"
+                      style={{ backgroundColor: CATEGORIES[id].color }}
+                    />
+                    {t(`cat.${id}`)}
+                  </span>
+                </Pill>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="mt-2 flex gap-3">
           <button type="button" className="btn-ghost flex-1" onClick={onClose}>

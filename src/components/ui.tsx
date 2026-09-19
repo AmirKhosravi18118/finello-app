@@ -228,6 +228,19 @@ export function Icon({ name, className = 'h-5 w-5' }: { name: IconName; classNam
   )
 }
 
+/* ---------- empty state ---------- */
+
+export function EmptyState({ icon, text }: { icon: IconName; text: string }) {
+  return (
+    <div className="flex flex-col items-center gap-2 py-8 text-center">
+      <span className="flex h-14 w-14 items-center justify-center rounded-3xl bg-slate-100 p-3.5 text-ink-soft/70">
+        <Icon name={icon} className="h-full w-full" />
+      </span>
+      <p className="text-sm font-bold text-ink-soft">{text}</p>
+    </div>
+  )
+}
+
 /* ---------- modal ---------- */
 
 export function Modal({

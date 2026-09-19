@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { useI18n } from '../i18n/I18nContext'
-import { Badge, Card, Modal, ProgressBar, SectionTitle, StatCard, type Tone } from '../components/ui'
+import { Badge, Card, Icon, Modal, ProgressBar, SectionTitle, StatCard, type Tone } from '../components/ui'
 import { AddPaymentFab } from '../components/AddPaymentFab'
 import { EditPaymentSheet } from '../components/EditPaymentSheet'
+import { AddMoneySheet } from '../components/AddMoneySheet'
 import { demo, type PayStatus, type Payment } from '../data/demo'
 import { getSalary, setSalary } from '../data/editStore'
 import { allPayments, nearestPayments } from '../data/paymentsView'
@@ -19,6 +20,7 @@ export function HomeScreen() {
   const { t, fmt } = useI18n()
   const [editPayment, setEditPayment] = useState<Payment | null>(null)
   const [salaryOpen, setSalaryOpen] = useState(false)
+  const [incomeOpen, setIncomeOpen] = useState(false)
   const [, setVersion] = useState(0)
   const refresh = () => setVersion((v) => v + 1)
 
@@ -70,7 +72,17 @@ export function HomeScreen() {
         </div>
         <div className="mt-3 grid grid-cols-2 gap-2">
           <div className="rounded-2xl bg-primary-soft/50 p-3">
-            <p className="text-[11px] font-bold text-primary-deep">{t('home.monthIncome')}</p>
+            <div className="flex items-center justify-between gap-1">
+              <p className="text-[11px] font-bold text-primary-deep">{t('home.monthIncome')}</p>
+              <button
+                type="button"
+                onClick={() => setIncomeOpen(true)}
+                aria-label={t('cash.income')}
+                className="tap flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-white"
+              >
+                <Icon name="plus" className="h-3.5 w-3.5" />
+              </button>
+            </div>
             <p className="num mt-0.5 text-base font-extrabold text-primary-deep">
               {fmt.currency(money.income)}
             </p>
@@ -140,6 +152,13 @@ export function HomeScreen() {
         open={editPayment !== null}
         onClose={() => setEditPayment(null)}
         payment={editPayment}
+        onSaved={refresh}
+      />
+
+      <AddMoneySheet
+        open={incomeOpen}
+        onClose={() => setIncomeOpen(false)}
+        initialMode="income"
         onSaved={refresh}
       />
 

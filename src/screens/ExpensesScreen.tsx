@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { useI18n } from '../i18n/I18nContext'
-import { Badge, Card, Icon, Pill, SectionTitle, StatCard } from '../components/ui'
+import { Badge, Card, EmptyState, Icon, Pill, SectionTitle, StatCard } from '../components/ui'
 import { EditEntrySheet, type EntryDraft } from '../components/EditEntrySheet'
 import { BY_CATEGORY, CATEGORIES, MONTH_TOTAL, SPLIT_MONTHS, demo } from '../data/demo'
 import type { Expense } from '../data/demo'
@@ -142,8 +142,8 @@ export function ExpensesScreen() {
       <div>
         <SectionTitle title={t('exp.expensesList')} />
         {sorted.length === 0 ? (
-          <Card className="p-6 text-center">
-            <p className="text-sm font-medium text-ink-soft">{t('exp.emptyExpenses')}</p>
+          <Card>
+            <EmptyState icon="wallet" text={t('exp.emptyExpenses')} />
           </Card>
         ) : (
           <div className="flex flex-col gap-2">

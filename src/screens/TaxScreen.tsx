@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useI18n } from '../i18n/I18nContext'
 import { demo, type TaxItem } from '../data/demo'
-import { Badge, Card, Icon, Modal, Pill, SectionTitle, StatCard } from '../components/ui'
+import { Badge, Card, EmptyState, Icon, Modal, Pill, SectionTitle, StatCard } from '../components/ui'
+import { TaxWizard, getWizardResult, type TaxWizardResult } from '../components/TaxWizard'
 import { addTaxExtra, getTaxExtras } from '../data/editStore'
 
 const CURRENT_YEAR = new Date().getFullYear()
@@ -16,6 +17,8 @@ export function TaxScreen() {
   const [extras, setExtras] = useState<TaxItem[]>(() => getTaxExtras())
   const items = [...demo.tax.items, ...extras]
   const [formOpen, setFormOpen] = useState(false)
+  const [wizardOpen, setWizardOpen] = useState(false)
+  const [wizardResult, setWizardResult] = useState<TaxWizardResult | null>(() => getWizardResult())
   const [category, setCategory] = useState('')
   const [amount, setAmount] = useState('')
   const [note, setNote] = useState('')
@@ -84,7 +87,7 @@ export function TaxScreen() {
         <SectionTitle title={t('tax.deductibles')} />
         <Card className="flex flex-col gap-3">
           {filtered.length === 0 ? (
-            <p className="py-2 text-sm font-medium text-ink-soft">{t('tax.emptyTax')}</p>
+            <EmptyState icon="tax" text={t('tax.emptyTax')} />
           ) : (
             <>
               {filtered.map((it) => (
@@ -110,6 +113,26 @@ export function TaxScreen() {
         </Card>
       </div>
 
+      {/* wizard result card */}
+      {wizardResult && (
+        <Card className="!bg-primary-soft/30">
+          <div className="flex flex-wrap items-center gap-2">
+            <Icon name="check" className="h-4 w-4 text-primary-deep" />
+            <p className="text-xs font-extrabold text-ink">{t('taxwiz.summary')}</p>
+            <Badge tone="success">{t('taxwiz.resultClass', { n: fmt.num(wizardResult.taxClass) })}</Badge>
+            <Badge tone={wizardResult.mandatory ? 'danger' : 'neutral'}>
+              {wizardResult.mandatory ? t('taxwiz.mandatory') : t('taxwiz.optional')}
+            </Badge>
+          </div>
+        </Card>
+      )}
+
+      {/* tax wizard */}
+      <button type="button" className="btn-ghost w-full" onClick={() => setWizardOpen(true)}>
+        <Icon name="tax" className="h-5 w-5" />
+        {t('tax.wizard')}
+      </button>
+
       {/* add deductible */}
       <button type="button" onClick={() => setFormOpen(true)} className="btn-primary w-full">
         <Icon name="plus" className="h-4 w-4" />
@@ -130,6 +153,16 @@ export function TaxScreen() {
         </div>
         <p className="mt-1 px-1 text-[11px] text-ink-soft">{t('tax.disclaimer')}</p>
       </div>
+
+      {/* tax wizard modal */}
+      <Modal open={wizardOpen} onClose={() => setWizardOpen(false)} title={t('taxwiz.title')}>
+        <TaxWizard
+          onDone={(r) => {
+            setWizardResult(r)
+            setWizardOpen(false)
+          }}
+        />
+      </Modal>
 
       {/* add deductible modal */}
       <Modal open={formOpen} onClose={closeForm} title={t('tax.addDeductible')}>

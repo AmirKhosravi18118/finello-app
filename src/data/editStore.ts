@@ -121,7 +121,13 @@ export function getCashTx(store: StorageLike = defaultStorage()): Tx[] {
 }
 
 export function addCashTx(
-  entry: { name: string; amount: number; date: string; categoryId: CategoryId | null },
+  entry: {
+    name: string
+    amount: number
+    date: string
+    categoryId: CategoryId | null
+    incomeType?: IncomeType | null
+  },
   store: StorageLike = defaultStorage(),
 ): Tx {
   const cash = getCashTx(store)

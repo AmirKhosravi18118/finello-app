@@ -101,7 +101,8 @@
     "category": "Kategorie",
     "amount": "Betrag (€)",
     "note": "Notiz",
-    "date": "Datum"
+    "date": "Datum",
+    "wizard": "Steuer-Check"
   },
   "set": {
     "title": "Einstellungen",
@@ -156,7 +157,11 @@
   },
   "cash": {
     "add": "Barzahlung erfassen",
-    "title": "Barzahlung"
+    "title": "Barzahlung",
+    "type": "Art",
+    "expense": "Barausgabe",
+    "income": "Bareinnahme",
+    "incomeType": "Einnahmeart"
   },
   "inc": {
     "salary": "Gehalt",
@@ -165,5 +170,37 @@
     "refund": "Erstattung",
     "gift": "Geschenk",
     "other": "Sonstige Einnahmen"
+  },
+  "taxwiz": {
+    "title": "Steuer-Check",
+    "start": "Start",
+    "step": "Frage {n} von {total}",
+    "q1": "Familienstand?",
+    "single": "ledig",
+    "marriedBoth": "verheiratet, Partner berufstätig",
+    "marriedNoIncome": "verheiratet, Partner ohne Einkommen",
+    "separated": "getrennt/geschieden",
+    "q2": "Wie viele Arbeitgeber hattest du im Jahr?",
+    "q3": "Bruttoeinkommen pro Jahr (€)",
+    "q4": "Arbeitsstunden pro Woche",
+    "q5": "Immatrikulierter Student?",
+    "q6": "km Wohnung–Arbeit (einfach)",
+    "q7": "Homeoffice-Tage im Jahr?",
+    "q8": "Kapitalerträge über ~410 € oder Lohnersatzleistungen?",
+    "yes": "Ja",
+    "no": "Nein",
+    "next": "Weiter",
+    "back": "Zurück",
+    "finish": "Ergebnis berechnen",
+    "resultClass": "Empfohlene Steuerklasse: {n}",
+    "mandatory": "Für dich ist eine Steuererklärung Pflicht",
+    "optional": "Die Steuererklärung ist freiwillig — lohnt sich aber meist",
+    "estPendler": "Geschätzte Pendlerpauschale: {amount}",
+    "estHomeoffice": "Geschätzte Homeoffice-Pauschale: {amount}",
+    "werkstudent": "Mit ~20 h oder weniger profitierst du vom Werkstudentenprivileg (KV-Freiheit)",
+    "save": "Ergebnis speichern",
+    "saved": "Gespeichert",
+    "redo": "Nochmal",
+    "summary": "Steuer-Check Ergebnis"
   }
 }
