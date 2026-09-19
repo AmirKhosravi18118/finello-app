@@ -1,0 +1,169 @@
+{
+  "app": {
+    "name": "Finello"
+  },
+  "nav": {
+    "home": "Start",
+    "calendar": "Kalender",
+    "expenses": "Ausgaben",
+    "transactions": "Transaktionen",
+    "tax": "Steuer",
+    "settings": "Einstellungen"
+  },
+  "status": {
+    "upcoming": "Bevorstehend",
+    "today": "Heute",
+    "overdue": "Überfällig",
+    "paid": "Bezahlt"
+  },
+  "common": {
+    "demo": "Demo",
+    "add": "Hinzufügen",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "close": "Schließen",
+    "total": "Gesamt",
+    "all": "Alle",
+    "empty": "Keine Einträge",
+    "seeAll": "Alle anzeigen",
+    "notifications": "Benachrichtigungen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "title": "Titel"
+  },
+  "home": {
+    "greeting": "Hallo {name}",
+    "salaryCountdown": "Tage bis zum Gehalt",
+    "daysToSalary": "{n} Tage bis zum Gehalt",
+    "paydayToday": "Heute ist Zahltag!",
+    "salaryDayOf": "Gehaltstag im Monat: {n}",
+    "nextPayments": "Anstehende Zahlungen",
+    "savings": "Ersparnisse",
+    "savingsGoal": "vom Ziel {goal}",
+    "addPayment": "Zahlung hinzufügen",
+    "emptyPayments": "Noch keine Zahlungen erfasst",
+    "paymentTitle": "Titel",
+    "amount": "Betrag (€)",
+    "dayOfMonth": "Tag im Monat",
+    "recipient": "Empfänger",
+    "uncategorizedNudge": "Du hast {n} Transaktionen ohne Kategorie",
+    "categorizeNow": "Jetzt zuordnen",
+    "monthIncome": "Monatseinnahmen",
+    "monthExpense": "Monatsausgaben",
+    "balance": "Monatsbilanz",
+    "surplus": "Überschuss",
+    "deficit": "Defizit"
+  },
+  "cal": {
+    "monthTitle": "Zahlungskalender",
+    "noPayments": "Keine Zahlungen an diesem Tag",
+    "paymentsOn": "Zahlungen am {date}"
+  },
+  "exp": {
+    "monthTotal": "Ausgaben diesen Monat",
+    "byCategory": "Nach Kategorie",
+    "comparePrev": "Vergleich zum Vormonat",
+    "more": "Mehr: {p} %",
+    "less": "Weniger: {p} %",
+    "noChange": "Keine Änderung",
+    "expensesList": "Ausgabenliste",
+    "emptyExpenses": "Dieser Monat sind keine Ausgaben erfasst",
+    "edit": "Ausgabe bearbeiten"
+  },
+  "tx": {
+    "recent": "Letzte Transaktionen",
+    "summary": "Übersicht",
+    "count": "{n} Transaktionen",
+    "uncategorized": "Ohne Kategorie: {n}",
+    "thisMonth": "Monatssumme",
+    "bank": "Bank",
+    "manual": "Manuell",
+    "assignCategory": "Kategorie zuweisen",
+    "importCsv": "CSV-Import",
+    "emptyTx": "Keine Transaktionen erfasst",
+    "importBank": "Von Bank abrufen",
+    "importedNew": "{n} neue Transaktionen aus der Bank hinzugefügt",
+    "edit": "Transaktion bearbeiten",
+    "name": "Empfänger/Absender",
+    "date": "Datum",
+    "assignIncome": "Einnahmeart wählen"
+  },
+  "tax": {
+    "year": "Jahr",
+    "profile": "Steuerprofil",
+    "taxClass": "Steuerklasse {n}",
+    "employment": "Beschäftigung",
+    "deductibles": "Absetzbare Ausgaben",
+    "addDeductible": "Absetzbare Ausgabe hinzufügen",
+    "readyForReturn": "Bereit für die Steuererklärung: {rows} Einträge, {amount}",
+    "disclaimer": "Diese Informationen ersetzen keine Steuerberatung.",
+    "emptyTax": "Für dieses Jahr sind keine Einträge vorhanden",
+    "category": "Kategorie",
+    "amount": "Betrag (€)",
+    "note": "Notiz",
+    "date": "Datum"
+  },
+  "set": {
+    "title": "Einstellungen",
+    "profileGroup": "Profil",
+    "languageGroup": "Sprache",
+    "notifGroup": "Benachrichtigungen",
+    "calendarGroup": "Kalender",
+    "privacyGroup": "Daten & Privatsphäre",
+    "aboutGroup": "Über",
+    "name": "Name",
+    "email": "E-Mail",
+    "status": "Status",
+    "notifyDays": "Erinnerung … Tage vor Fälligkeit",
+    "syncCalendar": "Mit dem Handy-Kalender synchronisieren",
+    "shareIcs": "Kalenderdatei (ICS) teilen",
+    "exportData": "Daten exportieren",
+    "wipeData": "Alle Daten löschen",
+    "wipeConfirm": "Sicher? Alle Daten werden gelöscht!",
+    "version": "Version",
+    "license": "Lizenz",
+    "aboutDisclaimer": "Dies ist eine Demo-Version; deine Daten bleiben auf deinem Gerät.",
+    "bankGroup": "Bank",
+    "connectBank": "Bankkonto verbinden",
+    "connectedBank": "Verbunden: {bank}",
+    "disconnect": "Verbindung trennen",
+    "bankConsent": "Mit der Verbindung werden die Transaktionen der letzten 7 Tage testweise abgerufen (Demo — es fließen keine echten Daten)."
+  },
+  "onb": {
+    "welcome": "Willkommen bei Finello",
+    "subtitle": "Dein Assistent für Raten, Ausgaben & Steuern in Deutschland",
+    "chooseLang": "Wähle deine Sprache",
+    "continue": "Los geht's"
+  },
+  "cat": {
+    "rent": "Miete",
+    "groceries": "Lebensmittel",
+    "transport": "Verkehr",
+    "phone": "Telefon & Internet",
+    "insurance": "Versicherung",
+    "subscription": "Abos",
+    "leisure": "Freizeit",
+    "study": "Studium",
+    "health": "Gesundheit",
+    "other": "Sonstiges",
+    "income": "Einkommen"
+  },
+  "notif": {
+    "title": "Benachrichtigungen",
+    "allGood": "Alles im grünen Bereich",
+    "dueIn": "Fällig in {n} Tagen",
+    "overdueN": "{n} überfällige Zahlungen"
+  },
+  "cash": {
+    "add": "Barzahlung erfassen",
+    "title": "Barzahlung"
+  },
+  "inc": {
+    "salary": "Gehalt",
+    "sidejob": "Nebenjob",
+    "scholarship": "Stipendium",
+    "refund": "Erstattung",
+    "gift": "Geschenk",
+    "other": "Sonstige Einnahmen"
+  }
+}

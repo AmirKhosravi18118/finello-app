@@ -1,0 +1,179 @@
+import { useState } from 'react'
+import { useI18n } from '../i18n/I18nContext'
+import { Badge, Card, SectionTitle, type Tone } from '../components/ui'
+import { AddPaymentFab } from '../components/AddPaymentFab'
+import { EditPaymentSheet } from '../components/EditPaymentSheet'
+import { CATEGORIES, type Payment, type PayStatus } from '../data/demo'
+import { allPayments } from '../data/paymentsView'
+
+const STATUS_TONE: Record<PayStatus, Tone> = {
+  today: 'warn',
+  overdue: 'danger',
+  upcoming: 'neutral',
+  paid: 'success',
+}
+
+export function CalendarScreen() {
+  const { t, fmt, lang } = useI18n()
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = now.getMonth()
+  const todayNum = now.getDate()
+  const daysInMonth = new Date(year, month + 1, 0).getDate()
+  const [selected, setSelected] = useState(todayNum)
+  const [editPayment, setEditPayment] = useState<Payment | null>(null)
+  const [, setVersion] = useState(0)
+  const refresh = () => setVersion((v) => v + 1)
+
+  const payments = allPayments()
+
+  const byDay = new Map<number, Payment[]>()
+  for (const p of payments) {
+    const list = byDay.get(p.dayOfMonth)
+    if (list) list.push(p)
+    else byDay.set(p.dayOfMonth, [p])
+  }
+  const paysOn = (d: number): Payment[] => byDay.get(d) ?? []
+
+  // Week starts Saturday for fa, Monday otherwise.
+  const firstWeekday = new Date(year, month, 1).getDay()
+  const offset = lang === 'fa' ? (firstWeekday + 1) % 7 : (firstWeekday + 6) % 7
+
+  const cells: Array<number | null> = [
+    ...Array.from({ length: offset }, () => null),
+    ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
+  ]
+  while (cells.length % 7 !== 0) cells.push(null)
+
+  const weekdayLabels = Array.from({ length: 7 }, (_, c) =>
+    fmt.weekday(new Date(year, month, 1 + c - offset)),
+  )
+
+  const selectedPayments = paysOn(selected)
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex items-baseline justify-between gap-2">
+        <h1 className="text-xl font-extrabold text-ink">{t('cal.monthTitle')}</h1>
+        <p className="text-sm font-bold text-ink-soft">{fmt.month(new Date())}</p>
+      </div>
+
+      <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+        {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((d) => {
+          const pays = paysOn(d)
+          const sel = selected === d
+          return (
+            <button
+              key={d}
+              type="button"
+              onClick={() => setSelected(d)}
+              className={`tap flex min-h-11 w-11 shrink-0 flex-col items-center justify-center gap-1 rounded-full px-1 ${
+                sel ? 'bg-navy text-white shadow-md' : 'border border-slate-200 bg-white text-ink-soft'
+              }`}
+            >
+              <span className="num text-sm font-bold">{fmt.num(d)}</span>
+              <span className="flex h-1.5 items-center gap-0.5">
+                {pays.length > 0 ? (
+                  pays.map((p) => (
+                    <span
+                      key={p.id}
+                      className="h-1.5 w-1.5 rounded-full"
+                      style={{ backgroundColor: CATEGORIES[p.categoryId].color }}
+                    />
+                  ))
+                ) : (
+                  <span className="h-1.5 w-1.5" />
+                )}
+              </span>
+            </button>
+          )
+        })}
+      </div>
+
+      <Card>
+        <div className="mb-2 grid grid-cols-7 gap-1">
+          {weekdayLabels.map((w, i) => (
+            <div key={i} className="text-center text-[10px] font-bold text-ink-soft">
+              {w}
+            </div>
+          ))}
+        </div>
+        <div className="grid grid-cols-7 gap-1">
+          {cells.map((d, i) =>
+            d === null ? (
+              <div key={`empty-${i}`} className="min-h-11" />
+            ) : (
+              <button
+                key={d}
+                type="button"
+                onClick={() => setSelected(d)}
+                className={`tap flex min-h-11 flex-col items-center justify-center gap-1 rounded-xl py-1 ${
+                  todayNum === d ? 'ring-2 ring-primary' : ''
+                } ${selected === d ? 'bg-navy text-white shadow-md' : ''}`}
+              >
+                <span className="num text-xs font-bold">{fmt.num(d)}</span>
+                <span className="flex h-1 w-full items-center justify-center gap-0.5 px-1">
+                  {paysOn(d).map((p) => (
+                    <span
+                      key={p.id}
+                      className="h-1.5 w-1.5 rounded-full"
+                      style={{ backgroundColor: CATEGORIES[p.categoryId].color }}
+                    />
+                  ))}
+                </span>
+              </button>
+            ),
+          )}
+        </div>
+      </Card>
+
+      {payments.length === 0 && (
+        <Card>
+          <p className="py-2 text-center text-sm font-medium text-ink-soft">{t('common.empty')}</p>
+        </Card>
+      )}
+
+      <Card>
+        <SectionTitle title={t('cal.paymentsOn', { date: fmt.date(new Date(year, month, selected)) })} />
+        {selectedPayments.length === 0 ? (
+          <p className="py-4 text-center text-sm font-medium text-ink-soft">{t('cal.noPayments')}</p>
+        ) : (
+          <div className="flex flex-col">
+            {selectedPayments.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => setEditPayment(p)}
+                className="tap -mx-1 flex items-center justify-between gap-3 rounded-xl px-1 py-2.5 text-start first:border-t-0 border-t border-slate-100"
+              >
+                <div className="flex min-w-0 items-center gap-3">
+                  <span
+                    className="h-2.5 w-2.5 shrink-0 rounded-full"
+                    style={{ backgroundColor: CATEGORIES[p.categoryId].color }}
+                  />
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-bold text-ink">{p.title}</p>
+                    <p className="truncate text-xs text-ink-soft">{p.recipient}</p>
+                  </div>
+                </div>
+                <div className="flex shrink-0 flex-col items-end gap-1">
+                  <span className="num text-sm font-extrabold text-ink">{fmt.currency(p.amount)}</span>
+                  <Badge tone={STATUS_TONE[p.status]}>{t(`status.${p.status}`)}</Badge>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+      </Card>
+
+      <EditPaymentSheet
+        open={editPayment !== null}
+        onClose={() => setEditPayment(null)}
+        payment={editPayment}
+        onSaved={refresh}
+      />
+
+      <AddPaymentFab onAdded={refresh} />
+    </div>
+  )
+}

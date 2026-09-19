@@ -1,0 +1,67 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-ink: #0e1b2c;
+  --color-ink-soft: #5a6b80;
+  --color-navy: #101726;
+  --color-primary: #10b981;
+  --color-primary-deep: #059669;
+  --color-primary-soft: #d1fae5;
+  --color-amber-soft: #fef3c7;
+  --color-danger: #ef4444;
+  --color-danger-soft: #fee2e2;
+  --color-canvas: #f2f4f9;
+  --font-sans: 'Inter', 'Vazirmatn', system-ui, sans-serif;
+}
+
+html[dir='rtl'],
+html[lang='fa'] {
+  --font-sans: 'Vazirmatn', 'Inter', system-ui, sans-serif;
+}
+
+html {
+  font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, #f6f7fb 0%, #eef1f7 100%);
+  color: var(--color-ink);
+  min-height: 100vh;
+}
+
+@layer components {
+  .card {
+    @apply rounded-3xl bg-white/85 backdrop-blur-sm shadow-[0_10px_30px_-12px_rgba(16,23,38,0.18)] border border-white/70;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold leading-none;
+  }
+  .tap {
+    @apply transition-transform duration-150 active:scale-[0.97] cursor-pointer select-none;
+  }
+  .pill-nav {
+    @apply fixed bottom-4 inset-x-4 z-40 rounded-full bg-navy/95 backdrop-blur-md shadow-[0_18px_40px_-10px_rgba(16,23,38,0.55)] border border-white/10;
+  }
+  .field {
+    @apply w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-ink outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/25 placeholder:text-slate-400;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3 text-sm font-bold text-white shadow-[0_10px_24px_-8px_rgba(16,185,129,0.6)] transition active:scale-[0.97] cursor-pointer;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-ink transition active:scale-[0.97] cursor-pointer;
+  }
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}

@@ -1,0 +1,169 @@
+{
+  "app": {
+    "name": "Finello"
+  },
+  "nav": {
+    "home": "خانه",
+    "calendar": "تقویم",
+    "expenses": "خرج‌ها",
+    "transactions": "تراکنش‌ها",
+    "tax": "مالیات",
+    "settings": "تنظیمات"
+  },
+  "status": {
+    "upcoming": "پیش‌رو",
+    "today": "امروز",
+    "overdue": "معوق",
+    "paid": "پرداخت‌شده"
+  },
+  "common": {
+    "demo": "نمونه",
+    "add": "افزودن",
+    "cancel": "انصراف",
+    "save": "ذخیره",
+    "close": "بستن",
+    "total": "جمع",
+    "all": "همه",
+    "empty": "موردی نیست",
+    "seeAll": "دیدن همه",
+    "notifications": "اعلان‌ها",
+    "edit": "ویرایش",
+    "delete": "حذف",
+    "title": "عنوان"
+  },
+  "home": {
+    "greeting": "سلام {name}",
+    "salaryCountdown": "روز تا حقوق",
+    "daysToSalary": "{n} روز تا حقوق",
+    "paydayToday": "امروز روز حقوق است!",
+    "salaryDayOf": "روز حقوق ماه: {n}",
+    "nextPayments": "پرداخت‌های نزدیک",
+    "savings": "پس‌انداز",
+    "savingsGoal": "از هدف {goal}",
+    "addPayment": "افزودن قسط",
+    "emptyPayments": "هنوز قسطی ثبت نشده است",
+    "paymentTitle": "عنوان",
+    "amount": "مبلغ (€)",
+    "dayOfMonth": "روز ماه",
+    "recipient": "گیرنده",
+    "uncategorizedNudge": "{n} تراکنش بدون دسته‌بندی داری",
+    "categorizeNow": "همین حالا دسته‌بندی کن",
+    "monthIncome": "درآمد ماه",
+    "monthExpense": "خرج ماه",
+    "balance": "تراز ماه",
+    "surplus": "مازاد",
+    "deficit": "کسری"
+  },
+  "cal": {
+    "monthTitle": "تقویم پرداخت‌ها",
+    "noPayments": "پرداختی در این روز نیست",
+    "paymentsOn": "پرداخت‌های {date}"
+  },
+  "exp": {
+    "monthTotal": "جمع خرج ماه",
+    "byCategory": "به تفکیک دسته",
+    "comparePrev": "مقایسه با ماه قبل",
+    "more": "بیشتر: {p}٪",
+    "less": "کمتر: {p}٪",
+    "noChange": "بدون تغییر",
+    "expensesList": "خرج‌های ماه",
+    "emptyExpenses": "این ماه خرجی ثبت نشده است",
+    "edit": "ویرایش خرج"
+  },
+  "tx": {
+    "recent": "تراکنش‌های اخیر",
+    "summary": "خلاصه",
+    "count": "{n} تراکنش",
+    "uncategorized": "بدون دسته: {n}",
+    "thisMonth": "جمع ماه",
+    "bank": "بانک",
+    "manual": "دستی",
+    "assignCategory": "تعیین دسته",
+    "importCsv": "ورود از CSV",
+    "emptyTx": "تراکنشی ثبت نشده است",
+    "importBank": "دریافت از بانک",
+    "importedNew": "{n} تراکنش جدید از بانک اضافه شد",
+    "edit": "ویرایش تراکنش",
+    "name": "طرف حساب",
+    "date": "تاریخ",
+    "assignIncome": "تعیین نوع درآمد"
+  },
+  "tax": {
+    "year": "سال",
+    "profile": "پروفایل مالیاتی",
+    "taxClass": "کلاس مالیاتی {n}",
+    "employment": "وضعیت اشتغال",
+    "deductibles": "خرج‌های قابل‌کاهش",
+    "addDeductible": "افزودن خرج قابل‌کاهش",
+    "readyForReturn": "آماده اظهارنامه: {rows} ردیف، {amount}",
+    "disclaimer": "این اطلاعات جایگزین مشاوره مالیاتی نیست.",
+    "emptyTax": "برای این سال آیتمی ثبت نشده است",
+    "category": "دسته",
+    "amount": "مبلغ (€)",
+    "note": "توضیح",
+    "date": "تاریخ"
+  },
+  "set": {
+    "title": "تنظیمات",
+    "profileGroup": "پروفایل",
+    "languageGroup": "زبان",
+    "notifGroup": "اعلان‌ها",
+    "calendarGroup": "تقویم",
+    "privacyGroup": "داده و حریم خصوصی",
+    "aboutGroup": "درباره",
+    "name": "نام",
+    "email": "ایمیل",
+    "status": "وضعیت",
+    "notifyDays": "چند روز قبل پرداخت یادآوری شود",
+    "syncCalendar": "همگام‌سازی با تقویم گوشی",
+    "shareIcs": "اشتراک فایل تقویم (ICS)",
+    "exportData": "خروجی گرفتن از داده‌ها",
+    "wipeData": "پاک‌کردن همه داده‌ها",
+    "wipeConfirm": "مطمئنی؟ همه داده‌ها پاک شوند!",
+    "version": "نسخه",
+    "license": "لایسنس",
+    "aboutDisclaimer": "این نسخه نمایشی است؛ داده‌ها فقط روی دستگاه تو می‌ماند.",
+    "bankGroup": "بانک",
+    "connectBank": "اتصال به حساب بانکی",
+    "connectedBank": "متصل: {bank}",
+    "disconnect": "قطع اتصال",
+    "bankConsent": "با اتصال، تراکنش‌های ۷ روز اخیر به‌صورت آزمایشی دریافت می‌شود (نسخه نمایشی — داده واقعی نمی‌دود)."
+  },
+  "onb": {
+    "welcome": "به Finello خوش آمدی",
+    "subtitle": "دستیار قسط، خرج و مالیات تو در آلمان",
+    "chooseLang": "زبانت را انتخاب کن",
+    "continue": "شروع کنیم"
+  },
+  "cat": {
+    "rent": "اجاره",
+    "groceries": "خواروبار",
+    "transport": "حمل‌ونقل",
+    "phone": "تلفن و اینترنت",
+    "insurance": "بیمه",
+    "subscription": "اشتراک‌ها",
+    "leisure": "تفریح",
+    "study": "تحصیل",
+    "health": "سلامت",
+    "other": "متفرقه",
+    "income": "درآمد"
+  },
+  "notif": {
+    "title": "اعلان‌ها",
+    "allGood": "همه‌چیز مرتب است",
+    "dueIn": "سررسید در {n} روز",
+    "overdueN": "{n} قسط معوق"
+  },
+  "cash": {
+    "add": "ثبت پرداخت نقدی",
+    "title": "پرداخت نقدی"
+  },
+  "inc": {
+    "salary": "حقوق",
+    "sidejob": "کار جانبی",
+    "scholarship": "بورسیه",
+    "refund": "بازگشت وجه",
+    "gift": "هدیه",
+    "other": "سایر درآمد"
+  }
+}

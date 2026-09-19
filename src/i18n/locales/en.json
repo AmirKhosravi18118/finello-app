@@ -1,0 +1,169 @@
+{
+  "app": {
+    "name": "Finello"
+  },
+  "nav": {
+    "home": "Home",
+    "calendar": "Calendar",
+    "expenses": "Expenses",
+    "transactions": "Transactions",
+    "tax": "Tax",
+    "settings": "Settings"
+  },
+  "status": {
+    "upcoming": "Upcoming",
+    "today": "Today",
+    "overdue": "Overdue",
+    "paid": "Paid"
+  },
+  "common": {
+    "demo": "Demo",
+    "add": "Add",
+    "cancel": "Cancel",
+    "save": "Save",
+    "close": "Close",
+    "total": "Total",
+    "all": "All",
+    "empty": "Nothing here yet",
+    "seeAll": "See all",
+    "notifications": "Notifications",
+    "edit": "Edit",
+    "delete": "Delete",
+    "title": "Title"
+  },
+  "home": {
+    "greeting": "Hi {name}",
+    "salaryCountdown": "days to payday",
+    "daysToSalary": "{n} days to payday",
+    "paydayToday": "Today is payday!",
+    "salaryDayOf": "Payday of the month: {n}",
+    "nextPayments": "Upcoming payments",
+    "savings": "Savings",
+    "savingsGoal": "of goal {goal}",
+    "addPayment": "Add payment",
+    "emptyPayments": "No payments yet",
+    "paymentTitle": "Title",
+    "amount": "Amount (€)",
+    "dayOfMonth": "Day of month",
+    "recipient": "Recipient",
+    "uncategorizedNudge": "You have {n} uncategorized transactions",
+    "categorizeNow": "Categorize now",
+    "monthIncome": "Monthly income",
+    "monthExpense": "Monthly expenses",
+    "balance": "Monthly balance",
+    "surplus": "Surplus",
+    "deficit": "Deficit"
+  },
+  "cal": {
+    "monthTitle": "Payments calendar",
+    "noPayments": "No payments on this day",
+    "paymentsOn": "Payments on {date}"
+  },
+  "exp": {
+    "monthTotal": "Total this month",
+    "byCategory": "By category",
+    "comparePrev": "Compare with last month",
+    "more": "More: {p}%",
+    "less": "Less: {p}%",
+    "noChange": "No change",
+    "expensesList": "Monthly expenses",
+    "emptyExpenses": "No expenses this month",
+    "edit": "Edit expense"
+  },
+  "tx": {
+    "recent": "Recent transactions",
+    "summary": "Summary",
+    "count": "{n} transactions",
+    "uncategorized": "Uncategorized: {n}",
+    "thisMonth": "Month total",
+    "bank": "Bank",
+    "manual": "Manual",
+    "assignCategory": "Assign category",
+    "importCsv": "Import CSV",
+    "emptyTx": "No transactions yet",
+    "importBank": "Fetch from bank",
+    "importedNew": "{n} new bank transactions added",
+    "edit": "Edit transaction",
+    "name": "Counterparty",
+    "date": "Date",
+    "assignIncome": "Assign income type"
+  },
+  "tax": {
+    "year": "Year",
+    "profile": "Tax profile",
+    "taxClass": "Tax class {n}",
+    "employment": "Employment",
+    "deductibles": "Deductible expenses",
+    "addDeductible": "Add deductible",
+    "readyForReturn": "Ready for tax return: {rows} rows, {amount}",
+    "disclaimer": "This information does not replace tax advice.",
+    "emptyTax": "No items for this year",
+    "category": "Category",
+    "amount": "Amount (€)",
+    "note": "Note",
+    "date": "Date"
+  },
+  "set": {
+    "title": "Settings",
+    "profileGroup": "Profile",
+    "languageGroup": "Language",
+    "notifGroup": "Notifications",
+    "calendarGroup": "Calendar",
+    "privacyGroup": "Data & privacy",
+    "aboutGroup": "About",
+    "name": "Name",
+    "email": "Email",
+    "status": "Status",
+    "notifyDays": "Remind me … days before due",
+    "syncCalendar": "Sync with phone calendar",
+    "shareIcs": "Share calendar file (ICS)",
+    "exportData": "Export data",
+    "wipeData": "Wipe all data",
+    "wipeConfirm": "Sure? All data will be deleted!",
+    "version": "Version",
+    "license": "License",
+    "aboutDisclaimer": "This is a demo; your data stays on your device.",
+    "bankGroup": "Bank",
+    "connectBank": "Connect bank account",
+    "connectedBank": "Connected: {bank}",
+    "disconnect": "Disconnect",
+    "bankConsent": "Connecting fetches the last 7 days of transactions for testing (demo — no real data flows)."
+  },
+  "onb": {
+    "welcome": "Welcome to Finello",
+    "subtitle": "Your assistant for installments, expenses & taxes in Germany",
+    "chooseLang": "Choose your language",
+    "continue": "Let's go"
+  },
+  "cat": {
+    "rent": "Rent",
+    "groceries": "Groceries",
+    "transport": "Transport",
+    "phone": "Phone & internet",
+    "insurance": "Insurance",
+    "subscription": "Subscriptions",
+    "leisure": "Leisure",
+    "study": "Study",
+    "health": "Health",
+    "other": "Other",
+    "income": "Income"
+  },
+  "notif": {
+    "title": "Notifications",
+    "allGood": "All clear",
+    "dueIn": "Due in {n} days",
+    "overdueN": "{n} overdue payments"
+  },
+  "cash": {
+    "add": "Add cash payment",
+    "title": "Cash payment"
+  },
+  "inc": {
+    "salary": "Salary",
+    "sidejob": "Side job",
+    "scholarship": "Scholarship",
+    "refund": "Refund",
+    "gift": "Gift",
+    "other": "Other income"
+  }
+}

@@ -1,0 +1,244 @@
+import { useState } from 'react'
+import { useI18n } from '../i18n/I18nContext'
+import { Badge, Card, Icon, Pill, SectionTitle, StatCard } from '../components/ui'
+import { EditEntrySheet, type EntryDraft } from '../components/EditEntrySheet'
+import { CATEGORIES } from '../data/demo'
+import type { CategoryId, Tx } from '../data/demo'
+import { useBankConnection } from '../bank/bankConnection'
+import { INCOME_TYPES, addCashTx, removeCashTx, saveTxEdit, tombstoneTx } from '../data/editStore'
+import { visibleTransactions } from '../data/incomeView'
+
+const CATEGORY_IDS = Object.keys(CATEGORIES) as CategoryId[]
+
+export function TransactionsScreen() {
+  const { t, fmt } = useI18n()
+  const { connected, importNow } = useBankConnection()
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [importFlash, setImportFlash] = useState(0)
+  const [editTx, setEditTx] = useState<Tx | null>(null)
+  const [cashOpen, setCashOpen] = useState(false)
+  const [, setVersion] = useState(0) // bump re-renders after persisted edits/cash changes
+
+  const txs = visibleTransactions()
+  const uncategorizedCount = txs.filter((tx) =>
+    tx.amount >= 0 ? tx.incomeType === undefined : tx.categoryId === null,
+  ).length
+  const now = new Date()
+  const monthSum = txs
+    .filter((tx) => {
+      const d = new Date(tx.date)
+      return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()
+    })
+    .reduce((sum, tx) => sum + tx.amount, 0)
+
+  const refresh = () => setVersion((v) => v + 1)
+
+  const saveEdit = (draft: EntryDraft) => {
+    if (!editTx) return
+    saveTxEdit(editTx.id, {
+      name: draft.name,
+      amount: draft.amount,
+      date: draft.date,
+      categoryId: draft.categoryId,
+    })
+    refresh()
+  }
+
+  const deleteTx = () => {
+    if (!editTx) return
+    if (editTx.id.startsWith('cash-')) removeCashTx(editTx.id)
+    else tombstoneTx(editTx.id)
+    refresh()
+  }
+
+  return (
+    <div className="flex flex-col gap-5">
+      <SectionTitle title={t('nav.transactions')} />
+
+      <div className="flex flex-col gap-3">
+        <StatCard label={t('tx.count', { n: fmt.num(txs.length) })} value={fmt.num(txs.length)} />
+        <StatCard
+          label={t('tx.uncategorized', { n: fmt.num(uncategorizedCount) })}
+          value={fmt.num(uncategorizedCount)}
+          tone="warn"
+        />
+        <StatCard label={t('tx.thisMonth')} value={fmt.currency(monthSum)} tone="success" />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <button type="button" className="btn-primary w-full" onClick={() => setCashOpen(true)}>
+          <Icon name="hand" className="h-5 w-5" />
+          {t('cash.add')}
+        </button>
+        <button
+          type="button"
+          className="btn-ghost w-full"
+          onClick={() => {
+            setImportFlash(importNow())
+            refresh()
+          }}
+        >
+          <Icon name={connected ? 'bank' : 'download'} className="h-5 w-5" />
+          {connected ? t('tx.importBank') : t('tx.importCsv')}
+        </button>
+        {importFlash > 0 && (
+          <p className="num text-center text-xs font-bold text-primary-deep">
+            {t('tx.importedNew', { n: importFlash })}
+          </p>
+        )}
+      </div>
+
+      <div>
+        <SectionTitle title={t('tx.recent')} />
+        {txs.length === 0 ? (
+          <Card className="p-6 text-center">
+            <p className="text-sm font-medium text-ink-soft">{t('tx.emptyTx')}</p>
+          </Card>
+        ) : (
+          <div className="flex flex-col gap-2">
+            {txs.map((tx) => {
+              const inflow = tx.amount >= 0
+              const classified = inflow ? tx.incomeType !== undefined : tx.categoryId !== null
+              const open = expandedId === tx.id && !classified
+              return (
+                <Card key={tx.id} className="tap" onClick={() => classified && setEditTx(tx)}>
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full p-2 ${
+                        inflow ? 'bg-primary-soft text-primary-deep' : 'bg-slate-100 text-ink-soft'
+                      }`}
+                    >
+                      <Icon name={tx.source === 'bank' ? 'bank' : 'hand'} className="h-5 w-5" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-bold text-ink">{tx.name}</p>
+                      <p className="text-xs font-medium text-ink-soft">{fmt.date(new Date(tx.date))}</p>
+                    </div>
+                    <div className="flex shrink-0 flex-col items-end gap-1">
+                      <span
+                        className={`num text-sm font-extrabold ${tx.amount < 0 ? 'text-ink' : 'text-primary-deep'}`}
+                      >
+                        {fmt.currency(tx.amount)}
+                      </span>
+                      {classified ? (
+                        inflow ? (
+                          <Badge tone="success">
+                            <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                            {t(`inc.${tx.incomeType}`)}
+                          </Badge>
+                        ) : (
+                          <Badge tone="neutral">
+                            <span
+                              className="h-1.5 w-1.5 rounded-full"
+                              style={{ backgroundColor: CATEGORIES[tx.categoryId!].color }}
+                            />
+                            {t(`cat.${tx.categoryId}`)}
+                          </Badge>
+                        )
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setExpandedId(open ? null : tx.id)
+                          }}
+                          className="tap flex min-h-11 items-center rounded-xl px-2 text-xs font-bold text-primary-deep"
+                        >
+                          {inflow ? t('tx.assignIncome') : t('tx.assignCategory')}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  {open && (
+                    <div className="mt-3 flex flex-wrap items-stretch gap-2">
+                      {inflow
+                        ? INCOME_TYPES.map((id) => (
+                            <Pill
+                              key={id}
+                              onClick={() => {
+                                saveTxEdit(tx.id, { incomeType: id })
+                                setExpandedId(null)
+                                refresh()
+                              }}
+                            >
+                              <span className="flex items-center gap-1.5">
+                                <span className="h-2 w-2 rounded-full bg-primary" />
+                                {t(`inc.${id}`)}
+                              </span>
+                            </Pill>
+                          ))
+                        : CATEGORY_IDS.map((id) => (
+                            <Pill
+                              key={id}
+                              onClick={() => {
+                                saveTxEdit(tx.id, { categoryId: id })
+                                setExpandedId(null)
+                                refresh()
+                              }}
+                            >
+                              <span className="flex items-center gap-1.5">
+                                <span
+                                  className="h-2 w-2 rounded-full"
+                                  style={{ backgroundColor: CATEGORIES[id].color }}
+                                />
+                                {t(`cat.${id}`)}
+                              </span>
+                            </Pill>
+                          ))}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setEditTx(tx)
+                        }}
+                        className="tap flex min-h-11 items-center rounded-xl px-2 text-xs font-bold text-ink-soft underline"
+                      >
+                        {t('common.edit')}
+                      </button>
+                    </div>
+                  )}
+                </Card>
+              )
+            })}
+          </div>
+        )}
+      </div>
+
+      <EditEntrySheet
+        open={editTx !== null}
+        onClose={() => setEditTx(null)}
+        title={t('tx.edit')}
+        initial={
+          editTx
+            ? {
+                name: editTx.name,
+                amount: editTx.amount,
+                date: editTx.date,
+                categoryId: editTx.categoryId,
+              }
+            : { name: '', amount: 0, date: new Date().toISOString().slice(0, 10), categoryId: null }
+        }
+        onSave={saveEdit}
+        onDelete={deleteTx}
+        showDelete
+      />
+
+      <EditEntrySheet
+        open={cashOpen}
+        onClose={() => setCashOpen(false)}
+        title={t('cash.title')}
+        initial={{ name: '', amount: 0, date: new Date().toISOString().slice(0, 10), categoryId: null }}
+        saveLabel={t('common.add')}
+        onSave={(draft) => {
+          addCashTx({
+            name: draft.name || t('cash.title'),
+            amount: draft.amount === 0 ? 0 : -Math.abs(draft.amount),
+            date: draft.date,
+            categoryId: draft.categoryId,
+          })
+          refresh()
+        }}
+      />
+    </div>
+  )
+}
