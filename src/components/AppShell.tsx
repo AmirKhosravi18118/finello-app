@@ -31,7 +31,7 @@ export function AppShell({
           <button
             type="button"
             onClick={() => setNotifOpen(true)}
-            className="tap relative rounded-2xl border border-slate-200 bg-white p-3 text-ink-soft"
+            className="tap relative rounded-2xl border border-line bg-surface p-3 text-ink-soft"
             aria-label={t('common.notifications')}
           >
             <Icon name="bell" className="h-5 w-5" />
@@ -49,7 +49,7 @@ export function AppShell({
             className={`tap rounded-2xl border p-3 ${
               tab === 'settings'
                 ? 'border-primary bg-primary-soft text-primary-deep'
-                : 'border-slate-200 bg-white text-ink-soft'
+                : 'border-line bg-surface text-ink-soft'
             }`}
           >
             <Icon name="settings" className="h-5 w-5" />
@@ -57,7 +57,9 @@ export function AppShell({
         </div>
       </header>
 
-      <main className="pb-36">{children}</main>
+      <main key={tab} className="screen-in pb-36">
+        {children}
+      </main>
 
       <BottomNav tab={tab} onTab={onTab} />
 

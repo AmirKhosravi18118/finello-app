@@ -72,7 +72,7 @@ export function NotificationCenter({ onGo }: { onGo: (tab: TabId) => void }) {
               return (
                 <div
                   key={p.id}
-                  className="flex items-center justify-between gap-3 border-t border-slate-100 py-2.5 first:border-t-0"
+                  className="flex items-center justify-between gap-3 border-t border-line py-2.5 first:border-t-0"
                 >
                   <div className="min-w-0">
                     <p className="truncate text-sm font-bold text-ink">{p.title}</p>

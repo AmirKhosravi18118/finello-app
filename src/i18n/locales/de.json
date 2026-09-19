@@ -128,7 +128,10 @@
     "connectBank": "Bankkonto verbinden",
     "connectedBank": "Verbunden: {bank}",
     "disconnect": "Verbindung trennen",
-    "bankConsent": "Mit der Verbindung werden die Transaktionen der letzten 7 Tage testweise abgerufen (Demo — es fließen keine echten Daten)."
+    "bankConsent": "Mit der Verbindung werden die Transaktionen der letzten 7 Tage testweise abgerufen (Demo — es fließen keine echten Daten).",
+    "themeGroup": "Design",
+    "themeLight": "Hell",
+    "themeDark": "Dunkel"
   },
   "onb": {
     "welcome": "Willkommen bei Finello",

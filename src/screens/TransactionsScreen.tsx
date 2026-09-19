@@ -155,7 +155,7 @@ export function TransactionsScreen() {
                   <div className="flex items-center gap-3">
                     <span
                       className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full p-2 ${
-                        inflow ? 'bg-primary-soft text-primary-deep' : 'bg-slate-100 text-ink-soft'
+                        inflow ? 'bg-primary-soft text-primary-deep' : 'bg-chip text-ink-soft'
                       }`}
                     >
                       <Icon name={tx.source === 'bank' ? 'bank' : 'hand'} className="h-5 w-5" />

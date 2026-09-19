@@ -68,7 +68,7 @@ export function CalendarScreen() {
               type="button"
               onClick={() => setSelected(d)}
               className={`tap flex min-h-11 w-11 shrink-0 flex-col items-center justify-center gap-1 rounded-full px-1 ${
-                sel ? 'bg-navy text-white shadow-md' : 'border border-slate-200 bg-white text-ink-soft'
+                sel ? 'bg-navy text-white shadow-md' : 'border border-line bg-surface text-ink-soft'
               }`}
             >
               <span className="num text-sm font-bold">{fmt.num(d)}</span>
@@ -144,7 +144,7 @@ export function CalendarScreen() {
                 key={p.id}
                 type="button"
                 onClick={() => setEditPayment(p)}
-                className="tap -mx-1 flex items-center justify-between gap-3 rounded-xl px-1 py-2.5 text-start first:border-t-0 border-t border-slate-100"
+                className="tap -mx-1 flex items-center justify-between gap-3 rounded-xl px-1 py-2.5 text-start first:border-t-0 border-t border-line"
               >
                 <div className="flex min-w-0 items-center gap-3">
                   <span

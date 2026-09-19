@@ -9,6 +9,7 @@ import {
   sendTestNotification,
   type PermState,
 } from '../notifications/reminders'
+import { getTheme, setTheme, type Theme } from '../theme/theme'
 import { downloadFile, exportableTransactions, paymentsIcs, transactionsCsv } from '../data/exporters'
 import { allPayments } from '../data/paymentsView'
 
@@ -31,7 +32,7 @@ function IconBubble({ name, danger = false }: { name: IconName; danger?: boolean
   return (
     <span
       className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full p-2 ${
-        danger ? 'bg-danger-soft text-danger' : 'bg-slate-100 text-ink-soft'
+        danger ? 'bg-danger-soft text-danger' : 'bg-chip text-ink-soft'
       }`}
     >
       <Icon name={name} className="h-full w-full" />
@@ -58,6 +59,11 @@ function SelectPill({
 export function SettingsScreen() {
   const { t, fmt, lang, setLang } = useI18n()
   const { banks, catalog, connect, disconnect } = useBankConnection()
+  const [theme, setThemeState] = useState<Theme>(() => getTheme())
+  const selectTheme = (v: Theme) => {
+    setTheme(v)
+    setThemeState(v)
+  }
   const [perm, setPerm] = useState<PermState>(() => permissionState())
   const [flash, setFlash] = useState('')
   const [notifyDays, setNotifyDays] = useState<number>(() => {
@@ -90,6 +96,23 @@ export function SettingsScreen() {
   return (
     <div className="flex flex-col gap-5">
       <SectionTitle title={t('set.title')} />
+
+      {/* display */}
+      <section>
+        <GroupHeader label={t('set.themeGroup')} />
+        <Card className="flex min-h-14 items-center gap-3">
+          <IconBubble name="globe" />
+          <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('set.themeGroup')}</span>
+          <div className="flex shrink-0 items-center gap-1.5">
+            <SelectPill active={theme === 'light'} onSelect={() => selectTheme('light')}>
+              {t('set.themeLight')}
+            </SelectPill>
+            <SelectPill active={theme === 'dark'} onSelect={() => selectTheme('dark')}>
+              {t('set.themeDark')}
+            </SelectPill>
+          </div>
+        </Card>
+      </section>
 
       {/* profile */}
       <section>
@@ -174,7 +197,7 @@ export function SettingsScreen() {
               <p className="text-[11px] leading-relaxed text-ink-soft">{t('notif.dailyNote')}</p>
               <button
                 type="button"
-                className="tap shrink-0 rounded-xl border border-slate-200 px-2.5 py-2 text-[11px] font-bold text-ink-soft"
+                className="tap shrink-0 rounded-xl border border-line px-2.5 py-2 text-[11px] font-bold text-ink-soft"
                 onClick={async () => {
                   const ok = await sendTestNotification()
                   if (ok) setFlash(t('notif.testSent'))
@@ -204,11 +227,11 @@ export function SettingsScreen() {
             >
               <span
                 className={`relative block h-6 w-11 rounded-full transition-colors ${
-                  sync ? 'bg-primary' : 'bg-slate-300'
+                  sync ? 'bg-primary' : 'bg-line'
                 }`}
               >
                 <span
-                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all duration-200 ${
+                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-surface shadow transition-all duration-200 ${
                     sync ? 'start-[22px]' : 'start-0.5'
                   }`}
                 />
@@ -228,7 +251,7 @@ export function SettingsScreen() {
                   'text/calendar;charset=utf-8',
                 )
               }
-              className="tap -me-3 flex shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white p-3 text-ink-soft"
+              className="tap -me-3 flex shrink-0 items-center justify-center rounded-2xl border border-line bg-surface p-3 text-ink-soft"
             >
               <Icon name="download" className="h-5 w-5" />
             </button>
@@ -341,7 +364,7 @@ export function SettingsScreen() {
                   ) : (
                     <span
                       className={`h-5 w-5 shrink-0 rounded-full border-2 ${
-                        pickedBank?.id === b.id ? 'border-primary bg-primary' : 'border-slate-300'
+                        pickedBank?.id === b.id ? 'border-primary bg-primary' : 'border-line'
                       }`}
                     />
                   )}

@@ -39,7 +39,7 @@ export function OnboardingScreen({ onDone }: { onDone: () => void }) {
               </div>
               <div
                 className={`h-6 w-6 rounded-full border-2 ${
-                  picked === l.id ? 'border-primary bg-primary' : 'border-slate-300'
+                  picked === l.id ? 'border-primary bg-primary' : 'border-line'
                 }`}
               />
             </Card>

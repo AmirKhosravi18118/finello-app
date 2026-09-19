@@ -65,7 +65,7 @@ export function AddMoneySheet({
               className={`tap flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-2xl text-sm font-bold ${
                 mode === 'expense'
                   ? 'bg-danger-soft text-danger ring-2 ring-danger/40'
-                  : 'border border-slate-200 bg-white text-ink-soft'
+                  : 'border border-line bg-surface text-ink-soft'
               }`}
             >
               <Icon name="up" className="h-4 w-4 rotate-180" />
@@ -77,7 +77,7 @@ export function AddMoneySheet({
               className={`tap flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-2xl text-sm font-bold ${
                 mode === 'income'
                   ? 'bg-primary-soft text-primary-deep ring-2 ring-primary/40'
-                  : 'border border-slate-200 bg-white text-ink-soft'
+                  : 'border border-line bg-surface text-ink-soft'
               }`}
             >
               <Icon name="down" className="h-4 w-4 rotate-180" />

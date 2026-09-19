@@ -65,7 +65,7 @@ export function ExpensesScreen() {
         <SectionTitle title={t('exp.byCategory')} />
         {byCat.length > 0 && (
           <svg viewBox="0 0 320 140" className="w-full" aria-hidden="true">
-            <line x1="0" y1="130.5" x2="320" y2="130.5" stroke="#E2E8F0" strokeWidth="1" />
+            <line x1="0" y1="130.5" x2="320" y2="130.5" className="stroke-line" strokeWidth="1" />
             {byCat.map((item, i) => {
               const slot = 320 / byCat.length
               const barW = Math.min(26, slot * 0.6)
@@ -119,7 +119,7 @@ export function ExpensesScreen() {
 
       <Card>
         <SectionTitle title={t('exp.comparePrev')} />
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-line">
           <div className="flex min-h-11 items-center justify-between gap-2 py-1">
             <span className="text-sm font-extrabold text-ink">{t('common.total')}</span>
             {renderDelta(curTotal, prevTotal)}

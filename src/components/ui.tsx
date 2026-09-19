@@ -25,7 +25,7 @@ const TONE_CLASS: Record<Tone, string> = {
   success: 'bg-primary-soft text-primary-deep',
   warn: 'bg-amber-soft text-amber-600',
   danger: 'bg-danger-soft text-danger',
-  neutral: 'bg-slate-100 text-slate-600',
+  neutral: 'bg-chip text-ink-soft',
 }
 
 export function Badge({ tone, children }: { tone: Tone; children: ReactNode }) {
@@ -64,7 +64,7 @@ export function ProgressBar({ value, label }: { value: number; label?: string })
   const pct = Math.round(Math.min(1, Math.max(0, value)) * 100)
   return (
     <div
-      className="h-2 w-full overflow-hidden rounded-full bg-slate-100"
+      className="h-2 w-full overflow-hidden rounded-full bg-chip"
       role="progressbar"
       aria-valuenow={pct}
       aria-valuemin={0}
@@ -93,7 +93,7 @@ export function Pill({
       type="button"
       onClick={onClick}
       className={`tap shrink-0 rounded-full px-4 py-2 text-xs font-bold ${
-        active ? 'bg-navy text-white shadow-md' : 'border border-slate-200 bg-white text-ink-soft'
+        active ? 'bg-navy text-white shadow-md' : 'border border-line bg-surface text-ink-soft'
       }`}
     >
       {children}
@@ -233,7 +233,7 @@ export function Icon({ name, className = 'h-5 w-5' }: { name: IconName; classNam
 export function EmptyState({ icon, text }: { icon: IconName; text: string }) {
   return (
     <div className="flex flex-col items-center gap-2 py-8 text-center">
-      <span className="flex h-14 w-14 items-center justify-center rounded-3xl bg-slate-100 p-3.5 text-ink-soft/70">
+      <span className="flex h-14 w-14 items-center justify-center rounded-3xl bg-chip p-3.5 text-ink-soft/70">
         <Icon name={icon} className="h-full w-full" />
       </span>
       <p className="text-sm font-bold text-ink-soft">{text}</p>
@@ -270,7 +270,7 @@ export function Modal({
             type="button"
             onClick={onClose}
             aria-label={t('common.close')}
-            className="tap rounded-full bg-slate-100 p-3 text-ink-soft"
+            className="tap rounded-full bg-chip p-3 text-ink-soft"
           >
             <svg
               viewBox="0 0 24 24"

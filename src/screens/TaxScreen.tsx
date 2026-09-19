@@ -104,7 +104,7 @@ export function TaxScreen() {
                   </span>
                 </div>
               ))}
-              <div className="flex items-center justify-between border-t border-slate-200/70 pt-3">
+              <div className="flex items-center justify-between border-t border-line/70 pt-3">
                 <span className="text-sm font-bold text-ink-soft">{t('common.total')}</span>
                 <span className="num text-end text-base font-extrabold text-ink">{fmt.currency(sum)}</span>
               </div>

@@ -87,7 +87,7 @@ export function HomeScreen() {
               {fmt.currency(money.income)}
             </p>
           </div>
-          <div className="rounded-2xl bg-slate-100 p-3">
+          <div className="rounded-2xl bg-chip p-3">
             <p className="text-[11px] font-bold text-ink-soft">{t('home.monthExpense')}</p>
             <p className="num mt-0.5 text-base font-extrabold text-ink">{fmt.currency(money.expense)}</p>
           </div>
@@ -116,10 +116,10 @@ export function HomeScreen() {
                 key={p.id}
                 type="button"
                 onClick={() => setEditPayment(p)}
-                className="tap -mx-1 flex items-center justify-between gap-3 rounded-xl px-1 py-2.5 text-start border-t border-slate-100 first:border-t-0"
+                className="tap -mx-1 flex items-center justify-between gap-3 rounded-xl px-1 py-2.5 text-start border-t border-line first:border-t-0"
               >
                 <div className="flex min-w-0 items-center gap-3">
-                  <span className="num flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-sm font-bold text-ink">
+                  <span className="num flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-chip text-sm font-bold text-ink">
                     {fmt.num(p.dayOfMonth)}
                   </span>
                   <div className="min-w-0">

@@ -128,7 +128,10 @@
     "connectBank": "Connect bank account",
     "connectedBank": "Connected: {bank}",
     "disconnect": "Disconnect",
-    "bankConsent": "Connecting fetches the last 7 days of transactions for testing (demo — no real data flows)."
+    "bankConsent": "Connecting fetches the last 7 days of transactions for testing (demo — no real data flows).",
+    "themeGroup": "Display",
+    "themeLight": "Light",
+    "themeDark": "Dark"
   },
   "onb": {
     "welcome": "Welcome to Finello",

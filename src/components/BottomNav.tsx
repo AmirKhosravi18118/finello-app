@@ -23,7 +23,7 @@ export function BottomNav({ tab, onTab }: { tab: TabId; onTab: (t: TabId) => voi
             onClick={() => onTab(id)}
             aria-current={active ? 'page' : undefined}
             className={`tap flex min-h-11 min-w-11 flex-1 flex-col items-center gap-0.5 rounded-2xl px-1 py-1.5 ${
-              active ? 'bg-white/15 text-white' : 'text-white/55'
+              active ? 'bg-surface/15 text-white' : 'text-white/55'
             }`}
           >
             <Icon name={icon} className={`h-5 w-5 ${active ? 'text-primary' : ''}`} />
