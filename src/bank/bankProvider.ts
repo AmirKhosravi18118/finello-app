@@ -18,6 +18,8 @@ export interface BankProvider {
   id: string
   listBanks(): BankRef[]
   importTransactions(bankId: string, sinceDays: number): BankTransaction[]
+  /** Live providers (PSD2) add the hosted consent flow. */
+  startConsent?: (bankId: string, redirectUrl: string) => Promise<{ link: string; id: string }>
 }
 
 const GERMAN_BANKS: BankRef[] = [

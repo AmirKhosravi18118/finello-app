@@ -3,9 +3,12 @@ import { useI18n } from '../i18n/I18nContext'
 import type { TabId } from '../data/demo'
 import { BottomNav } from './BottomNav'
 import { Badge, Icon, Modal } from './ui'
+import { Tour } from './Tour'
 import { uncategorizedTotal } from '../bank/bankConnection'
 import { NotificationCenter } from './NotificationCenter'
 
+/** App shell: brand header (logo + demo badge on Home only), global bell/settings,
+ *  page canvas on the DS2.0 rhythm (px-5 pt-2) and the pill bottom nav. */
 export function AppShell({
   tab,
   onTab,
@@ -18,16 +21,20 @@ export function AppShell({
   const { t, fmt } = useI18n()
   const [notifOpen, setNotifOpen] = useState(false)
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-4 pt-5">
-      <header className="mb-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-navy font-extrabold text-primary">
-            F
+    <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-5 pt-2">
+      <header className="flex items-center justify-between gap-2 pb-2 pt-2">
+        {tab === 'home' ? (
+          <div className="flex min-w-0 items-center gap-2">
+            <div className="hero-gradient shadow-card flex h-9 w-9 items-center justify-center rounded-2xl text-base font-extrabold text-primary">
+              F
+            </div>
+            <span className="truncate text-lg font-extrabold tracking-tight text-ink">{t('app.name')}</span>
+            <Badge tone="warn">{t('common.demo')}</Badge>
           </div>
-          <span className="text-lg font-extrabold tracking-tight text-ink">{t('app.name')}</span>
-          <Badge tone="warn">{t('common.demo')}</Badge>
-        </div>
-        <div className="flex items-center gap-2">
+        ) : (
+          <span className="flex-1" />
+        )}
+        <div className="flex shrink-0 items-center gap-2">
           <button
             type="button"
             onClick={() => setNotifOpen(true)}
@@ -71,6 +78,9 @@ export function AppShell({
           }}
         />
       </Modal>
+
+      {/* guided tour: first run + Settings replay (requestTour) */}
+      <Tour />
     </div>
   )
 }

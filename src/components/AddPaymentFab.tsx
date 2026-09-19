@@ -1,14 +1,23 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useI18n } from '../i18n/I18nContext'
-import { Icon, Modal } from './ui'
+import { Modal } from './ui'
 import type { CategoryId } from '../data/demo'
 import { addUserPayment } from '../data/editStore'
 
-/** Floating add-payment action (CONTRACT §5): rendered on home and calendar tabs.
+/** Add-payment sheet (CONTRACT §5 / DS2.0 §5): controlled modal — opened from the
+ *  Home section actions, the Calendar header "+" or the nav quick-add menu
+ *  (window event `finello:quick-add` with detail 'payment', listened to in HomeScreen).
  *  Saving persists a real user payment (WP6) — screens refresh via onAdded. */
-export function AddPaymentFab({ onAdded }: { onAdded?: () => void }) {
+export function AddPaymentSheet({
+  open,
+  onClose,
+  onAdded,
+}: {
+  open: boolean
+  onClose: () => void
+  onAdded?: () => void
+}) {
   const { t } = useI18n()
-  const [open, setOpen] = useState(false)
   const [title, setTitle] = useState('')
   const [amount, setAmount] = useState('')
   const [day, setDay] = useState('')
@@ -16,13 +25,14 @@ export function AddPaymentFab({ onAdded }: { onAdded?: () => void }) {
 
   const valid = title.trim() !== '' && Number(amount) > 0 && Number(day) >= 1 && Number(day) <= 31
 
-  const close = () => {
-    setOpen(false)
-    setTitle('')
-    setAmount('')
-    setDay('')
-    setRecipient('')
-  }
+  useEffect(() => {
+    if (!open) {
+      setTitle('')
+      setAmount('')
+      setDay('')
+      setRecipient('')
+    }
+  }, [open])
 
   const save = () => {
     if (!valid) return
@@ -34,93 +44,79 @@ export function AddPaymentFab({ onAdded }: { onAdded?: () => void }) {
       categoryId: 'other' as CategoryId,
     })
     onAdded?.()
-    close()
+    onClose()
   }
 
   return (
-    <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        aria-label={t('common.add')}
-        className="tap fixed bottom-24 end-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-white shadow-lg"
-      >
-        <Icon name="plus" className="h-6 w-6" />
-      </button>
-
-      <Modal open={open} onClose={close} title={t('home.addPayment')}>
-        <div className="flex flex-col gap-3">
-          <div>
-            <label htmlFor="fin-payment-title" className="mb-1 block ps-1 text-xs font-bold text-ink-soft">
-              {t('home.paymentTitle')}
+    <Modal open={open} onClose={onClose} title={t('home.addPayment')}>
+      <div className="flex flex-col gap-3">
+        <div>
+          <label htmlFor="fin-payment-title" className="mb-1 block ps-1 text-xs font-bold text-ink-soft">
+            {t('home.paymentTitle')}
+          </label>
+          <input
+            id="fin-payment-title"
+            type="text"
+            className="field"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
+        <div className="flex gap-3">
+          <div className="flex-1">
+            <label htmlFor="fin-payment-amount" className="mb-1 block ps-1 text-xs font-bold text-ink-soft">
+              {t('home.amount')}
             </label>
             <input
-              id="fin-payment-title"
-              type="text"
-              className="field"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              id="fin-payment-amount"
+              type="number"
+              min={0}
+              className="field num"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
             />
           </div>
-          <div className="flex gap-3">
-            <div className="flex-1">
-              <label htmlFor="fin-payment-amount" className="mb-1 block ps-1 text-xs font-bold text-ink-soft">
-                {t('home.amount')}
-              </label>
-              <input
-                id="fin-payment-amount"
-                type="number"
-                min={0}
-                className="field num"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-              />
-            </div>
-            <div className="flex-1">
-              <label htmlFor="fin-payment-day" className="mb-1 block ps-1 text-xs font-bold text-ink-soft">
-                {t('home.dayOfMonth')}
-              </label>
-              <input
-                id="fin-payment-day"
-                type="number"
-                min={1}
-                max={31}
-                className="field num"
-                value={day}
-                onChange={(e) => setDay(e.target.value)}
-              />
-            </div>
-          </div>
-          <div>
-            <label
-              htmlFor="fin-payment-recipient"
-              className="mb-1 block ps-1 text-xs font-bold text-ink-soft"
-            >
-              {t('home.recipient')}
+          <div className="flex-1">
+            <label htmlFor="fin-payment-day" className="mb-1 block ps-1 text-xs font-bold text-ink-soft">
+              {t('home.dayOfMonth')}
             </label>
             <input
-              id="fin-payment-recipient"
-              type="text"
-              className="field"
-              value={recipient}
-              onChange={(e) => setRecipient(e.target.value)}
+              id="fin-payment-day"
+              type="number"
+              min={1}
+              max={31}
+              className="field num"
+              value={day}
+              onChange={(e) => setDay(e.target.value)}
             />
-          </div>
-          <div className="mt-2 flex gap-3">
-            <button type="button" className="btn-ghost flex-1" onClick={close}>
-              {t('common.cancel')}
-            </button>
-            <button
-              type="button"
-              disabled={!valid}
-              onClick={save}
-              className="btn-primary flex-1 disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              {t('common.save')}
-            </button>
           </div>
         </div>
-      </Modal>
-    </>
+        <div>
+          <label htmlFor="fin-payment-recipient" className="mb-1 block ps-1 text-xs font-bold text-ink-soft">
+            {t('home.recipient')}
+          </label>
+          <input
+            id="fin-payment-recipient"
+            type="text"
+            className="field"
+            value={recipient}
+            onChange={(e) => setRecipient(e.target.value)}
+          />
+        </div>
+        <div className="mt-2 flex gap-3">
+          <button type="button" className="btn-ghost flex-1" onClick={onClose}>
+            {t('common.cancel')}
+          </button>
+          <button
+            type="button"
+            disabled={!valid}
+            onClick={save}
+            className="btn-primary flex-1 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            {t('common.save')}
+          </button>
+        </div>
+      </div>
+    </Modal>
   )
 }

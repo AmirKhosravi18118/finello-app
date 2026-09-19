@@ -2,7 +2,7 @@ import { useEffect, useState, type JSX } from 'react'
 import type { TabId } from './data/demo'
 import { AppShell } from './components/AppShell'
 import { runDailyReminders } from './notifications/reminders'
-import { OnboardingScreen } from './screens/OnboardingScreen'
+import { AuthScreen } from './auth/AuthScreen'
 import { HomeScreen } from './screens/HomeScreen'
 import { CalendarScreen } from './screens/CalendarScreen'
 import { ExpensesScreen } from './screens/ExpensesScreen'
@@ -19,8 +19,8 @@ const SCREENS: Record<TabId, () => JSX.Element> = {
   settings: SettingsScreen,
 }
 
-const ONBOARD_KEY = 'finello_onboarded'
 const TAB_KEY = 'finello_tab'
+const ONBOARD_KEY = 'finello_onboarded'
 
 export default function App() {
   const [onboarded, setOnboarded] = useState(() => localStorage.getItem(ONBOARD_KEY) === '1')
@@ -43,9 +43,8 @@ export default function App() {
 
   if (!onboarded) {
     return (
-      <OnboardingScreen
+      <AuthScreen
         onDone={() => {
-          localStorage.setItem(ONBOARD_KEY, '1')
           setOnboarded(true)
         }}
       />

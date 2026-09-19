@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useI18n } from '../i18n/I18nContext'
-import { Badge, Card, SectionTitle, type Tone } from '../components/ui'
-import { AddPaymentFab } from '../components/AddPaymentFab'
+import { AppHeader, Badge, EmptyState, Icon, SectionHeader, SkeletonCard, type Tone } from '../components/ui'
+import { AddPaymentSheet } from '../components/AddPaymentFab'
 import { EditPaymentSheet } from '../components/EditPaymentSheet'
-import { CATEGORIES, type Payment, type PayStatus } from '../data/demo'
+import { CATEGORIES, type Payment } from '../data/demo'
+import type { PayStatus } from '../data/demo'
 import { allPayments } from '../data/paymentsView'
 
 const STATUS_TONE: Record<PayStatus, Tone> = {
@@ -22,8 +23,16 @@ export function CalendarScreen() {
   const daysInMonth = new Date(year, month + 1, 0).getDate()
   const [selected, setSelected] = useState(todayNum)
   const [editPayment, setEditPayment] = useState<Payment | null>(null)
+  const [addOpen, setAddOpen] = useState(false)
   const [, setVersion] = useState(0)
   const refresh = () => setVersion((v) => v + 1)
+
+  // simulated fetch so skeleton states are actually visible
+  const [loaded, setLoaded] = useState(false)
+  useEffect(() => {
+    const id = window.setTimeout(() => setLoaded(true), 350)
+    return () => window.clearTimeout(id)
+  }, [])
 
   const payments = allPayments()
 
@@ -51,36 +60,63 @@ export function CalendarScreen() {
 
   const selectedPayments = paysOn(selected)
 
-  return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-baseline justify-between gap-2">
-        <h1 className="text-xl font-extrabold text-ink">{t('cal.monthTitle')}</h1>
-        <p className="text-sm font-bold text-ink-soft">{fmt.month(new Date())}</p>
-      </div>
+  // 7-day strip centered on the selected day (DS2.0 §5): 3 before + selected + 3 after, clamped.
+  const stripStart = Math.min(Math.max(1, selected - 3), Math.max(1, daysInMonth - 6))
+  const stripDays = Array.from({ length: 7 }, (_, i) => stripStart + i)
 
-      <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
-        {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((d) => {
+  return (
+    <div className="flex flex-col gap-5">
+      <AppHeader
+        overline={fmt.month(new Date())}
+        title={t('cal.monthTitle')}
+        trailing={
+          <button
+            type="button"
+            aria-label={t('common.add')}
+            onClick={() => setAddOpen(true)}
+            className="tap shadow-card flex h-10 w-10 items-center justify-center rounded-2xl bg-navy text-white"
+          >
+            <Icon name="plus" className="h-5 w-5" />
+          </button>
+        }
+      />
+
+      {/* 7-day strip centered on the selected day; center cell is the gradient hero */}
+      <div className="grid grid-cols-7 gap-1.5">
+        {stripDays.map((d) => {
           const pays = paysOn(d)
-          const sel = selected === d
+          const isCenter = selected === d
           return (
             <button
               key={d}
               type="button"
               onClick={() => setSelected(d)}
-              className={`tap flex min-h-11 w-11 shrink-0 flex-col items-center justify-center gap-1 rounded-full px-1 ${
-                sel ? 'bg-navy text-white shadow-md' : 'border border-line bg-surface text-ink-soft'
+              aria-pressed={isCenter}
+              className={`tap flex min-h-16 flex-col items-center justify-center gap-0.5 rounded-2xl px-0.5 py-1.5 ${
+                isCenter
+                  ? 'hero-gradient shadow-card text-white'
+                  : `border border-line bg-surface text-ink ${todayNum === d ? 'ring-2 ring-primary' : ''}`
               }`}
             >
-              <span className="num text-sm font-bold">{fmt.num(d)}</span>
+              <span
+                className={`max-w-full truncate text-[9px] font-bold uppercase tracking-wide ${
+                  isCenter ? 'text-white/70' : 'text-ink-soft'
+                }`}
+              >
+                {fmt.weekday(new Date(year, month, d))}
+              </span>
+              <span className="num text-lg font-extrabold leading-none">{fmt.num(d)}</span>
               <span className="flex h-1.5 items-center gap-0.5">
                 {pays.length > 0 ? (
-                  pays.map((p) => (
-                    <span
-                      key={p.id}
-                      className="h-1.5 w-1.5 rounded-full"
-                      style={{ backgroundColor: CATEGORIES[p.categoryId].color }}
-                    />
-                  ))
+                  pays
+                    .slice(0, 3)
+                    .map((p) => (
+                      <span
+                        key={p.id}
+                        className="h-1.5 w-1.5 rounded-full"
+                        style={{ backgroundColor: CATEGORIES[p.categoryId].color }}
+                      />
+                    ))
                 ) : (
                   <span className="h-1.5 w-1.5" />
                 )}
@@ -90,7 +126,8 @@ export function CalendarScreen() {
         })}
       </div>
 
-      <Card>
+      {/* month grid */}
+      <div className="card p-4">
         <div className="mb-2 grid grid-cols-7 gap-1">
           {weekdayLabels.map((w, i) => (
             <div key={i} className="text-center text-[10px] font-bold text-ink-soft">
@@ -125,46 +162,61 @@ export function CalendarScreen() {
             ),
           )}
         </div>
-      </Card>
+      </div>
 
-      {payments.length === 0 && (
-        <Card>
-          <p className="py-2 text-center text-sm font-medium text-ink-soft">{t('common.empty')}</p>
-        </Card>
-      )}
-
-      <Card>
-        <SectionTitle title={t('cal.paymentsOn', { date: fmt.date(new Date(year, month, selected)) })} />
-        {selectedPayments.length === 0 ? (
-          <p className="py-4 text-center text-sm font-medium text-ink-soft">{t('cal.noPayments')}</p>
-        ) : (
-          <div className="flex flex-col">
-            {selectedPayments.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => setEditPayment(p)}
-                className="tap -mx-1 flex items-center justify-between gap-3 rounded-xl px-1 py-2.5 text-start first:border-t-0 border-t border-line"
-              >
-                <div className="flex min-w-0 items-center gap-3">
-                  <span
-                    className="h-2.5 w-2.5 shrink-0 rounded-full"
-                    style={{ backgroundColor: CATEGORIES[p.categoryId].color }}
-                  />
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-bold text-ink">{p.title}</p>
-                    <p className="truncate text-xs text-ink-soft">{p.recipient}</p>
-                  </div>
-                </div>
-                <div className="flex shrink-0 flex-col items-end gap-1">
-                  <span className="num text-sm font-extrabold text-ink">{fmt.currency(p.amount)}</span>
-                  <Badge tone={STATUS_TONE[p.status]}>{t(`status.${p.status}`)}</Badge>
-                </div>
-              </button>
-            ))}
+      {/* day panel */}
+      {loaded ? (
+        payments.length === 0 ? (
+          <div className="card">
+            <EmptyState icon="calendar" text={t('common.empty')} />
           </div>
-        )}
-      </Card>
+        ) : (
+          <section>
+            <SectionHeader
+              icon="calendar"
+              tone="warn"
+              title={t('cal.paymentsOn', { date: fmt.date(new Date(year, month, selected)) })}
+            />
+            {selectedPayments.length === 0 ? (
+              <div className="card">
+                <EmptyState icon="calendar" tone="neutral" text={t('cal.noPayments')} />
+              </div>
+            ) : (
+              <div className="card px-4">
+                {selectedPayments.map((p) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => setEditPayment(p)}
+                    className="tap flex w-full items-center justify-between gap-3 border-t border-line py-3 text-start first:border-t-0"
+                  >
+                    <div className="flex min-w-0 items-center gap-3">
+                      <span
+                        className="h-2.5 w-2.5 shrink-0 rounded-full"
+                        style={{ backgroundColor: CATEGORIES[p.categoryId].color }}
+                      />
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-bold text-ink">{p.title}</p>
+                        <p className="truncate text-xs text-ink-soft">{p.recipient}</p>
+                      </div>
+                    </div>
+                    <div className="flex shrink-0 flex-col items-end gap-1">
+                      <span className="num text-sm font-extrabold text-ink">{fmt.currency(p.amount)}</span>
+                      <Badge tone={STATUS_TONE[p.status]}>{t(`status.${p.status}`)}</Badge>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </section>
+        )
+      ) : (
+        <>
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+        </>
+      )}
 
       <EditPaymentSheet
         open={editPayment !== null}
@@ -173,7 +225,7 @@ export function CalendarScreen() {
         onSaved={refresh}
       />
 
-      <AddPaymentFab onAdded={refresh} />
+      <AddPaymentSheet open={addOpen} onClose={() => setAddOpen(false)} onAdded={refresh} />
     </div>
   )
 }

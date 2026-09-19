@@ -131,7 +131,10 @@
     "bankConsent": "Connecting fetches the last 7 days of transactions for testing (demo — no real data flows).",
     "themeGroup": "Display",
     "themeLight": "Light",
-    "themeDark": "Dark"
+    "themeDark": "Dark",
+    "demoData": "Demo data",
+    "demoDataOn": "On (demo)",
+    "demoDataOff": "Off (clean)"
   },
   "onb": {
     "welcome": "Welcome to Finello",
@@ -212,5 +215,56 @@
     "saved": "Result saved",
     "redo": "Redo",
     "summary": "Tax check result"
+  },
+  "tour": {
+    "title": "Finello tour",
+    "skip": "Skip",
+    "next": "Next",
+    "done": "Let’s start",
+    "s1t": "Monthly balance at a glance",
+    "s1d": "Income, expenses and your monthly balance live here — the green + records income instantly.",
+    "s2t": "Payments calendar",
+    "s2d": "Every payment has a colored dot; tap a day to view or edit its payments.",
+    "s3t": "Expenses & insights",
+    "s3d": "Category chart, month-over-month comparison and the full list; tap any expense to edit it.",
+    "s4t": "Transactions & banks",
+    "s4d": "Connected-bank transactions carry a bank badge; filter, categorize and classify your income.",
+    "s5t": "Taxes without stress",
+    "s5d": "Log deductible expenses all year and use the 8-question check for your class and filing status.",
+    "s6t": "Everything in Settings",
+    "s6d": "Language, reminders, bank connections, data export and replaying this tour — all here."
+  },
+  "qa": {
+    "title": "Quick add",
+    "expense": "New expense",
+    "payment": "New installment",
+    "income": "New income"
+  },
+  "auth": {
+    "welcome": "Create your Finello account",
+    "sub": "Local & private — data stays on your device",
+    "name": "Full name",
+    "email": "Email",
+    "pin": "4-digit PIN (optional)",
+    "create": "Create account",
+    "haveAccount": "Already have an account?",
+    "login": "Sign in",
+    "helloBack": "Welcome back",
+    "loginBtn": "Log in to Finello",
+    "wrongPin": "Wrong PIN",
+    "needName": "Please enter your name",
+    "invalidEmail": "Invalid email",
+    "step": "Step {n} of {total}",
+    "q1": "Marital status?",
+    "q2": "Current occupation?",
+    "q3": "Working hours per week?",
+    "q4": "km home to work?",
+    "setupTitle": "A few quick questions",
+    "setupSub": "so reminders and taxes fit you",
+    "finish": "All set — let’s go",
+    "bankNow": "Connect a bank now?",
+    "bankLater": "Later",
+    "liveBadge": "Live connection",
+    "demoBadge": "Demo mode"
   }
 }

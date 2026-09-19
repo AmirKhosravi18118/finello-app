@@ -5,16 +5,7 @@ import { useI18n } from '../i18n/I18nContext'
 
 export function Card(props: HTMLAttributes<HTMLDivElement>) {
   const { className = '', ...rest } = props
-  return <div className={`card p-4 ${className}`} {...rest} />
-}
-
-export function SectionTitle({ title, action }: { title: string; action?: ReactNode }) {
-  return (
-    <div className="mb-2 flex items-center justify-between gap-2">
-      <h2 className="text-[15px] font-extrabold text-ink">{title}</h2>
-      {action}
-    </div>
-  )
+  return <div className={`card p-5 ${className}`} {...rest} />
 }
 
 /* ---------- atoms ---------- */
@@ -32,16 +23,161 @@ export function Badge({ tone, children }: { tone: Tone; children: ReactNode }) {
   return <span className={`badge ${TONE_CLASS[tone]}`}>{children}</span>
 }
 
-export function StatCard({
+/** Tinted 40px icon chip (DESIGN_SYSTEM_V2 §1 spacing scale). */
+export function IconChip({ icon, tone = 'neutral' }: { icon: IconName; tone?: Tone }) {
+  return (
+    <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl ${TONE_CLASS[tone]}`}>
+      <Icon name={icon} className="h-5 w-5" />
+    </span>
+  )
+}
+
+/* ---------- sticky page header (DESIGN_SYSTEM_V2 §2) ---------- */
+
+/** Sticky blurred page header: small overline above the 20px title, optional
+ *  subtitle, trailing text/icon action and optional demo badge (home only).
+ *  t()-free by design — callers pass ready strings. */
+export function AppHeader({
+  overline,
+  title,
+  subtitle,
+  trailing,
+  badge,
+}: {
+  overline: string
+  title: string
+  subtitle?: string
+  trailing?: ReactNode
+  badge?: string
+}) {
+  return (
+    <div className="sticky top-0 z-30 -mx-5 bg-canvas/85 px-5 pb-3 pt-2 backdrop-blur-md">
+      <div className="flex items-end justify-between gap-3">
+        <div className="min-w-0">
+          <p className="eyebrow">{overline}</p>
+          <div className="mt-0.5 flex items-center gap-2">
+            <h1 className="truncate text-[20px] font-extrabold leading-tight text-ink">{title}</h1>
+            {badge && <Badge tone="warn">{badge}</Badge>}
+          </div>
+          {subtitle && <p className="mt-0.5 truncate text-xs font-medium text-ink-soft">{subtitle}</p>}
+        </div>
+        {trailing && <div className="flex shrink-0 items-center gap-2">{trailing}</div>}
+      </div>
+    </div>
+  )
+}
+
+/* ---------- skeletons (DESIGN_SYSTEM_V2 §2) ---------- */
+
+export function Skeleton({ className = '' }: { className?: string }) {
+  return <div aria-hidden="true" className={`skeleton rounded-2xl ${className}`} />
+}
+
+/** List-row placeholder: icon chip + two lines + trailing amount. */
+export function SkeletonCard({ className = '' }: { className?: string }) {
+  return (
+    <div className={`card p-5 ${className}`}>
+      <div className="flex items-center gap-3">
+        <Skeleton className="h-10 w-10" />
+        <div className="flex min-w-0 flex-1 flex-col gap-2">
+          <Skeleton className="h-3.5 w-2/5" />
+          <Skeleton className="h-3 w-1/4" />
+        </div>
+        <Skeleton className="h-4 w-14" />
+      </div>
+    </div>
+  )
+}
+
+/** Two-tile stats placeholder for the 2-column StatTile grid. */
+export function SkeletonStats() {
+  return (
+    <div className="grid grid-cols-2 gap-3">
+      <Skeleton className="h-32 rounded-[28px]" />
+      <Skeleton className="h-32 rounded-[28px]" />
+    </div>
+  )
+}
+
+/* ---------- section header (DESIGN_SYSTEM_V2 §2) ---------- */
+
+export function SectionHeader({
+  icon,
+  title,
+  action,
+  tone = 'neutral',
+}: {
+  icon: IconName
+  title: string
+  action?: ReactNode
+  tone?: Tone
+}) {
+  return (
+    <div className="mb-2 flex items-center justify-between gap-2">
+      <div className="flex min-w-0 items-center gap-2.5">
+        <IconChip icon={icon} tone={tone} />
+        <h2 className="truncate text-[13px] font-bold text-ink">{title}</h2>
+      </div>
+      {action}
+    </div>
+  )
+}
+
+/* ---------- progress ring (DESIGN_SYSTEM_V2 §2) ---------- */
+
+export function ProgressRing({ value, size = 44, label }: { value: number; size?: number; label?: string }) {
+  const pct = Math.min(1, Math.max(0, value))
+  const r = (size - 6) / 2
+  const c = 2 * Math.PI * r
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox={`0 0 ${size} ${size}`}
+      role="progressbar"
+      aria-valuenow={Math.round(pct * 100)}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-label={label}
+      className="-rotate-90"
+    >
+      <circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth="5" className="stroke-chip" />
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={r}
+        fill="none"
+        strokeWidth="5"
+        strokeLinecap="round"
+        strokeDasharray={c}
+        strokeDashoffset={c * (1 - pct)}
+        className="stroke-primary transition-[stroke-dashoffset] duration-500"
+      />
+    </svg>
+  )
+}
+
+/* ---------- stat tile (DESIGN_SYSTEM_V2 §2) ---------- */
+
+export function StatTile({
   label,
   value,
   sub,
   tone = 'default',
+  icon,
+  progress,
+  progressLabel,
+  className = '',
 }: {
   label: string
   value: string
   sub?: string
   tone?: 'default' | 'success' | 'warn' | 'danger'
+  icon: IconName
+  /** 0..1 — renders a small ProgressRing next to the icon chip. */
+  progress?: number
+  progressLabel?: string
+  className?: string
 }) {
   const valueColor =
     tone === 'success'
@@ -51,12 +187,19 @@ export function StatCard({
         : tone === 'danger'
           ? 'text-danger'
           : 'text-ink'
+  const chipTone: Tone = tone === 'default' ? 'neutral' : tone
   return (
-    <Card className="min-w-[140px] flex-1">
-      <p className="text-[11px] font-bold uppercase tracking-wide text-ink-soft">{label}</p>
-      <p className={`num mt-1 text-xl font-extrabold ${valueColor}`}>{value}</p>
-      {sub && <p className="mt-0.5 text-[11px] font-medium text-ink-soft">{sub}</p>}
-    </Card>
+    <div className={`card flex flex-col gap-3 p-4 ${className}`}>
+      <div className="flex items-center justify-between gap-2">
+        <IconChip icon={icon} tone={chipTone} />
+        {progress !== undefined && <ProgressRing value={progress} size={40} label={progressLabel ?? label} />}
+      </div>
+      <div className="min-w-0">
+        <p className="truncate text-xs font-medium text-ink-soft">{label}</p>
+        <p className={`num mt-0.5 truncate text-xl font-extrabold ${valueColor}`}>{value}</p>
+        {sub && <p className="mt-0.5 truncate text-xs font-medium text-ink-soft">{sub}</p>}
+      </div>
+    </div>
   )
 }
 
@@ -228,15 +371,26 @@ export function Icon({ name, className = 'h-5 w-5' }: { name: IconName; classNam
   )
 }
 
-/* ---------- empty state ---------- */
+/* ---------- empty state (DESIGN_SYSTEM_V2 §2) ---------- */
 
-export function EmptyState({ icon, text }: { icon: IconName; text: string }) {
+export function EmptyState({
+  icon,
+  text,
+  tone = 'neutral',
+  action,
+}: {
+  icon: IconName
+  text: string
+  tone?: Tone
+  action?: ReactNode
+}) {
   return (
     <div className="flex flex-col items-center gap-2 py-8 text-center">
-      <span className="flex h-14 w-14 items-center justify-center rounded-3xl bg-chip p-3.5 text-ink-soft/70">
+      <span className={`flex h-14 w-14 items-center justify-center rounded-3xl p-3.5 ${TONE_CLASS[tone]}`}>
         <Icon name={icon} className="h-full w-full" />
       </span>
       <p className="text-sm font-bold text-ink-soft">{text}</p>
+      {action}
     </div>
   )
 }

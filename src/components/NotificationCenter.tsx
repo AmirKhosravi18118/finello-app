@@ -36,7 +36,7 @@ export function NotificationCenter({ onGo }: { onGo: (tab: TabId) => void }) {
     <div className="flex flex-col gap-3">
       {uncategorized > 0 && (
         <button type="button" onClick={() => onGo('transactions')} className="tap w-full text-start">
-          <Card className="flex min-h-16 items-center gap-3 !border-amber-200 !bg-amber-50/90">
+          <Card className="flex min-h-16 items-center gap-3 !border-amber-soft !bg-amber-soft/70">
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-soft text-amber-600">
               <Icon name="bell" className="h-5 w-5" />
             </span>
@@ -52,7 +52,7 @@ export function NotificationCenter({ onGo }: { onGo: (tab: TabId) => void }) {
 
       {overdues > 0 && (
         <button type="button" onClick={() => onGo('home')} className="tap w-full text-start">
-          <Card className="flex min-h-16 items-center gap-3 !border-red-200 !bg-red-50/80">
+          <Card className="flex min-h-16 items-center gap-3 !border-danger-soft !bg-danger-soft/70">
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-danger-soft text-danger">
               <Icon name="receipt" className="h-5 w-5" />
             </span>

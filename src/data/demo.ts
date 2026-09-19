@@ -221,17 +221,31 @@ const transactions: Tx[] = [
   },
 ]
 
+/** Optional demo dataset (WP12): default OFF → clean product with empty states.
+ *  Settings ▸ Demo data toggles 'finello_demo_data' and reloads. */
+const DEMO_KEY = 'finello_demo_data'
+
+export function demoDataEnabled(): boolean {
+  try {
+    return localStorage.getItem(DEMO_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+const maybe = <T>(rows: T[]): T[] => (demoDataEnabled() ? rows : [])
+
 export const demo: DemoData = {
   user: { name: 'Amir', email: 'amir@demo.finello.app', status: 'Werkstudent' },
   salaryDay: 15,
   salaryAmount: 850,
-  payments,
-  expenses,
-  transactions,
-  savings: { amount: 2150, goal: 5000 },
+  payments: maybe(payments),
+  expenses: maybe(expenses),
+  transactions: maybe(transactions),
+  savings: { amount: demoDataEnabled() ? 2150 : 0, goal: 5000 },
   tax: {
     profile: { taxClass: 1, employment: 'Werkstudent 18h/Woche' },
-    items: [
+    items: maybe<TaxItem>([
       {
         id: 'x1',
         category: 'Homeoffice',
@@ -272,7 +286,7 @@ export const demo: DemoData = {
         date: iso(Y, 8, 1),
         year: Y,
       },
-    ],
+    ]),
   },
 }
 

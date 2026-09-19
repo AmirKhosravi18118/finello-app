@@ -1,5 +1,8 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { activeBankProvider, type BankRef } from './bankProvider'
+import { gocardlessProvider, isLive } from './gocardless'
+
+export { isLive }
 import { demo, type Tx } from '../data/demo'
 import { getCashTx, uncategorizedCount } from '../data/editStore'
 
@@ -99,4 +102,39 @@ export function useBankConnection() {
   }, [])
 
   return { banks, catalog: activeBankProvider.listBanks(), imported, connect, disconnect, importNow }
+}
+
+/** Live (GoCardless) variants: async catalog + async pull that lands rows in
+ *  the same finello_bank_tx store so every screen keeps working unchanged. */
+export function useLiveBankCatalog(): BankRef[] {
+  const [catalog, setCatalog] = useState<BankRef[]>(() => (isLive() ? [] : activeBankProvider.listBanks()))
+  useEffect(() => {
+    if (!isLive()) return
+    gocardlessProvider
+      .listBanks()
+      .then(setCatalog)
+      .catch(() => setCatalog(activeBankProvider.listBanks()))
+  }, [])
+  return catalog
+}
+
+export async function importLiveTransactions(): Promise<number> {
+  if (!isLive()) return 0
+  const existing = getImportedTx()
+  const existingIds = new Set(existing.map((t) => t.id))
+  const rows = await gocardlessProvider.importTransactions('', 90)
+  const fresh: BankTx[] = rows
+    .filter((r) => !existingIds.has(r.id))
+    .map((r) => ({ ...r, source: 'bank', categoryId: null, bankId: 'live' }))
+  if (fresh.length) writeImported([...fresh, ...existing])
+  return fresh.length
+}
+
+/** Persist a live consent result (called after bank redirect back into app). */
+export function connectLiveBank(bank: BankRef) {
+  const next = getConnectedBanks()
+  if (!next.some((b) => b.id === bank.id)) {
+    next.push(bank)
+    writeBanks(next)
+  }
 }

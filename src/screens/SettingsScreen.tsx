@@ -1,8 +1,9 @@
 import { useState, type ReactNode } from 'react'
 import { useI18n, type Lang } from '../i18n/I18nContext'
 import { demo } from '../data/demo'
-import { Badge, Card, Icon, Modal, Pill, SectionTitle, type IconName } from '../components/ui'
-import { useBankConnection, type BankRef } from '../bank/bankConnection'
+import { AppHeader, Badge, Card, Icon, Modal, Pill, type IconName } from '../components/ui'
+import { requestTour } from '../components/Tour'
+import { useBankConnection, useLiveBankCatalog, isLive, type BankRef } from '../bank/bankConnection'
 import {
   permissionState,
   requestPermission,
@@ -10,6 +11,7 @@ import {
   type PermState,
 } from '../notifications/reminders'
 import { getTheme, setTheme, type Theme } from '../theme/theme'
+import { demoDataEnabled } from '../data/demo'
 import { downloadFile, exportableTransactions, paymentsIcs, transactionsCsv } from '../data/exporters'
 import { allPayments } from '../data/paymentsView'
 
@@ -25,13 +27,13 @@ const NOTIFY_OPTIONS = [1, 3, 7]
 const DEFAULT_NOTIFY = 3
 
 function GroupHeader({ label }: { label: string }) {
-  return <p className="mb-1 text-[11px] font-bold uppercase tracking-wide text-ink-soft">{label}</p>
+  return <p className="eyebrow mb-1">{label}</p>
 }
 
 function IconBubble({ name, danger = false }: { name: IconName; danger?: boolean }) {
   return (
     <span
-      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full p-2 ${
+      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl p-2.5 ${
         danger ? 'bg-danger-soft text-danger' : 'bg-chip text-ink-soft'
       }`}
     >
@@ -58,7 +60,15 @@ function SelectPill({
 
 export function SettingsScreen() {
   const { t, fmt, lang, setLang } = useI18n()
-  const { banks, catalog, connect, disconnect } = useBankConnection()
+  const { banks, catalog: mockCatalog, connect, disconnect } = useBankConnection()
+  const liveCatalog = useLiveBankCatalog()
+  const catalog = isLive() ? liveCatalog : mockCatalog
+  const [demoOn, setDemoOn] = useState(() => demoDataEnabled())
+  const toggleDemo = (on: boolean) => {
+    localStorage.setItem('finello_demo_data', on ? '1' : '0')
+    setDemoOn(on)
+    window.location.reload()
+  }
   const [theme, setThemeState] = useState<Theme>(() => getTheme())
   const selectTheme = (v: Theme) => {
     setTheme(v)
@@ -95,42 +105,68 @@ export function SettingsScreen() {
 
   return (
     <div className="flex flex-col gap-5">
-      <SectionTitle title={t('set.title')} />
+      <AppHeader overline={t('app.name')} title={t('set.title')} />
 
-      {/* display */}
+      {/* display & tour */}
       <section>
-        <GroupHeader label={t('set.themeGroup')} />
+        <GroupHeader label={t('set.privacyGroup')} />
         <Card className="flex min-h-14 items-center gap-3">
-          <IconBubble name="globe" />
-          <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('set.themeGroup')}</span>
+          <IconBubble name="receipt" />
+          <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('set.demoData')}</span>
           <div className="flex shrink-0 items-center gap-1.5">
-            <SelectPill active={theme === 'light'} onSelect={() => selectTheme('light')}>
-              {t('set.themeLight')}
+            <SelectPill active={demoOn} onSelect={() => toggleDemo(true)}>
+              <span className="text-[10px]">{t('set.demoDataOn')}</span>
             </SelectPill>
-            <SelectPill active={theme === 'dark'} onSelect={() => selectTheme('dark')}>
-              {t('set.themeDark')}
+            <SelectPill active={!demoOn} onSelect={() => toggleDemo(false)}>
+              <span className="text-[10px]">{t('set.demoDataOff')}</span>
             </SelectPill>
           </div>
         </Card>
+      </section>
+
+      {/* display-orig */}
+      <section>
+        <GroupHeader label={t('set.themeGroup')} />
+        <div className="flex flex-col gap-2">
+          <Card className="flex min-h-14 items-center gap-3 !p-4">
+            <IconBubble name="globe" />
+            <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('set.themeGroup')}</span>
+            <div className="flex shrink-0 items-center gap-1.5">
+              <SelectPill active={theme === 'light'} onSelect={() => selectTheme('light')}>
+                {t('set.themeLight')}
+              </SelectPill>
+              <SelectPill active={theme === 'dark'} onSelect={() => selectTheme('dark')}>
+                {t('set.themeDark')}
+              </SelectPill>
+            </div>
+          </Card>
+          <button type="button" className="tap w-full text-start" onClick={requestTour}>
+            <Card className="flex min-h-14 items-center gap-3 !p-4">
+              <IconBubble name="home" />
+              <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('tour.title')}</span>
+              <Icon name="chevron" className="h-4 w-4 shrink-0 text-ink-soft" />
+            </Card>
+          </button>
+        </div>
       </section>
 
       {/* profile */}
       <section>
         <GroupHeader label={t('set.profileGroup')} />
         <div className="flex flex-col gap-2">
-          <Card className="flex min-h-14 items-center gap-3">
+          <Card className="flex min-h-14 items-center gap-3 !p-4">
             <IconBubble name="user" />
             <span className="flex-1 text-sm font-bold text-ink">{t('set.name')}</span>
             <span className="max-w-[55%] truncate text-sm font-medium text-ink-soft">{demo.user.name}</span>
             <Icon name="chevron" className="h-4 w-4 shrink-0 text-ink-soft" />
           </Card>
-          <Card className="flex min-h-14 items-center gap-3">
+          <Card className="flex min-h-14 items-center gap-3 !p-4">
             <IconBubble name="receipt" />
             <span className="flex-1 text-sm font-bold text-ink">{t('set.email')}</span>
             <span className="max-w-[55%] truncate text-sm font-medium text-ink-soft">{demo.user.email}</span>
             <Icon name="chevron" className="h-4 w-4 shrink-0 text-ink-soft" />
           </Card>
-          <Card className="flex min-h-14 items-center gap-3">
+          <Card className="flex min-h-14 items-center gap-3 !p-4">
             <IconBubble name="check" />
             <span className="flex-1 text-sm font-bold text-ink">{t('set.status')}</span>
             <span className="max-w-[55%] truncate text-sm font-medium text-ink-soft">{demo.user.status}</span>
@@ -142,7 +178,7 @@ export function SettingsScreen() {
       {/* language */}
       <section>
         <GroupHeader label={t('set.languageGroup')} />
-        <Card className="flex min-h-14 items-center gap-3">
+        <Card className="flex min-h-14 items-center gap-3 !p-4">
           <IconBubble name="globe" />
           <div className="ms-auto flex items-center gap-1.5">
             {LANGS.map((l) => (
@@ -157,7 +193,7 @@ export function SettingsScreen() {
       {/* notifications */}
       <section>
         <GroupHeader label={t('set.notifGroup')} />
-        <Card className="flex min-h-14 items-center gap-3">
+        <Card className="flex min-h-14 items-center gap-3 !p-4">
           <IconBubble name="bell" />
           <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('set.notifyDays')}</span>
           <div className="flex shrink-0 items-center gap-1.5">
@@ -168,7 +204,7 @@ export function SettingsScreen() {
             ))}
           </div>
         </Card>
-        <Card className="flex flex-col gap-2">
+        <Card className="flex flex-col gap-2 !p-4">
           <div className="flex min-h-11 items-center gap-3">
             <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('notif.reminders')}</span>
             {perm === 'granted' ? (
@@ -215,7 +251,7 @@ export function SettingsScreen() {
       <section>
         <GroupHeader label={t('set.calendarGroup')} />
         <div className="flex flex-col gap-2">
-          <Card className="flex min-h-14 items-center gap-3">
+          <Card className="flex min-h-14 items-center gap-3 !p-4">
             <IconBubble name="calendar" />
             <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('set.syncCalendar')}</span>
             <button
@@ -238,7 +274,7 @@ export function SettingsScreen() {
               </span>
             </button>
           </Card>
-          <Card className="flex min-h-14 items-center gap-3">
+          <Card className="flex min-h-14 items-center gap-3 !p-4">
             <IconBubble name="calendar" />
             <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('set.shareIcs')}</span>
             <button
@@ -264,7 +300,7 @@ export function SettingsScreen() {
         <GroupHeader label={t('set.bankGroup')} />
         <div className="flex flex-col gap-2">
           {banks.map((b) => (
-            <Card key={b.id} className="flex min-h-14 items-center gap-3">
+            <Card key={b.id} className="flex min-h-14 items-center gap-3 !p-4">
               <IconBubble name="bank" />
               <span className="min-w-0 flex-1 truncate text-sm font-bold text-ink">
                 {t('set.connectedBank', { bank: b.name })}
@@ -281,7 +317,7 @@ export function SettingsScreen() {
             </Card>
           ))}
           <button type="button" onClick={() => setBankOpen(true)} className="tap w-full text-start">
-            <Card className="flex min-h-14 items-center gap-3">
+            <Card className="flex min-h-14 items-center gap-3 !p-4">
               <IconBubble name="plus" />
               <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('set.connectBank')}</span>
               <Icon name="chevron" className="h-4 w-4 shrink-0 text-ink-soft" />
@@ -305,14 +341,14 @@ export function SettingsScreen() {
               )
             }
           >
-            <Card className="flex min-h-14 items-center gap-3">
+            <Card className="flex min-h-14 items-center gap-3 !p-4">
               <IconBubble name="up" />
               <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('set.exportData')}</span>
               <Icon name="download" className="h-4 w-4 shrink-0 text-ink-soft" />
             </Card>
           </button>
           <button type="button" onClick={() => setWipeOpen(true)} className="tap w-full text-start">
-            <Card className="flex min-h-14 items-center gap-3">
+            <Card className="flex min-h-14 items-center gap-3 !p-4">
               <IconBubble name="trash" danger />
               <span className="min-w-0 flex-1 text-sm font-bold text-danger">{t('set.wipeData')}</span>
               <Icon name="chevron" className="h-4 w-4 shrink-0 text-danger" />
@@ -325,15 +361,15 @@ export function SettingsScreen() {
       <section>
         <GroupHeader label={t('set.aboutGroup')} />
         <div className="flex flex-col gap-2">
-          <Card className="flex min-h-14 items-center gap-3">
+          <Card className="flex min-h-14 items-center gap-3 !p-4">
             <span className="flex-1 text-sm font-bold text-ink">{t('set.version')}</span>
             <span className="num text-sm font-medium text-ink-soft">0.1.0</span>
           </Card>
-          <Card className="flex min-h-14 items-center gap-3">
+          <Card className="flex min-h-14 items-center gap-3 !p-4">
             <span className="flex-1 text-sm font-bold text-ink">{t('set.license')}</span>
             <span className="num text-sm font-medium text-ink-soft">MIT</span>
           </Card>
-          <Card className="flex min-h-14 items-center">
+          <Card className="flex min-h-14 items-center !p-4">
             <p className="text-[11px] leading-relaxed text-ink-soft">{t('set.aboutDisclaimer')}</p>
           </Card>
         </div>
@@ -417,6 +453,8 @@ export function SettingsScreen() {
           </button>
         </div>
       </Modal>
+
+      {/* product tour is mounted app-wide in AppShell; requestTour() replays it */}
     </div>
   )
 }

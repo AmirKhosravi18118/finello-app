@@ -1,6 +1,17 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useI18n } from '../i18n/I18nContext'
-import { Badge, Card, EmptyState, Icon, Pill, SectionTitle, StatCard } from '../components/ui'
+import {
+  AppHeader,
+  Badge,
+  Card,
+  EmptyState,
+  Icon,
+  Pill,
+  SectionHeader,
+  SkeletonCard,
+  SkeletonStats,
+  StatTile,
+} from '../components/ui'
 import { EditEntrySheet, type EntryDraft } from '../components/EditEntrySheet'
 import { AddMoneySheet } from '../components/AddMoneySheet'
 import { CATEGORIES } from '../data/demo'
@@ -12,6 +23,9 @@ import { visibleTransactions } from '../data/incomeView'
 
 const CATEGORY_IDS = Object.keys(CATEGORIES) as CategoryId[]
 
+/** Cross-tab quick-add signal (DS2.0 §5) — dispatched by BottomNav. */
+const QUICK_ADD_EVENT = 'finello:quick-add'
+
 export function TransactionsScreen() {
   const { t, fmt } = useI18n()
   const { banks, importNow } = useBankConnection()
@@ -20,12 +34,33 @@ export function TransactionsScreen() {
   const [editTx, setEditTx] = useState<Tx | null>(null)
   const [cashOpen, setCashOpen] = useState(false)
   const [cashMode, setCashMode] = useState<'expense' | 'income'>('expense')
+  const [filtersVisible, setFiltersVisible] = useState(true)
   const openCash = (mode: 'expense' | 'income') => {
     setCashMode(mode)
     setCashOpen(true)
   }
   const [bankFilter, setBankFilter] = useState<string | null>(null)
   const [, setVersion] = useState(0) // bump re-renders after persisted edits/cash changes
+
+  // simulated fetch so skeleton states are actually visible
+  const [loaded, setLoaded] = useState(false)
+  useEffect(() => {
+    const id = window.setTimeout(() => setLoaded(true), 350)
+    return () => window.clearTimeout(id)
+  }, [])
+
+  // bottom-nav quick add → cash expense/income sheet
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<'expense' | 'payment' | 'income'>).detail
+      if (detail === 'expense' || detail === 'income') {
+        setCashMode(detail)
+        setCashOpen(true)
+      }
+    }
+    window.addEventListener(QUICK_ADD_EVENT, handler)
+    return () => window.removeEventListener(QUICK_ADD_EVENT, handler)
+  }, [])
 
   const all = visibleTransactions() as Array<Tx & { incomeType?: IncomeType; bankId?: string }>
   const bankName = (id?: string) => banks.find((b) => b.id === id)?.name ?? id ?? ''
@@ -70,9 +105,27 @@ export function TransactionsScreen() {
 
   return (
     <div className="flex flex-col gap-5">
-      <SectionTitle title={t('nav.transactions')} />
+      <AppHeader
+        overline={fmt.month(new Date())}
+        title={t('nav.transactions')}
+        trailing={
+          <button
+            type="button"
+            aria-label={t('tx.bank')}
+            aria-pressed={filtersVisible}
+            onClick={() => setFiltersVisible((v) => !v)}
+            className={`tap flex h-10 w-10 items-center justify-center rounded-2xl border ${
+              filtersVisible
+                ? 'border-primary bg-primary-soft text-primary-deep'
+                : 'border-line bg-surface text-ink-soft'
+            }`}
+          >
+            <Icon name="settings" className="h-5 w-5" />
+          </button>
+        }
+      />
 
-      {banks.length > 0 && (
+      {banks.length > 0 && filtersVisible && (
         <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
           <Pill active={bankFilter === null} onClick={() => setBankFilter(null)}>
             {t('common.all')}
@@ -88,22 +141,41 @@ export function TransactionsScreen() {
         </div>
       )}
 
-      <div className="flex flex-col gap-3">
-        <StatCard label={t('tx.count', { n: fmt.num(txs.length) })} value={fmt.num(txs.length)} />
-        <StatCard
-          label={t('tx.uncategorized', { n: fmt.num(uncategorizedCount) })}
-          value={fmt.num(uncategorizedCount)}
-          tone="warn"
-        />
-        {bankFilter ? (
-          <div className="flex flex-row gap-3">
-            <StatCard label={t('home.monthIncome')} value={fmt.currency(monthIncome)} tone="success" />
-            <StatCard label={t('home.monthExpense')} value={fmt.currency(monthExpense)} tone="warn" />
-          </div>
-        ) : (
-          <StatCard label={t('tx.thisMonth')} value={fmt.currency(monthSum)} tone="success" />
-        )}
-      </div>
+      {/* stats: 3-tile grid */}
+      {!loaded ? (
+        <SkeletonStats />
+      ) : bankFilter ? (
+        <div className="grid grid-cols-2 gap-3">
+          <StatTile
+            tone="success"
+            icon="down"
+            label={t('home.monthIncome')}
+            value={fmt.currency(monthIncome)}
+          />
+          <StatTile tone="warn" icon="up" label={t('home.monthExpense')} value={fmt.currency(monthExpense)} />
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-3">
+          <StatTile
+            icon="receipt"
+            label={t('tx.count', { n: fmt.num(txs.length) })}
+            value={fmt.num(txs.length)}
+          />
+          <StatTile
+            tone="warn"
+            icon="bell"
+            label={t('tx.uncategorized', { n: fmt.num(uncategorizedCount) })}
+            value={fmt.num(uncategorizedCount)}
+          />
+          <StatTile
+            tone="success"
+            icon="wallet"
+            label={t('tx.thisMonth')}
+            value={fmt.currency(monthSum)}
+            className="col-span-2"
+          />
+        </div>
+      )}
 
       <div className="flex flex-col gap-2">
         <div className="flex gap-2">
@@ -138,9 +210,16 @@ export function TransactionsScreen() {
         )}
       </div>
 
-      <div>
-        <SectionTitle title={t('tx.recent')} />
-        {txs.length === 0 ? (
+      {/* recent transactions */}
+      <section>
+        <SectionHeader icon="receipt" title={t('tx.recent')} />
+        {!loaded ? (
+          <div className="flex flex-col gap-3">
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+          </div>
+        ) : txs.length === 0 ? (
           <Card>
             <EmptyState icon="receipt" text={t('tx.emptyTx')} />
           </Card>
@@ -151,10 +230,10 @@ export function TransactionsScreen() {
               const classified = inflow ? tx.incomeType !== undefined : tx.categoryId !== null
               const open = expandedId === tx.id && !classified
               return (
-                <Card key={tx.id} className="tap" onClick={() => classified && setEditTx(tx)}>
+                <Card key={tx.id} className="tap !p-4" onClick={() => classified && setEditTx(tx)}>
                   <div className="flex items-center gap-3">
                     <span
-                      className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full p-2 ${
+                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl ${
                         inflow ? 'bg-primary-soft text-primary-deep' : 'bg-chip text-ink-soft'
                       }`}
                     >
@@ -260,7 +339,7 @@ export function TransactionsScreen() {
             })}
           </div>
         )}
-      </div>
+      </section>
 
       <EditEntrySheet
         open={editTx !== null}

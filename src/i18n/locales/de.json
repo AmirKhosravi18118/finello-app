@@ -131,7 +131,10 @@
     "bankConsent": "Mit der Verbindung werden die Transaktionen der letzten 7 Tage testweise abgerufen (Demo — es fließen keine echten Daten).",
     "themeGroup": "Design",
     "themeLight": "Hell",
-    "themeDark": "Dunkel"
+    "themeDark": "Dunkel",
+    "demoData": "Demo-Daten",
+    "demoDataOn": "An (Demo)",
+    "demoDataOff": "Aus (leer)"
   },
   "onb": {
     "welcome": "Willkommen bei Finello",
@@ -212,5 +215,56 @@
     "saved": "Gespeichert",
     "redo": "Nochmal",
     "summary": "Steuer-Check Ergebnis"
+  },
+  "tour": {
+    "title": "Finello-Tour",
+    "skip": "Überspringen",
+    "next": "Weiter",
+    "done": "Los geht’s",
+    "s1t": "Monatsbilanz auf einen Blick",
+    "s1d": "Einnahmen, Ausgaben und Bilanz des Monats — mit dem grünen + erfasst du Einnahmen direkt hier.",
+    "s2t": "Zahlungskalender",
+    "s2d": "Jede Zahlung hat einen farbigen Punkt; tippe auf einen Tag, um Zahlungen zu sehen oder zu bearbeiten.",
+    "s3t": "Ausgaben & Analyse",
+    "s3d": "Kategorie-Chart, Vormonatsvergleich und vollständige Liste; tippe auf eine Ausgabe zum Bearbeiten.",
+    "s4t": "Transaktionen & Banken",
+    "s4d": "Banktransaktionen tragen das Bank-Abzeichen; filtere, kategorisiere und ordne deine Einnahmen zu.",
+    "s5t": "Stressfreie Steuern",
+    "s5d": "Erfasse absetzbare Ausgaben laufend und sieh mit dem 8-Fragen-Check Klasse und Pflicht deiner Erklärung.",
+    "s6t": "Alles in den Einstellungen",
+    "s6d": "Sprache, Erinnerungen, Bankverbindungen, Datenexport und diese Tour erneut — findest du hier."
+  },
+  "qa": {
+    "title": "Schnell hinzufügen",
+    "expense": "Neue Ausgabe",
+    "payment": "Neue Rate",
+    "income": "Neue Einnahme"
+  },
+  "auth": {
+    "welcome": "Finello-Konto erstellen",
+    "sub": "Lokal und privat — deine Daten bleiben auf deinem Gerät",
+    "name": "Vor- und Nachname",
+    "email": "E-Mail",
+    "pin": "4-stellige PIN (optional)",
+    "create": "Konto erstellen",
+    "haveAccount": "Schon ein Konto?",
+    "login": "Anmelden",
+    "helloBack": "Willkommen zurück",
+    "loginBtn": "In Finello einloggen",
+    "wrongPin": "Falsche PIN",
+    "needName": "Bitte Namen eingeben",
+    "invalidEmail": "Ungültige E-Mail",
+    "step": "Schritt {n} von {total}",
+    "q1": "Familienstand?",
+    "q2": "Aktuelle Tätigkeit?",
+    "q3": "Arbeitsstunden pro Woche?",
+    "q4": "km Wohnung–Arbeit?",
+    "setupTitle": "Ein paar schnelle Fragen",
+    "setupSub": "damit Erinnerungen und Steuern passen",
+    "finish": "Fertig — los geht’s",
+    "bankNow": "Jetzt Bank verbinden?",
+    "bankLater": "Später",
+    "liveBadge": "Echte Verbindung",
+    "demoBadge": "Demo-Modus"
   }
 }

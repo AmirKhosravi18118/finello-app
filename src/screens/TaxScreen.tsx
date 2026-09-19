@@ -1,7 +1,18 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useI18n } from '../i18n/I18nContext'
 import { demo, type TaxItem } from '../data/demo'
-import { Badge, Card, EmptyState, Icon, Modal, Pill, SectionTitle, StatCard } from '../components/ui'
+import {
+  AppHeader,
+  Badge,
+  Card,
+  EmptyState,
+  Icon,
+  Modal,
+  Pill,
+  SectionHeader,
+  SkeletonCard,
+  StatTile,
+} from '../components/ui'
 import { TaxWizard, getWizardResult, type TaxWizardResult } from '../components/TaxWizard'
 import { addTaxExtra, getTaxExtras } from '../data/editStore'
 
@@ -23,6 +34,13 @@ export function TaxScreen() {
   const [amount, setAmount] = useState('')
   const [note, setNote] = useState('')
   const [date, setDate] = useState('')
+
+  // simulated fetch so skeleton states are actually visible
+  const [loaded, setLoaded] = useState(false)
+  useEffect(() => {
+    const id = window.setTimeout(() => setLoaded(true), 350)
+    return () => window.clearTimeout(id)
+  }, [])
 
   const filtered = items.filter((it) => it.year === year)
   const sum = filtered.reduce((s, it) => s + it.amount, 0)
@@ -54,64 +72,20 @@ export function TaxScreen() {
 
   return (
     <div className="flex flex-col gap-5">
-      <SectionTitle title={t('nav.tax')} />
-
-      {/* year selector */}
-      <div className="flex gap-2">
-        {YEARS.map((y) => (
-          <Pill key={y} active={year === y} onClick={() => setYear(y)}>
-            <span className="num">{fmt.num(y)}</span>
-          </Pill>
-        ))}
-      </div>
-
-      {/* tax profile */}
-      <Card className="flex items-center gap-3">
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary-deep">
-          <Icon name="user" />
-        </span>
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <p className="text-base font-extrabold text-ink">{demo.user.name}</p>
-            <Badge tone="success">{t('tax.taxClass', { n: fmt.num(demo.tax.profile.taxClass) })}</Badge>
-          </div>
-          <div className="mt-1 flex items-baseline justify-between gap-2 text-sm">
-            <span className="shrink-0 font-medium text-ink-soft">{t('tax.employment')}</span>
-            <span className="truncate font-bold text-ink">{demo.tax.profile.employment}</span>
-          </div>
-        </div>
-      </Card>
-
-      {/* deductibles */}
-      <div>
-        <SectionTitle title={t('tax.deductibles')} />
-        <Card className="flex flex-col gap-3">
-          {filtered.length === 0 ? (
-            <EmptyState icon="tax" text={t('tax.emptyTax')} />
-          ) : (
-            <>
-              {filtered.map((it) => (
-                <div key={it.id} className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <p className="text-sm font-bold text-ink">{it.category}</p>
-                    <p className="mt-0.5 flex flex-wrap items-center gap-x-2 text-xs text-ink-soft">
-                      <span>{fmt.date(parseDate(it.date))}</span>
-                      {it.note && <span>{it.note}</span>}
-                    </p>
-                  </div>
-                  <span className="num shrink-0 text-end text-sm font-bold text-ink">
-                    {fmt.currency(it.amount)}
-                  </span>
-                </div>
-              ))}
-              <div className="flex items-center justify-between border-t border-line/70 pt-3">
-                <span className="text-sm font-bold text-ink-soft">{t('common.total')}</span>
-                <span className="num text-end text-base font-extrabold text-ink">{fmt.currency(sum)}</span>
-              </div>
-            </>
-          )}
-        </Card>
-      </div>
+      <AppHeader
+        overline={fmt.num(year)}
+        title={t('nav.tax')}
+        trailing={
+          <button
+            type="button"
+            aria-label={t('tax.wizard')}
+            onClick={() => setWizardOpen(true)}
+            className="tap shadow-card flex h-10 w-10 items-center justify-center rounded-2xl bg-navy text-white"
+          >
+            <Icon name="tax" className="h-5 w-5" />
+          </button>
+        }
+      />
 
       {/* wizard result card */}
       {wizardResult && (
@@ -127,11 +101,78 @@ export function TaxScreen() {
         </Card>
       )}
 
-      {/* tax wizard */}
+      {/* wizard */}
       <button type="button" className="btn-ghost w-full" onClick={() => setWizardOpen(true)}>
         <Icon name="tax" className="h-5 w-5" />
         {t('tax.wizard')}
       </button>
+
+      {/* year selector */}
+      <div className="flex gap-2">
+        {YEARS.map((y) => (
+          <Pill key={y} active={year === y} onClick={() => setYear(y)}>
+            <span className="num">{fmt.num(y)}</span>
+          </Pill>
+        ))}
+      </div>
+
+      {/* tax profile */}
+      <Card className="flex items-center gap-3">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary-soft text-primary-deep">
+          <Icon name="user" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="text-base font-extrabold text-ink">{demo.user.name}</p>
+            <Badge tone="success">{t('tax.taxClass', { n: fmt.num(demo.tax.profile.taxClass) })}</Badge>
+          </div>
+          <div className="mt-1 flex items-baseline justify-between gap-2 text-sm">
+            <span className="shrink-0 font-medium text-ink-soft">{t('tax.employment')}</span>
+            <span className="truncate font-bold text-ink">{demo.tax.profile.employment}</span>
+          </div>
+        </div>
+      </Card>
+
+      {/* deductibles */}
+      <section>
+        <SectionHeader icon="receipt" tone="success" title={t('tax.deductibles')} />
+        {!loaded ? (
+          <div className="flex flex-col gap-3">
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+          </div>
+        ) : (
+          <Card>
+            {filtered.length === 0 ? (
+              <EmptyState icon="tax" text={t('tax.emptyTax')} />
+            ) : (
+              <>
+                <div className="divide-y divide-line">
+                  {filtered.map((it) => (
+                    <div key={it.id} className="flex items-start justify-between gap-3 py-3">
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold text-ink">{it.category}</p>
+                        <p className="mt-0.5 flex flex-wrap items-center gap-x-2 text-xs text-ink-soft">
+                          <span>{fmt.date(parseDate(it.date))}</span>
+                          {it.note && <span>{it.note}</span>}
+                        </p>
+                      </div>
+                      <span className="num shrink-0 text-end text-sm font-bold text-ink">
+                        {fmt.currency(it.amount)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex items-center justify-between border-t border-line/70 pt-3">
+                  <span className="text-sm font-bold text-ink-soft">{t('common.total')}</span>
+                  <span className="num text-end text-base font-extrabold text-ink">{fmt.currency(sum)}</span>
+                </div>
+              </>
+            )}
+          </Card>
+        )}
+      </section>
 
       {/* add deductible */}
       <button type="button" onClick={() => setFormOpen(true)} className="btn-primary w-full">
@@ -140,19 +181,15 @@ export function TaxScreen() {
       </button>
 
       {/* readiness summary */}
-      <div>
-        <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary-deep">
-            <Icon name="check" />
-          </span>
-          <StatCard
-            tone="success"
-            label={t('tax.readyForReturn', { rows: filtered.length, amount: fmt.currency(sum) })}
-            value={fmt.currency(sum)}
-          />
-        </div>
+      <section>
+        <StatTile
+          tone="success"
+          icon="check"
+          label={t('tax.readyForReturn', { rows: filtered.length, amount: fmt.currency(sum) })}
+          value={fmt.currency(sum)}
+        />
         <p className="mt-1 px-1 text-[11px] text-ink-soft">{t('tax.disclaimer')}</p>
-      </div>
+      </section>
 
       {/* tax wizard modal */}
       <Modal open={wizardOpen} onClose={() => setWizardOpen(false)} title={t('taxwiz.title')}>
