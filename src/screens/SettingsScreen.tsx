@@ -51,7 +51,7 @@ function SelectPill({
 
 export function SettingsScreen() {
   const { t, fmt, lang, setLang } = useI18n()
-  const { connected, banks, connect, disconnect } = useBankConnection()
+  const { banks, catalog, connect, disconnect } = useBankConnection()
   const [notifyDays, setNotifyDays] = useState<number>(() => {
     const saved = Number(localStorage.getItem(NOTIFY_KEY))
     return NOTIFY_OPTIONS.includes(saved) ? saved : DEFAULT_NOTIFY
@@ -187,27 +187,34 @@ export function SettingsScreen() {
         </div>
       </section>
 
-      {/* bank */}
+      {/* bank (multi) */}
       <section>
         <GroupHeader label={t('set.bankGroup')} />
         <div className="flex flex-col gap-2">
+          {banks.map((b) => (
+            <Card key={b.id} className="flex min-h-14 items-center gap-3">
+              <IconBubble name="bank" />
+              <span className="min-w-0 flex-1 truncate text-sm font-bold text-ink">
+                {t('set.connectedBank', { bank: b.name })}
+              </span>
+              <button
+                type="button"
+                onClick={() => disconnect(b.id)}
+                aria-label={t('set.disconnect')}
+                className="tap flex min-h-11 shrink-0 items-center gap-1.5 rounded-xl px-2 text-xs font-bold text-danger"
+              >
+                <Icon name="trash" className="h-4 w-4" />
+                {t('set.disconnect')}
+              </button>
+            </Card>
+          ))}
           <button type="button" onClick={() => setBankOpen(true)} className="tap w-full text-start">
             <Card className="flex min-h-14 items-center gap-3">
-              <IconBubble name="bank" />
-              <span className="min-w-0 flex-1 text-sm font-bold text-ink">
-                {connected ? t('set.connectedBank', { bank: connected.name }) : t('set.connectBank')}
-              </span>
+              <IconBubble name="plus" />
+              <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('set.connectBank')}</span>
               <Icon name="chevron" className="h-4 w-4 shrink-0 text-ink-soft" />
             </Card>
           </button>
-          {connected && (
-            <button type="button" onClick={disconnect} className="tap w-full text-start">
-              <Card className="flex min-h-14 items-center gap-3">
-                <IconBubble name="trash" danger />
-                <span className="min-w-0 flex-1 text-sm font-bold text-danger">{t('set.disconnect')}</span>
-              </Card>
-            </button>
-          )}
         </div>
       </section>
 
@@ -263,28 +270,36 @@ export function SettingsScreen() {
       {/* bank connect */}
       <Modal open={bankOpen} onClose={() => setBankOpen(false)} title={t('set.connectBank')}>
         <div className="flex flex-col gap-2">
-          {banks.map((b) => (
-            <button
-              key={b.id}
-              type="button"
-              onClick={() => setPickedBank(b)}
-              className="tap w-full text-start"
-            >
-              <Card
-                className={`flex min-h-14 items-center gap-3 !p-3 ${
-                  pickedBank?.id === b.id ? 'ring-2 ring-primary' : ''
-                }`}
+          {catalog.map((b) => {
+            const isConnected = banks.some((x) => x.id === b.id)
+            return (
+              <button
+                key={b.id}
+                type="button"
+                disabled={isConnected}
+                onClick={() => setPickedBank(b)}
+                className={`tap w-full text-start ${isConnected ? 'opacity-50' : ''}`}
               >
-                <IconBubble name="bank" />
-                <span className="flex-1 text-sm font-bold text-ink">{b.name}</span>
-                <span
-                  className={`h-5 w-5 shrink-0 rounded-full border-2 ${
-                    pickedBank?.id === b.id ? 'border-primary bg-primary' : 'border-slate-300'
+                <Card
+                  className={`flex min-h-14 items-center gap-3 !p-3 ${
+                    pickedBank?.id === b.id ? 'ring-2 ring-primary' : ''
                   }`}
-                />
-              </Card>
-            </button>
-          ))}
+                >
+                  <IconBubble name="bank" />
+                  <span className="flex-1 text-sm font-bold text-ink">{b.name}</span>
+                  {isConnected ? (
+                    <Icon name="check" className="h-5 w-5 shrink-0 text-primary-deep" />
+                  ) : (
+                    <span
+                      className={`h-5 w-5 shrink-0 rounded-full border-2 ${
+                        pickedBank?.id === b.id ? 'border-primary bg-primary' : 'border-slate-300'
+                      }`}
+                    />
+                  )}
+                </Card>
+              </button>
+            )
+          })}
           <p className="mt-1 text-[11px] leading-relaxed text-ink-soft">{t('set.bankConsent')}</p>
           <div className="mt-2 flex gap-3">
             <button

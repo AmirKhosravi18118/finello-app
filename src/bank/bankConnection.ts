@@ -5,43 +5,50 @@ import { getCashTx, uncategorizedCount } from '../data/editStore'
 
 export type { BankRef }
 
-/** Cross-screen bank-connection state persisted in localStorage.
+/** A transaction imported from a connected bank, tagged with its origin. */
+export interface BankTx extends Tx {
+  bankId: string
+}
+
+/** Cross-screen multi-bank connection state persisted in localStorage.
  *  Screens remount on tab switch, so plain reads per mount keep them consistent. */
 
-const BANK_KEY = 'finello_bank' // {"id","name"} | removed
+const BANKS_KEY = 'finello_banks' // BankRef[]
+const LEGACY_BANK_KEY = 'finello_bank' // single-bank predecessor → migrated on read
 const TX_KEY = 'finello_bank_tx' // persisted imported rows, capped
-const TX_CAP = 50
+const TX_CAP = 200
 
-export function getConnectedBank(): BankRef | null {
+export function getConnectedBanks(): BankRef[] {
   try {
-    const raw = localStorage.getItem(BANK_KEY)
-    return raw ? (JSON.parse(raw) as BankRef) : null
-  } catch {
-    return null
-  }
-}
-
-export function setConnectedBank(bank: BankRef | null) {
-  if (bank) localStorage.setItem(BANK_KEY, JSON.stringify(bank))
-  else {
-    localStorage.removeItem(BANK_KEY)
-    localStorage.removeItem(TX_KEY)
-  }
-}
-
-export function getImportedTx(): Tx[] {
-  try {
-    const raw = localStorage.getItem(TX_KEY)
-    return raw ? (JSON.parse(raw) as Tx[]) : []
+    const raw = localStorage.getItem(BANKS_KEY)
+    if (raw) return JSON.parse(raw) as BankRef[]
+    const legacy = localStorage.getItem(LEGACY_BANK_KEY)
+    if (legacy) {
+      const bank = JSON.parse(legacy) as BankRef
+      localStorage.setItem(BANKS_KEY, JSON.stringify([bank]))
+      return [bank]
+    }
+    return []
   } catch {
     return []
   }
 }
 
-export function addImportedTx(rows: Tx[]): Tx[] {
-  const next = [...rows, ...getImportedTx()].slice(0, TX_CAP)
-  localStorage.setItem(TX_KEY, JSON.stringify(next))
-  return next
+function writeBanks(list: BankRef[]) {
+  localStorage.setItem(BANKS_KEY, JSON.stringify(list))
+}
+
+export function getImportedTx(): BankTx[] {
+  try {
+    const raw = localStorage.getItem(TX_KEY)
+    return raw ? (JSON.parse(raw) as BankTx[]) : []
+  } catch {
+    return []
+  }
+}
+
+function writeImported(rows: BankTx[]) {
+  localStorage.setItem(TX_KEY, JSON.stringify(rows.slice(0, TX_CAP)))
 }
 
 /** Total uncategorized across demo + bank imports + cash, respecting edit overlays. */
@@ -50,32 +57,46 @@ export function uncategorizedTotal(): number {
 }
 
 export function useBankConnection() {
-  const [connected, setConnected] = useState<BankRef | null>(() => getConnectedBank())
-  const [imported, setImported] = useState<Tx[]>(() => getImportedTx())
+  const [banks, setBanks] = useState<BankRef[]>(() => getConnectedBanks())
+  const [imported, setImported] = useState<BankTx[]>(() => getImportedTx())
 
   const connect = useCallback((bank: BankRef) => {
-    setConnectedBank(bank)
-    setConnected(bank)
+    const next = getConnectedBanks()
+    if (!next.some((b) => b.id === bank.id)) {
+      next.push(bank)
+      writeBanks(next)
+    }
+    setBanks(getConnectedBanks())
   }, [])
 
-  const disconnect = useCallback(() => {
-    setConnectedBank(null)
-    setConnected(null)
-    setImported([])
+  const disconnect = useCallback((bankId: string) => {
+    writeBanks(getConnectedBanks().filter((b) => b.id !== bankId))
+    writeImported(getImportedTx().filter((t) => t.bankId !== bankId))
+    setBanks(getConnectedBanks())
+    setImported(getImportedTx())
   }, [])
 
-  /** Pull new rows from the provider and persist them. Returns how many were new. */
+  /** Pull new rows from every connected bank (tagged with bankId). Returns how many were new. */
   const importNow = useCallback((): number => {
-    const bank = getConnectedBank()
-    if (!bank) return 0
-    const existing = new Set(getImportedTx().map((t) => t.id))
-    const fresh = activeBankProvider
-      .importTransactions(bank.id, 7)
-      .filter((r) => !existing.has(r.id))
-      .map<Tx>((r) => ({ ...r, source: 'bank', categoryId: null }))
-    if (fresh.length) setImported(addImportedTx(fresh))
+    const connected = getConnectedBanks()
+    const existing = getImportedTx()
+    const existingIds = new Set(existing.map((t) => t.id))
+    const fresh: BankTx[] = []
+    for (const bank of connected) {
+      for (const r of activeBankProvider.importTransactions(bank.id, 7)) {
+        if (!existingIds.has(r.id)) {
+          fresh.push({ ...r, source: 'bank', categoryId: null, bankId: bank.id })
+          existingIds.add(r.id)
+        }
+      }
+    }
+    if (fresh.length) {
+      const next = [...fresh, ...existing]
+      writeImported(next)
+      setImported(next.slice(0, TX_CAP))
+    }
     return fresh.length
   }, [])
 
-  return { connected, banks: activeBankProvider.listBanks(), imported, connect, disconnect, importNow }
+  return { banks, catalog: activeBankProvider.listBanks(), imported, connect, disconnect, importNow }
 }

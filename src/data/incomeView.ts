@@ -3,7 +3,7 @@ import { applyEdits, getCashTx } from './editStore'
 import { getImportedTx } from '../bank/bankConnection'
 import type { IncomeType } from './editStore'
 
-export type VisibleTx = Tx & { incomeType?: IncomeType }
+export type VisibleTx = Tx & { incomeType?: IncomeType; bankId?: string }
 
 /** All visible transactions: demo + bank imports + cash, edit overlay applied. */
 export function visibleTransactions(): VisibleTx[] {

@@ -12,24 +12,28 @@ const CATEGORY_IDS = Object.keys(CATEGORIES) as CategoryId[]
 
 export function TransactionsScreen() {
   const { t, fmt } = useI18n()
-  const { connected, importNow } = useBankConnection()
+  const { banks, importNow } = useBankConnection()
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [importFlash, setImportFlash] = useState(0)
   const [editTx, setEditTx] = useState<Tx | null>(null)
   const [cashOpen, setCashOpen] = useState(false)
+  const [bankFilter, setBankFilter] = useState<string | null>(null)
   const [, setVersion] = useState(0) // bump re-renders after persisted edits/cash changes
 
-  const txs = visibleTransactions()
+  const all = visibleTransactions()
+  const bankName = (id?: string) => banks.find((b) => b.id === id)?.name ?? id ?? ''
+  const txs = bankFilter ? all.filter((tx) => tx.bankId === bankFilter) : all
   const uncategorizedCount = txs.filter((tx) =>
     tx.amount >= 0 ? tx.incomeType === undefined : tx.categoryId === null,
   ).length
   const now = new Date()
-  const monthSum = txs
-    .filter((tx) => {
-      const d = new Date(tx.date)
-      return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()
-    })
-    .reduce((sum, tx) => sum + tx.amount, 0)
+  const inMonth = txs.filter((tx) => {
+    const d = new Date(tx.date)
+    return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()
+  })
+  const monthSum = inMonth.reduce((sum, tx) => sum + tx.amount, 0)
+  const monthIncome = inMonth.filter((tx) => tx.amount >= 0).reduce((s, tx) => s + tx.amount, 0)
+  const monthExpense = inMonth.filter((tx) => tx.amount < 0).reduce((s, tx) => s + Math.abs(tx.amount), 0)
 
   const refresh = () => setVersion((v) => v + 1)
 
@@ -55,6 +59,22 @@ export function TransactionsScreen() {
     <div className="flex flex-col gap-5">
       <SectionTitle title={t('nav.transactions')} />
 
+      {banks.length > 0 && (
+        <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+          <Pill active={bankFilter === null} onClick={() => setBankFilter(null)}>
+            {t('common.all')}
+          </Pill>
+          {banks.map((b) => (
+            <Pill key={b.id} active={bankFilter === b.id} onClick={() => setBankFilter(b.id)}>
+              <span className="flex items-center gap-1.5">
+                <Icon name="bank" className="h-3.5 w-3.5" />
+                {b.name}
+              </span>
+            </Pill>
+          ))}
+        </div>
+      )}
+
       <div className="flex flex-col gap-3">
         <StatCard label={t('tx.count', { n: fmt.num(txs.length) })} value={fmt.num(txs.length)} />
         <StatCard
@@ -62,7 +82,14 @@ export function TransactionsScreen() {
           value={fmt.num(uncategorizedCount)}
           tone="warn"
         />
-        <StatCard label={t('tx.thisMonth')} value={fmt.currency(monthSum)} tone="success" />
+        {bankFilter ? (
+          <div className="flex flex-row gap-3">
+            <StatCard label={t('home.monthIncome')} value={fmt.currency(monthIncome)} tone="success" />
+            <StatCard label={t('home.monthExpense')} value={fmt.currency(monthExpense)} tone="warn" />
+          </div>
+        ) : (
+          <StatCard label={t('tx.thisMonth')} value={fmt.currency(monthSum)} tone="success" />
+        )}
       </div>
 
       <div className="flex flex-col gap-2">
@@ -78,8 +105,8 @@ export function TransactionsScreen() {
             refresh()
           }}
         >
-          <Icon name={connected ? 'bank' : 'download'} className="h-5 w-5" />
-          {connected ? t('tx.importBank') : t('tx.importCsv')}
+          <Icon name={banks.length > 0 ? 'bank' : 'download'} className="h-5 w-5" />
+          {banks.length > 0 ? t('tx.importBank') : t('tx.importCsv')}
         </button>
         {importFlash > 0 && (
           <p className="num text-center text-xs font-bold text-primary-deep">
@@ -112,7 +139,15 @@ export function TransactionsScreen() {
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-bold text-ink">{tx.name}</p>
-                      <p className="text-xs font-medium text-ink-soft">{fmt.date(new Date(tx.date))}</p>
+                      <p className="flex items-center gap-1.5 text-xs font-medium text-ink-soft">
+                        <span>{fmt.date(new Date(tx.date))}</span>
+                        {tx.bankId && (
+                          <Badge tone="neutral">
+                            <Icon name="bank" className="h-3 w-3" />
+                            {bankName(tx.bankId)}
+                          </Badge>
+                        )}
+                      </p>
                     </div>
                     <div className="flex shrink-0 flex-col items-end gap-1">
                       <span
