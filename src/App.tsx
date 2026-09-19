@@ -1,6 +1,7 @@
-import { useState, type JSX } from 'react'
+import { useEffect, useState, type JSX } from 'react'
 import type { TabId } from './data/demo'
 import { AppShell } from './components/AppShell'
+import { runDailyReminders } from './notifications/reminders'
 import { OnboardingScreen } from './screens/OnboardingScreen'
 import { HomeScreen } from './screens/HomeScreen'
 import { CalendarScreen } from './screens/CalendarScreen'
@@ -32,6 +33,13 @@ export default function App() {
     localStorage.setItem(TAB_KEY, t)
     setTab(t)
   }
+
+  // daily payment reminder check (only fires when notifications are granted)
+  useEffect(() => {
+    if (!onboarded) return
+    const days = Number(localStorage.getItem('finello_notify_days')) || 3
+    void runDailyReminders(days)
+  }, [onboarded])
 
   if (!onboarded) {
     return (

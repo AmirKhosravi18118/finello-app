@@ -153,7 +153,14 @@
     "title": "Benachrichtigungen",
     "allGood": "Alles im grünen Bereich",
     "dueIn": "Fällig in {n} Tagen",
-    "overdueN": "{n} überfällige Zahlungen"
+    "overdueN": "{n} überfällige Zahlungen",
+    "enable": "Benachrichtigungen aktivieren",
+    "enabled": "Benachrichtigungen sind aktiv",
+    "blocked": "Blockiert — in den Browser-Einstellungen aktivieren",
+    "test": "Test-Benachrichtigung senden",
+    "testSent": "Test-Benachrichtigung gesendet",
+    "dailyNote": "Einmal täglich beim Öffnen der App: Erinnerung an nahe und überfällige Zahlungen",
+    "reminders": "Zahlungserinnerungen"
   },
   "cash": {
     "add": "Barzahlung erfassen",

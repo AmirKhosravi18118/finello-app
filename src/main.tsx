@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { I18nProvider } from './i18n/I18nContext'
 import App from './App'
 import './index.css'
+import { registerServiceWorker } from './notifications/reminders'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -11,3 +12,6 @@ createRoot(document.getElementById('root')!).render(
     </I18nProvider>
   </StrictMode>,
 )
+
+// PWA: service worker for notifications (+ future offline caching)
+void registerServiceWorker()

@@ -1,8 +1,14 @@
 import { useState, type ReactNode } from 'react'
 import { useI18n, type Lang } from '../i18n/I18nContext'
 import { demo } from '../data/demo'
-import { Card, Icon, Modal, Pill, SectionTitle, type IconName } from '../components/ui'
+import { Badge, Card, Icon, Modal, Pill, SectionTitle, type IconName } from '../components/ui'
 import { useBankConnection, type BankRef } from '../bank/bankConnection'
+import {
+  permissionState,
+  requestPermission,
+  sendTestNotification,
+  type PermState,
+} from '../notifications/reminders'
 import { downloadFile, exportableTransactions, paymentsIcs, transactionsCsv } from '../data/exporters'
 import { allPayments } from '../data/paymentsView'
 
@@ -52,6 +58,8 @@ function SelectPill({
 export function SettingsScreen() {
   const { t, fmt, lang, setLang } = useI18n()
   const { banks, catalog, connect, disconnect } = useBankConnection()
+  const [perm, setPerm] = useState<PermState>(() => permissionState())
+  const [flash, setFlash] = useState('')
   const [notifyDays, setNotifyDays] = useState<number>(() => {
     const saved = Number(localStorage.getItem(NOTIFY_KEY))
     return NOTIFY_OPTIONS.includes(saved) ? saved : DEFAULT_NOTIFY
@@ -136,6 +144,47 @@ export function SettingsScreen() {
               </SelectPill>
             ))}
           </div>
+        </Card>
+        <Card className="flex flex-col gap-2">
+          <div className="flex min-h-11 items-center gap-3">
+            <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('notif.reminders')}</span>
+            {perm === 'granted' ? (
+              <Badge tone="success">
+                <Icon name="check" className="h-3 w-3" />
+                {t('notif.enabled')}
+              </Badge>
+            ) : perm === 'denied' ? (
+              <Badge tone="danger">{t('notif.blocked')}</Badge>
+            ) : (
+              <button
+                type="button"
+                className="tap flex min-h-11 shrink-0 items-center rounded-xl px-3 text-xs font-bold text-primary-deep"
+                onClick={async () => {
+                  const p = await requestPermission()
+                  setPerm(p)
+                  if (p === 'granted') await sendTestNotification()
+                }}
+              >
+                {t('notif.enable')}
+              </button>
+            )}
+          </div>
+          {perm === 'granted' && (
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-[11px] leading-relaxed text-ink-soft">{t('notif.dailyNote')}</p>
+              <button
+                type="button"
+                className="tap shrink-0 rounded-xl border border-slate-200 px-2.5 py-2 text-[11px] font-bold text-ink-soft"
+                onClick={async () => {
+                  const ok = await sendTestNotification()
+                  if (ok) setFlash(t('notif.testSent'))
+                }}
+              >
+                {t('notif.test')}
+              </button>
+            </div>
+          )}
+          {flash && <p className="text-[11px] font-bold text-primary-deep">{flash}</p>}
         </Card>
       </section>
 
