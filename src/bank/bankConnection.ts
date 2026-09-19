@@ -84,12 +84,15 @@ export function useBankConnection() {
     const connected = getConnectedBanks()
     const existing = getImportedTx()
     const existingIds = new Set(existing.map((t) => t.id))
+    const existingKeys = new Set(existing.map((t) => `${t.name}|${t.date}`))
     const fresh: BankTx[] = []
     for (const bank of connected) {
       for (const r of activeBankProvider.importTransactions(bank.id, 7)) {
-        if (!existingIds.has(r.id)) {
+        const key = `${r.name}|${r.date}`
+        if (!existingIds.has(r.id) && !existingKeys.has(key)) {
           fresh.push({ ...r, source: 'bank', categoryId: null, bankId: bank.id })
           existingIds.add(r.id)
+          existingKeys.add(key)
         }
       }
     }

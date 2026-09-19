@@ -6,7 +6,7 @@
     "home": "Home",
     "calendar": "Calendar",
     "expenses": "Expenses",
-    "transactions": "Transactions",
+    "transactions": "Activity",
     "tax": "Tax",
     "settings": "Settings"
   },
@@ -57,7 +57,9 @@
   "cal": {
     "monthTitle": "Payments calendar",
     "noPayments": "No payments on this day",
-    "paymentsOn": "Payments on {date}"
+    "paymentsOn": "Payments on {date}",
+    "prev": "Previous month",
+    "next": "Next month"
   },
   "exp": {
     "monthTotal": "Total this month",
@@ -86,7 +88,9 @@
     "edit": "Edit transaction",
     "name": "Counterparty",
     "date": "Date",
-    "assignIncome": "Assign income type"
+    "assignIncome": "Assign income type",
+    "methodCash": "Cash",
+    "methodCard": "Card"
   },
   "tax": {
     "year": "Year",

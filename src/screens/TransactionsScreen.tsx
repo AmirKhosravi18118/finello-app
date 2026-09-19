@@ -241,12 +241,20 @@ export function TransactionsScreen() {
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-bold text-ink">{tx.name}</p>
-                      <p className="flex items-center gap-1.5 text-xs font-medium text-ink-soft">
+                      <p className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-ink-soft">
                         <span>{fmt.date(new Date(tx.date))}</span>
-                        {tx.bankId && (
+                        {tx.source === 'manual' ? (
+                          <Badge tone="neutral">
+                            <Icon name="hand" className="h-3 w-3" />
+                            {t('tx.methodCash')}
+                          </Badge>
+                        ) : (
                           <Badge tone="neutral">
                             <Icon name="bank" className="h-3 w-3" />
-                            {bankName(tx.bankId)}
+                            {t('tx.methodCard')}
+                            {tx.bankId && bankName(tx.bankId) !== tx.bankId
+                              ? ` · ${bankName(tx.bankId)}`
+                              : ''}
                           </Badge>
                         )}
                       </p>

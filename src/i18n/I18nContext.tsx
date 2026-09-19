@@ -55,7 +55,8 @@ export function I18nProvider({ children }: { children: ReactNode }) {
           new Intl.NumberFormat(locale, {
             style: 'currency',
             currency: 'EUR',
-            maximumFractionDigits: 0,
+            minimumFractionDigits: Number.isInteger(n) ? 0 : 2,
+            maximumFractionDigits: 2,
           }).format(n),
         date: (d) => new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short' }).format(d),
         month: (d) => new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(d),

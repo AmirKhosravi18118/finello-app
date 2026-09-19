@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { useI18n } from '../i18n/I18nContext'
 import { Icon, Modal, Pill } from './ui'
+import { CATEGORIES, type CategoryId } from '../data/demo'
+
+const CATEGORY_IDS = Object.keys(CATEGORIES) as CategoryId[]
 import { INCOME_TYPES } from '../data/editStore'
 import { addCashTx } from '../data/editStore'
 
@@ -23,6 +26,7 @@ export function AddMoneySheet({
   const [amount, setAmount] = useState('')
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10))
   const [incomeType, setIncomeType] = useState<string>('salary')
+  const [categoryId, setCategoryId] = useState<CategoryId | null>(null)
 
   const reset = () => {
     setMode(initialMode)
@@ -30,6 +34,7 @@ export function AddMoneySheet({
     setAmount('')
     setDate(new Date().toISOString().slice(0, 10))
     setIncomeType('salary')
+    setCategoryId(null)
   }
 
   const close = () => {
@@ -45,7 +50,7 @@ export function AddMoneySheet({
       name: name.trim(),
       amount: mode === 'income' ? Number(amount) : -Math.abs(Number(amount)),
       date,
-      categoryId: null,
+      categoryId: mode === 'expense' ? (categoryId ?? null) : null,
       incomeType: mode === 'income' ? (incomeType as never) : null,
     })
     onSaved?.()
@@ -144,7 +149,22 @@ export function AddMoneySheet({
           </div>
         )}
         {mode === 'expense' && (
-          <p className="text-[11px] leading-relaxed text-ink-soft">{t('tx.assignCategory')} ↓</p>
+          <div>
+            <p className="mb-1.5 ps-1 text-xs font-bold text-ink-soft">{t('tx.assignCategory')}</p>
+            <div className="flex max-h-32 flex-wrap gap-2 overflow-y-auto">
+              {CATEGORY_IDS.map((id) => (
+                <Pill key={id} active={categoryId === id} onClick={() => setCategoryId(id)}>
+                  <span className="flex items-center gap-1.5">
+                    <span
+                      className="h-2 w-2 rounded-full"
+                      style={{ backgroundColor: CATEGORIES[id].color }}
+                    />
+                    {t(`cat.${id}`)}
+                  </span>
+                </Pill>
+              ))}
+            </div>
+          </div>
         )}
 
         <div className="mt-2 flex gap-3">

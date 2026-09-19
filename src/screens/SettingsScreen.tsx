@@ -1,6 +1,5 @@
 import { useState, type ReactNode } from 'react'
 import { useI18n, type Lang } from '../i18n/I18nContext'
-import { demo } from '../data/demo'
 import { AppHeader, Badge, Card, Icon, Modal, Pill, type IconName } from '../components/ui'
 import { requestTour } from '../components/Tour'
 import { useBankConnection, useLiveBankCatalog, isLive, type BankRef } from '../bank/bankConnection'
@@ -12,6 +11,7 @@ import {
 } from '../notifications/reminders'
 import { getTheme, setTheme, type Theme } from '../theme/theme'
 import { demoDataEnabled } from '../data/demo'
+import { userProfile, getAccount, saveAccount } from '../auth/account'
 import { downloadFile, exportableTransactions, paymentsIcs, transactionsCsv } from '../data/exporters'
 import { allPayments } from '../data/paymentsView'
 
@@ -63,6 +63,7 @@ export function SettingsScreen() {
   const { banks, catalog: mockCatalog, connect, disconnect } = useBankConnection()
   const liveCatalog = useLiveBankCatalog()
   const catalog = isLive() ? liveCatalog : mockCatalog
+  const profile = userProfile()
   const [demoOn, setDemoOn] = useState(() => demoDataEnabled())
   const toggleDemo = (on: boolean) => {
     localStorage.setItem('finello_demo_data', on ? '1' : '0')
@@ -70,6 +71,10 @@ export function SettingsScreen() {
     window.location.reload()
   }
   const [theme, setThemeState] = useState<Theme>(() => getTheme())
+  const [, setVersion] = useState(0)
+  const [profileOpen, setProfileOpen] = useState(false)
+  const [pName, setPName] = useState(() => profile.name)
+  const [pEmail, setPEmail] = useState(() => profile.email)
   const selectTheme = (v: Theme) => {
     setTheme(v)
     setThemeState(v)
@@ -150,27 +155,30 @@ export function SettingsScreen() {
         </div>
       </section>
 
-      {/* profile */}
+      {/* profile (editable) */}
       <section>
         <GroupHeader label={t('set.profileGroup')} />
         <div className="flex flex-col gap-2">
-          <Card className="flex min-h-14 items-center gap-3 !p-4">
-            <IconBubble name="user" />
-            <span className="flex-1 text-sm font-bold text-ink">{t('set.name')}</span>
-            <span className="max-w-[55%] truncate text-sm font-medium text-ink-soft">{demo.user.name}</span>
-            <Icon name="chevron" className="h-4 w-4 shrink-0 text-ink-soft" />
-          </Card>
-          <Card className="flex min-h-14 items-center gap-3 !p-4">
-            <IconBubble name="receipt" />
-            <span className="flex-1 text-sm font-bold text-ink">{t('set.email')}</span>
-            <span className="max-w-[55%] truncate text-sm font-medium text-ink-soft">{demo.user.email}</span>
-            <Icon name="chevron" className="h-4 w-4 shrink-0 text-ink-soft" />
-          </Card>
+          <button type="button" className="tap w-full text-start" onClick={() => setProfileOpen(true)}>
+            <Card className="flex min-h-14 items-center gap-3 !p-4">
+              <IconBubble name="user" />
+              <span className="flex-1 text-sm font-bold text-ink">{t('set.name')}</span>
+              <span className="max-w-[55%] truncate text-sm font-medium text-ink-soft">{profile.name}</span>
+              <Icon name="chevron" className="h-4 w-4 shrink-0 text-ink-soft" />
+            </Card>
+          </button>
+          <button type="button" className="tap w-full text-start" onClick={() => setProfileOpen(true)}>
+            <Card className="flex min-h-14 items-center gap-3 !p-4">
+              <IconBubble name="receipt" />
+              <span className="flex-1 text-sm font-bold text-ink">{t('set.email')}</span>
+              <span className="max-w-[55%] truncate text-sm font-medium text-ink-soft">{profile.email}</span>
+              <Icon name="chevron" className="h-4 w-4 shrink-0 text-ink-soft" />
+            </Card>
+          </button>
           <Card className="flex min-h-14 items-center gap-3 !p-4">
             <IconBubble name="check" />
             <span className="flex-1 text-sm font-bold text-ink">{t('set.status')}</span>
-            <span className="max-w-[55%] truncate text-sm font-medium text-ink-soft">{demo.user.status}</span>
-            <Icon name="chevron" className="h-4 w-4 shrink-0 text-ink-soft" />
+            <span className="max-w-[55%] truncate text-sm font-medium text-ink-soft">{profile.status}</span>
           </Card>
         </div>
       </section>
@@ -451,6 +459,61 @@ export function SettingsScreen() {
             <Icon name="trash" className="h-4 w-4" />
             {t('set.wipeData')}
           </button>
+        </div>
+      </Modal>
+
+      {/* profile edit */}
+      <Modal open={profileOpen} onClose={() => setProfileOpen(false)} title={t('set.profileGroup')}>
+        <div className="flex flex-col gap-3">
+          <div>
+            <label htmlFor="fin-prof-name" className="mb-1 block ps-1 text-xs font-bold text-ink-soft">
+              {t('set.name')}
+            </label>
+            <input
+              id="fin-prof-name"
+              type="text"
+              className="field"
+              value={pName}
+              onChange={(e) => setPName(e.target.value)}
+            />
+          </div>
+          <div>
+            <label htmlFor="fin-prof-email" className="mb-1 block ps-1 text-xs font-bold text-ink-soft">
+              {t('set.email')}
+            </label>
+            <input
+              id="fin-prof-email"
+              type="email"
+              className="field"
+              value={pEmail}
+              onChange={(e) => setPEmail(e.target.value)}
+            />
+          </div>
+          <div className="mt-2 flex gap-3">
+            <button type="button" className="btn-ghost flex-1" onClick={() => setProfileOpen(false)}>
+              {t('common.cancel')}
+            </button>
+            <button
+              type="button"
+              className="btn-primary flex-1"
+              onClick={() => {
+                const a = getAccount()
+                if (a) {
+                  saveAccount({ ...a, name: pName.trim() || a.name, email: pEmail.trim() || a.email })
+                } else {
+                  saveAccount({
+                    name: pName.trim() || 'Friend',
+                    email: pEmail.trim(),
+                    createdAt: new Date().toISOString(),
+                  })
+                }
+                setProfileOpen(false)
+                setVersion((v) => v + 1)
+              }}
+            >
+              {t('common.save')}
+            </button>
+          </div>
         </div>
       </Modal>
 

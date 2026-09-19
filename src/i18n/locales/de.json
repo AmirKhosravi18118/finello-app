@@ -6,7 +6,7 @@
     "home": "Start",
     "calendar": "Kalender",
     "expenses": "Ausgaben",
-    "transactions": "Transaktionen",
+    "transactions": "Umsätze",
     "tax": "Steuer",
     "settings": "Einstellungen"
   },
@@ -57,7 +57,9 @@
   "cal": {
     "monthTitle": "Zahlungskalender",
     "noPayments": "Keine Zahlungen an diesem Tag",
-    "paymentsOn": "Zahlungen am {date}"
+    "paymentsOn": "Zahlungen am {date}",
+    "prev": "Vormonat",
+    "next": "Folgemonat"
   },
   "exp": {
     "monthTotal": "Ausgaben diesen Monat",
@@ -86,7 +88,9 @@
     "edit": "Transaktion bearbeiten",
     "name": "Empfänger/Absender",
     "date": "Datum",
-    "assignIncome": "Einnahmeart wählen"
+    "assignIncome": "Einnahmeart wählen",
+    "methodCash": "Bar",
+    "methodCard": "Karte"
   },
   "tax": {
     "year": "Jahr",

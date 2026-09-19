@@ -6,6 +6,7 @@ import { AddMoneySheet } from '../components/AddMoneySheet'
 import { BY_CATEGORY, CATEGORIES, MONTH_TOTAL, SPLIT_MONTHS, demo } from '../data/demo'
 import type { Expense } from '../data/demo'
 import { applyExpenseEdits, saveTxEdit, tombstoneTx } from '../data/editStore'
+import { visibleTransactions } from '../data/incomeView'
 
 /** Whole-number percent for `diff` relative to `base` (no decimals; 0 or 100 when base is empty). */
 const pctOf = (diff: number, base: number): number => {
@@ -13,12 +14,27 @@ const pctOf = (diff: number, base: number): number => {
   return Math.round((Math.abs(diff) / base) * 100)
 }
 
+/** ALL expenses in one place: demo entries + every negative transaction
+ *  (cash + bank imports) → charts, totals and the list stay live-connected. */
+function allExpenses(): Expense[] {
+  const txExpenses: Expense[] = visibleTransactions()
+    .filter((tx) => tx.amount < 0)
+    .map((tx) => ({
+      id: `tx-${tx.id}`,
+      title: tx.name,
+      amount: Math.abs(tx.amount),
+      date: tx.date,
+      categoryId: tx.categoryId ?? 'other',
+    }))
+  return applyExpenseEdits([...demo.expenses, ...txExpenses])
+}
+
 export function ExpensesScreen() {
   const { t, fmt } = useI18n()
   const [editExp, setEditExp] = useState<Expense | null>(null)
   const [addOpen, setAddOpen] = useState(false)
   const [, setVersion] = useState(0)
-  const { cur, prev } = SPLIT_MONTHS(applyExpenseEdits(demo.expenses))
+  const { cur, prev } = SPLIT_MONTHS(allExpenses())
   const curTotal = MONTH_TOTAL(cur)
   const prevTotal = MONTH_TOTAL(prev)
   const byCat = BY_CATEGORY(cur)

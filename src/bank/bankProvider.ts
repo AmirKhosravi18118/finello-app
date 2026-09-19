@@ -32,25 +32,17 @@ const GERMAN_BANKS: BankRef[] = [
 ]
 
 /** Deterministic per-day pool so demo imports feel real without a backend. */
-const IMPORT_POOL: Array<(bankId: string, daysAgo: number) => BankTransaction> = [
-  (bankId, daysAgo) => ({
-    id: `${bankId}-supermarkt-${daysAgo}`,
-    name: 'SUPERMARKT KASSE',
-    amount: -38.4,
-    date: isoDaysAgo(daysAgo),
-  }),
-  (bankId, daysAgo) => ({
-    id: `${bankId}-paypal-${daysAgo}`,
-    name: 'PayPal *EBAY',
-    amount: -24.9,
-    date: isoDaysAgo(daysAgo),
-  }),
-  (bankId, daysAgo) => ({
-    id: `${bankId}-cafeteria-${daysAgo}`,
-    name: 'UNI Cafeteria',
-    amount: -5.8,
-    date: isoDaysAgo(daysAgo),
-  }),
+/** 8 distinct merchants; each bank picks a seeded rotation so two connected
+ *  banks never duplicate the same row (name+date) — month totals stay honest. */
+const MERCHANTS: Array<[string, number]> = [
+  ['SUPERMARKT KASSE', -38.4],
+  ['PayPal *EBAY', -24.9],
+  ['UNI Cafeteria', -5.8],
+  ['DB Regio Ticket', -21.0],
+  ['ROS SMOOTHIES', -7.4],
+  ['AMZN MARKETPLACE', -33.2],
+  ['Backerei KRAUS', -4.6],
+  ['VBL Versicherung', -12.8],
 ]
 
 function isoDaysAgo(days: number): string {
@@ -63,9 +55,11 @@ export const mockBankProvider: BankProvider = {
   id: 'mock',
   listBanks: () => GERMAN_BANKS,
   importTransactions: (bankId, sinceDays) => {
+    const seed = Math.abs(bankId.split('').reduce((a, c) => a + c.charCodeAt(0), 0))
     const rows: BankTransaction[] = []
     for (let d = 1; d <= Math.min(sinceDays, 7); d += 2) {
-      rows.push(IMPORT_POOL[(d + sinceDays) % IMPORT_POOL.length](bankId, d))
+      const [name, amount] = MERCHANTS[(seed + d) % MERCHANTS.length]
+      rows.push({ id: `${bankId}-${d}-${name.replace(/\W+/g, '')}`, name, amount, date: isoDaysAgo(d) })
     }
     return rows
   },

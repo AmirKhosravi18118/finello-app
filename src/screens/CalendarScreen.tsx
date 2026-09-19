@@ -17,15 +17,23 @@ const STATUS_TONE: Record<PayStatus, Tone> = {
 export function CalendarScreen() {
   const { t, fmt, lang } = useI18n()
   const now = new Date()
-  const year = now.getFullYear()
-  const month = now.getMonth()
+  const [monthOffset, setMonthOffset] = useState(0)
+  const viewDate = new Date(now.getFullYear(), now.getMonth() + monthOffset, 1)
+  const year = viewDate.getFullYear()
+  const month = viewDate.getMonth()
   const todayNum = now.getDate()
+  const isCurrentMonth = monthOffset === 0
   const daysInMonth = new Date(year, month + 1, 0).getDate()
   const [selected, setSelected] = useState(todayNum)
   const [editPayment, setEditPayment] = useState<Payment | null>(null)
   const [addOpen, setAddOpen] = useState(false)
   const [, setVersion] = useState(0)
   const refresh = () => setVersion((v) => v + 1)
+
+  const goMonth = (delta: number) => {
+    setMonthOffset((v) => v + delta)
+    setSelected(1)
+  }
 
   // simulated fetch so skeleton states are actually visible
   const [loaded, setLoaded] = useState(false)
@@ -67,17 +75,27 @@ export function CalendarScreen() {
   return (
     <div className="flex flex-col gap-5">
       <AppHeader
-        overline={fmt.month(new Date())}
+        overline={fmt.month(viewDate)}
         title={t('cal.monthTitle')}
         trailing={
-          <button
-            type="button"
-            aria-label={t('common.add')}
-            onClick={() => setAddOpen(true)}
-            className="tap shadow-card flex h-10 w-10 items-center justify-center rounded-2xl bg-navy text-white"
-          >
-            <Icon name="plus" className="h-5 w-5" />
-          </button>
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              aria-label={t('cal.prev')}
+              onClick={() => goMonth(-1)}
+              className="tap shadow-card flex h-10 w-10 items-center justify-center rounded-2xl bg-surface text-ink rtl:rotate-180"
+            >
+              <Icon name="chevron" className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              aria-label={t('cal.next')}
+              onClick={() => goMonth(1)}
+              className="tap shadow-card flex h-10 w-10 items-center justify-center rounded-2xl bg-surface text-ink ltr:rotate-180"
+            >
+              <Icon name="chevron" className="h-4 w-4" />
+            </button>
+          </div>
         }
       />
 
@@ -202,7 +220,13 @@ export function CalendarScreen() {
                     </div>
                     <div className="flex shrink-0 flex-col items-end gap-1">
                       <span className="num text-sm font-extrabold text-ink">{fmt.currency(p.amount)}</span>
-                      <Badge tone={STATUS_TONE[p.status]}>{t(`status.${p.status}`)}</Badge>
+                      <Badge
+                        tone={
+                          isCurrentMonth ? STATUS_TONE[p.status] : monthOffset > 0 ? 'neutral' : 'success'
+                        }
+                      >
+                        {t(`status.${monthOffset === 0 ? p.status : monthOffset > 0 ? 'upcoming' : 'paid'}`)}
+                      </Badge>
                     </div>
                   </button>
                 ))}

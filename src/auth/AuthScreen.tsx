@@ -1,33 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useI18n, type Lang } from '../i18n/I18nContext'
 import { Badge, Card, Icon, Pill } from '../components/ui'
+import { getAccount, saveAccount, ACCOUNT_EVENT, type Account } from './account'
 import { connectLiveBank, isLive } from '../bank/bankConnection'
-
-/** Local account store (no backend yet): name/email/PIN on this device only. */
-export interface Account {
-  name: string
-  email: string
-  pin?: string
-  createdAt: string
-  setup?: { marital: string; occupation: string; hours: number; km: number }
-}
-
-const KEY = 'finello_account'
-
-export function getAccount(): Account | null {
-  try {
-    const raw = localStorage.getItem(KEY)
-    return raw ? (JSON.parse(raw) as Account) : null
-  } catch {
-    return null
-  }
-}
-
-export function saveAccount(a: Account) {
-  localStorage.setItem(KEY, JSON.stringify(a))
-}
-
-export const ACCOUNT_EVENT = 'finello:account'
 
 /* ---------- language step ---------- */
 
@@ -269,6 +244,7 @@ export function AuthScreen({ onDone }: { onDone: () => void }) {
             type="button"
             className="btn-primary w-full"
             onClick={() => {
+              localStorage.setItem('finello_tab', 'settings')
               finish({
                 name: name.trim() || existing?.name || 'Friend',
                 email: email || existing?.email || '',

@@ -57,7 +57,9 @@
   "cal": {
     "monthTitle": "تقویم پرداخت‌ها",
     "noPayments": "پرداختی در این روز نیست",
-    "paymentsOn": "پرداخت‌های {date}"
+    "paymentsOn": "پرداخت‌های {date}",
+    "prev": "ماه قبل",
+    "next": "ماه بعد"
   },
   "exp": {
     "monthTotal": "جمع خرج ماه",
@@ -86,7 +88,9 @@
     "edit": "ویرایش تراکنش",
     "name": "طرف حساب",
     "date": "تاریخ",
-    "assignIncome": "تعیین نوع درآمد"
+    "assignIncome": "تعیین نوع درآمد",
+    "methodCash": "نقدی",
+    "methodCard": "کارت"
   },
   "tax": {
     "year": "سال",

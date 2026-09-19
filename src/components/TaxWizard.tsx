@@ -125,9 +125,7 @@ export function TaxWizard({ onDone }: { onDone: (r: TaxWizardResult) => void }) 
   if (!started) {
     return (
       <div className="flex flex-col gap-3">
-        <p className="text-sm font-medium text-ink-soft">
-          {t('taxwiz.step', { n: fmt.num(8), total: fmt.num(8) })} · {t('taxwiz.title')}
-        </p>
+        <p className="text-sm font-medium text-ink-soft">{t('taxwiz.title')}</p>
         <button type="button" className="btn-primary w-full" onClick={() => setStarted(true)}>
           {t('taxwiz.start')}
         </button>

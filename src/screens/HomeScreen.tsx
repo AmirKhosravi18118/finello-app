@@ -18,6 +18,7 @@ import type { PayStatus } from '../data/demo'
 import { getSalary, setSalary } from '../data/editStore'
 import { allPayments, nearestPayments } from '../data/paymentsView'
 import { monthMoney, visibleTransactions } from '../data/incomeView'
+import { userProfile } from '../auth/account'
 
 const STATUS_TONE: Record<PayStatus, Tone> = {
   today: 'warn',
@@ -68,6 +69,7 @@ export function HomeScreen() {
   const payments = allPayments()
   const nextPayments = nearestPayments(payments, 3)
   const money = monthMoney(visibleTransactions())
+  const profile = userProfile()
 
   const salaryValid = Number(salaryDay) >= 1 && Number(salaryDay) <= 31 && Number(salaryAmount) > 0
 
@@ -77,10 +79,10 @@ export function HomeScreen() {
       <section className="hero-gradient shadow-card screen-in rounded-[28px] p-5 text-white">
         <div className="flex items-center justify-between gap-2">
           <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-white/70">
-            {t('home.greeting', { name: demo.user.name })}
+            {t('home.greeting', { name: profile.name })}
           </p>
           <span className="rounded-full bg-white/14 px-2.5 py-1 text-[10px] font-bold text-white/80">
-            {demo.user.status}
+            {profile.status}
           </span>
         </div>
         <p className="mt-3 text-xs font-medium text-white/60">{t('home.balance')}</p>
@@ -103,7 +105,7 @@ export function HomeScreen() {
                 type="button"
                 onClick={() => setIncomeOpen(true)}
                 aria-label={t('cash.income')}
-                className="tap flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/20 text-white"
+                className="tap -me-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/20 text-white"
               >
                 <Icon name="plus" className="h-3.5 w-3.5" />
               </button>
@@ -170,7 +172,7 @@ export function HomeScreen() {
                   type="button"
                   aria-label={t('common.add')}
                   onClick={() => setAddOpen(true)}
-                  className="tap flex h-9 w-9 items-center justify-center rounded-2xl bg-chip text-ink"
+                  className="tap flex h-11 w-11 items-center justify-center rounded-2xl bg-chip text-ink"
                 >
                   <Icon name="plus" className="h-4.5 w-4.5" />
                 </button>
