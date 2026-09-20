@@ -138,7 +138,11 @@
     "themeDark": "Dark",
     "demoData": "Demo data",
     "demoDataOn": "On (demo)",
-    "demoDataOff": "Off (clean)"
+    "demoDataOff": "Off (clean)",
+    "legalGroup": "Legal & privacy",
+    "impressum": "Imprint (Impressum)",
+    "privacy": "Privacy policy (Datenschutz)",
+    "terms": "Terms of use (AGB)"
   },
   "onb": {
     "welcome": "Welcome to Finello",

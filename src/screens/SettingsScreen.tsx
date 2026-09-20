@@ -10,6 +10,8 @@ import {
   type PermState,
 } from '../notifications/reminders'
 import { getTheme, setTheme, type Theme } from '../theme/theme'
+import { LegalSheet } from '../components/LegalSheet'
+import type { LegalDocKey } from '../legal/legalContent'
 import { demoDataEnabled } from '../data/demo'
 import { userProfile, getAccount, saveAccount } from '../auth/account'
 import { downloadFile, exportableTransactions, paymentsIcs, transactionsCsv } from '../data/exporters'
@@ -73,6 +75,7 @@ export function SettingsScreen() {
   const [theme, setThemeState] = useState<Theme>(() => getTheme())
   const [, setVersion] = useState(0)
   const [profileOpen, setProfileOpen] = useState(false)
+  const [legalDocKey, setLegalDoc] = useState<LegalDocKey | null>(null)
   const [pName, setPName] = useState(() => profile.name)
   const [pEmail, setPEmail] = useState(() => profile.email)
   const selectTheme = (v: Theme) => {
@@ -371,6 +374,22 @@ export function SettingsScreen() {
 
       {/* about */}
       <section>
+        <GroupHeader label={t('set.legalGroup')} />
+        <div className="flex flex-col gap-2">
+          {(['impressum', 'privacy', 'terms'] as const).map((k) => (
+            <button key={k} type="button" className="tap w-full text-start" onClick={() => setLegalDoc(k)}>
+              <Card className="flex min-h-14 items-center gap-3 !p-4">
+                <IconBubble name="check" />
+                <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t(`set.${k}`)}</span>
+                <Icon name="chevron" className="h-4 w-4 shrink-0 text-ink-soft" />
+              </Card>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* about */}
+      <section>
         <GroupHeader label={t('set.aboutGroup')} />
         <div className="flex flex-col gap-2">
           <Card className="flex min-h-14 items-center gap-3 !p-4">
@@ -520,6 +539,8 @@ export function SettingsScreen() {
           </div>
         </div>
       </Modal>
+
+      <LegalSheet docKey={legalDocKey} onClose={() => setLegalDoc(null)} />
 
       {/* product tour is mounted app-wide in AppShell; requestTour() replays it */}
     </div>

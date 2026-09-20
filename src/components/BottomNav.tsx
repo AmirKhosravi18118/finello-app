@@ -65,19 +65,22 @@ export function BottomNav({ tab, onTab }: { tab: TabId; onTab: (t: TabId) => voi
         />
       )}
 
-      {/* drop-up: three separate labeled circles, staggered rise */}
+      {/* drop-up: vertical stack of three separate labeled circles above the + */}
       {menuOpen && (
-        <div className="fixed bottom-28 z-50 flex items-end gap-4 px-6" style={{ insetInlineEnd: '1.25rem' }}>
+        <div
+          className="fixed bottom-[10.75rem] z-50 flex flex-col items-center gap-4"
+          style={{ insetInlineEnd: '1.25rem' }}
+        >
           {QUICK_ACTIONS.map(({ detail, labelKey, icon, circle, rotate }, i) => (
             <button
               key={detail}
               type="button"
               onClick={() => quickAdd(detail)}
-              className="screen-in tap flex w-20 flex-col items-center gap-2"
-              style={{ animationDelay: `${i * 60}ms` }}
+              className="screen-in tap flex w-24 flex-col items-center gap-1.5"
+              style={{ animationDelay: `${(QUICK_ACTIONS.length - 1 - i) * 60}ms` }}
             >
               <span
-                className={`flex h-16 w-16 items-center justify-center rounded-full border border-line bg-surface shadow-card ${circle}`}
+                className={`flex h-14 w-14 items-center justify-center rounded-full border border-line bg-surface shadow-card ${circle}`}
               >
                 <Icon name={icon} className={`h-6 w-6 ${rotate ? 'rotate-180' : ''}`} />
               </span>

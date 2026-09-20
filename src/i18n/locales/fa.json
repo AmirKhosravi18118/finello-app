@@ -138,7 +138,11 @@
     "themeDark": "تاریک",
     "demoData": "داده نمونه",
     "demoDataOn": "فعال (نمایشی)",
-    "demoDataOff": "خاموش (پاک)"
+    "demoDataOff": "خاموش (پاک)",
+    "legalGroup": "حقوقی و حریم خصوصی",
+    "impressum": "Imprint (Impressum)",
+    "privacy": "حریم خصوصی (Datenschutz)",
+    "terms": "شرایط استفاده (AGB)"
   },
   "onb": {
     "welcome": "به Finello خوش آمدی",
