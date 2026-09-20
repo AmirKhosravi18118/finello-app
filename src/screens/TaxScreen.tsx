@@ -131,7 +131,7 @@ export function TaxScreen() {
           </div>
           <div className="mt-1 flex items-baseline justify-between gap-2 text-sm">
             <span className="shrink-0 font-medium text-ink-soft">{t('tax.employment')}</span>
-            <span className="truncate font-bold text-ink">{demo.tax.profile.employment}</span>
+            <span className="line-clamp-2 text-end font-bold text-ink">{demo.tax.profile.employment}</span>
           </div>
         </div>
       </Card>
@@ -178,10 +178,12 @@ export function TaxScreen() {
       </section>
 
       {/* add deductible */}
-      <button type="button" onClick={() => setFormOpen(true)} className="btn-primary w-full">
-        <Icon name="plus" className="h-4 w-4" />
-        {t('tax.addDeductible')}
-      </button>
+      <div className="pe-14">
+        <button type="button" onClick={() => setFormOpen(true)} className="btn-primary w-full">
+          <Icon name="plus" className="h-4 w-4" />
+          {t('tax.addDeductible')}
+        </button>
+      </div>
 
       {/* readiness summary */}
       <section>

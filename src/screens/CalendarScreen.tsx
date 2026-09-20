@@ -83,7 +83,7 @@ export function CalendarScreen() {
               type="button"
               aria-label={t('cal.prev')}
               onClick={() => goMonth(-1)}
-              className="tap shadow-card flex h-10 w-10 items-center justify-center rounded-2xl bg-surface text-ink rtl:rotate-180"
+              className="tap shadow-card flex h-11 w-11 items-center justify-center rounded-2xl bg-surface text-ink rtl:rotate-180"
             >
               <Icon name="chevron" className="h-4 w-4" />
             </button>
@@ -91,7 +91,7 @@ export function CalendarScreen() {
               type="button"
               aria-label={t('cal.next')}
               onClick={() => goMonth(1)}
-              className="tap shadow-card flex h-10 w-10 items-center justify-center rounded-2xl bg-surface text-ink ltr:rotate-180"
+              className="tap shadow-card flex h-11 w-11 items-center justify-center rounded-2xl bg-surface text-ink ltr:rotate-180"
             >
               <Icon name="chevron" className="h-4 w-4" />
             </button>
@@ -117,7 +117,7 @@ export function CalendarScreen() {
               }`}
             >
               <span
-                className={`max-w-full truncate text-[9px] font-bold uppercase tracking-wide ${
+                className={`max-w-full truncate text-[10px] font-bold uppercase tracking-wide ${
                   isCenter ? 'text-white/70' : 'text-ink-soft'
                 }`}
               >
@@ -146,14 +146,14 @@ export function CalendarScreen() {
 
       {/* month grid */}
       <div className="card p-4">
-        <div className="mb-2 grid grid-cols-7 gap-1">
+        <div className="mb-2 grid grid-cols-7 gap-0.5">
           {weekdayLabels.map((w, i) => (
             <div key={i} className="text-center text-[10px] font-bold text-ink-soft">
               {w}
             </div>
           ))}
         </div>
-        <div className="grid grid-cols-7 gap-1">
+        <div className="grid grid-cols-7 gap-0.5">
           {cells.map((d, i) =>
             d === null ? (
               <div key={`empty-${i}`} className="min-h-11" />

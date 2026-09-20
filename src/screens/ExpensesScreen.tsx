@@ -90,7 +90,7 @@ export function ExpensesScreen() {
             type="button"
             aria-label={t('common.add')}
             onClick={() => setAddOpen(true)}
-            className="tap shadow-card flex h-10 w-10 items-center justify-center rounded-2xl bg-navy text-white"
+            className="tap shadow-card flex h-11 w-11 items-center justify-center rounded-2xl bg-navy text-white"
           >
             <Icon name="plus" className="h-5 w-5" />
           </button>

@@ -115,7 +115,7 @@ export function TransactionsScreen() {
             aria-label={t('tx.bank')}
             aria-pressed={filtersVisible}
             onClick={() => setFiltersVisible((v) => !v)}
-            className={`tap flex h-10 w-10 items-center justify-center rounded-2xl border ${
+            className={`tap flex h-11 w-11 items-center justify-center rounded-2xl border ${
               filtersVisible
                 ? 'border-primary bg-primary-soft text-primary-deep'
                 : 'border-line bg-surface text-ink-soft'
@@ -234,7 +234,7 @@ export function TransactionsScreen() {
                 <Card key={tx.id} className="tap !p-4" onClick={() => classified && setEditTx(tx)}>
                   <div className="flex items-center gap-3">
                     <span
-                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl ${
+                      className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${
                         inflow ? 'bg-primary-soft text-primary-deep' : 'bg-chip text-ink-soft'
                       }`}
                     >

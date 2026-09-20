@@ -122,7 +122,7 @@ export function SettingsScreen() {
       {/* display-orig */}
       <section>
         <GroupHeader label={t('set.themeGroup')} />
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           <Card className="flex min-h-14 items-center gap-3 !p-4">
             <IconBubble name="globe" />
             <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('set.themeGroup')}</span>
@@ -148,7 +148,7 @@ export function SettingsScreen() {
       {/* profile (editable) */}
       <section>
         <GroupHeader label={t('set.profileGroup')} />
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           <button type="button" className="tap w-full text-start" onClick={() => setProfileOpen(true)}>
             <Card className="flex min-h-14 items-center gap-3 !p-4">
               <IconBubble name="user" />
@@ -248,7 +248,7 @@ export function SettingsScreen() {
       {/* calendar */}
       <section>
         <GroupHeader label={t('set.calendarGroup')} />
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           <Card className="flex min-h-14 items-center gap-3 !p-4">
             <IconBubble name="calendar" />
             <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('set.syncCalendar')}</span>
@@ -296,7 +296,7 @@ export function SettingsScreen() {
       {/* bank (multi) */}
       <section>
         <GroupHeader label={t('set.bankGroup')} />
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           {banks.map((b) => (
             <Card key={b.id} className="flex min-h-14 items-center gap-3 !p-4">
               <IconBubble name="bank" />
@@ -327,7 +327,7 @@ export function SettingsScreen() {
       {/* privacy */}
       <section>
         <GroupHeader label={t('set.privacyGroup')} />
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           <Card className="flex min-h-14 items-center gap-3 !p-4">
             <IconBubble name="receipt" />
             <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('set.demoData')}</span>
@@ -370,7 +370,7 @@ export function SettingsScreen() {
       {/* about */}
       <section>
         <GroupHeader label={t('set.legalGroup')} />
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           {(['impressum', 'privacy', 'terms'] as const).map((k) => (
             <button key={k} type="button" className="tap w-full text-start" onClick={() => setLegalDoc(k)}>
               <Card className="flex min-h-14 items-center gap-3 !p-4">
@@ -386,7 +386,7 @@ export function SettingsScreen() {
       {/* about */}
       <section>
         <GroupHeader label={t('set.aboutGroup')} />
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           <Card className="flex min-h-14 items-center gap-3 !p-4">
             <span className="flex-1 text-sm font-bold text-ink">{t('set.version')}</span>
             <span className="num text-sm font-medium text-ink-soft">0.1.0</span>
@@ -403,7 +403,7 @@ export function SettingsScreen() {
 
       {/* bank connect */}
       <Modal open={bankOpen} onClose={() => setBankOpen(false)} title={t('set.connectBank')}>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           {catalog.map((b) => {
             const isConnected = banks.some((x) => x.id === b.id)
             return (

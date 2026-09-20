@@ -116,7 +116,7 @@ export function SectionHeader({
     <div className="mb-2 flex items-center justify-between gap-2">
       <div className="flex min-w-0 items-center gap-2.5">
         <IconChip icon={icon} tone={tone} />
-        <h2 className="truncate text-[13px] font-bold text-ink">{title}</h2>
+        <h2 className="truncate text-sm font-bold text-ink">{title}</h2>
       </div>
       {action}
     </div>
@@ -235,7 +235,7 @@ export function Pill({
     <button
       type="button"
       onClick={onClick}
-      className={`tap shrink-0 rounded-full px-4 py-2 text-xs font-bold ${
+      className={`tap min-h-11 shrink-0 rounded-full px-4 py-2 text-xs font-bold ${
         active ? 'bg-navy text-white shadow-md' : 'border border-line bg-surface text-ink-soft'
       }`}
     >

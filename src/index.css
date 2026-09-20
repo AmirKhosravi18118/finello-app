@@ -92,10 +92,10 @@ html.dark body {
     @apply transition-transform duration-200 active:scale-[0.97] cursor-pointer select-none;
   }
   .pill-nav {
-    @apply fixed bottom-4 inset-x-4 z-40 rounded-full bg-navy/95 backdrop-blur-md shadow-[0_18px_40px_-10px_rgba(16,23,38,0.55)] border border-white/10;
+    @apply fixed bottom-4 inset-x-5 z-40 rounded-full bg-navy/95 backdrop-blur-md shadow-[0_18px_40px_-10px_rgba(16,23,38,0.55)] border border-white/10;
   }
   .field {
-    @apply w-full rounded-2xl border border-line bg-surface px-4 py-3 text-base font-medium text-ink outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/25 placeholder:text-ink-soft/60;
+    @apply w-full rounded-2xl border border-line bg-surface px-4 py-3 text-base font-medium text-ink outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/25 placeholder:text-ink-soft;
   }
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-bold text-white shadow-[0_10px_24px_-8px_rgba(16,185,129,0.6)] transition active:scale-[0.97] cursor-pointer;
