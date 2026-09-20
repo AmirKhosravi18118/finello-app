@@ -56,10 +56,10 @@ export function AppHeader({
         <div className="min-w-0">
           <p className="eyebrow">{overline}</p>
           <div className="mt-0.5 flex items-center gap-2">
-            <h1 className="truncate text-[20px] font-extrabold leading-tight text-ink">{title}</h1>
+            <h1 className="line-clamp-2 text-[20px] font-extrabold leading-tight text-ink">{title}</h1>
             {badge && <Badge tone="warn">{badge}</Badge>}
           </div>
-          {subtitle && <p className="mt-0.5 truncate text-xs font-medium text-ink-soft">{subtitle}</p>}
+          {subtitle && <p className="mt-0.5 line-clamp-2 text-xs font-medium text-ink-soft">{subtitle}</p>}
         </div>
         {trailing && <div className="flex shrink-0 items-center gap-2">{trailing}</div>}
       </div>
@@ -195,9 +195,9 @@ export function StatTile({
         {progress !== undefined && <ProgressRing value={progress} size={40} label={progressLabel ?? label} />}
       </div>
       <div className="min-w-0">
-        <p className="truncate text-xs font-medium text-ink-soft">{label}</p>
-        <p className={`num mt-0.5 truncate text-xl font-extrabold ${valueColor}`}>{value}</p>
-        {sub && <p className="mt-0.5 truncate text-xs font-medium text-ink-soft">{sub}</p>}
+        <p className="text-xs font-medium text-ink-soft">{label}</p>
+        <p className={`num mt-0.5 text-xl font-extrabold ${valueColor}`}>{value}</p>
+        {sub && <p className="mt-0.5 text-xs font-medium text-ink-soft">{sub}</p>}
       </div>
     </div>
   )
