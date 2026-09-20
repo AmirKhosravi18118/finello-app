@@ -105,7 +105,7 @@ export function AddMoneySheet({
           />
         </div>
         <div className="flex gap-3">
-          <div className="flex-1">
+          <div className="min-w-0 flex-1">
             <label htmlFor="fin-money-amount" className="mb-1 block ps-1 text-xs font-bold text-ink-soft">
               {t('home.amount')}
             </label>
@@ -119,7 +119,7 @@ export function AddMoneySheet({
               onChange={(e) => setAmount(e.target.value)}
             />
           </div>
-          <div className="flex-1">
+          <div className="min-w-0 flex-1">
             <label htmlFor="fin-money-date" className="mb-1 block ps-1 text-xs font-bold text-ink-soft">
               {t('tx.date')}
             </label>

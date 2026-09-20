@@ -79,11 +79,13 @@ export function HomeScreen() {
       <section className="hero-gradient shadow-card screen-in rounded-[28px] p-5 text-white">
         <div className="flex items-center justify-between gap-2">
           <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-white/70">
-            {t('home.greeting', { name: profile.name })}
+            {profile.name ? t('home.greeting', { name: profile.name }) : t('home.guest')}
           </p>
-          <span className="rounded-full bg-white/14 px-2.5 py-1 text-[10px] font-bold text-white/80">
-            {profile.status}
-          </span>
+          {profile.status && (
+            <span className="rounded-full bg-white/14 px-2.5 py-1 text-[10px] font-bold text-white/80">
+              {profile.status}
+            </span>
+          )}
         </div>
         <p className="mt-3 text-xs font-medium text-white/60">{t('home.balance')}</p>
         <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -98,20 +100,20 @@ export function HomeScreen() {
         </div>
 
         <div className="mt-4 grid grid-cols-2 gap-3">
-          <div className="rounded-2xl bg-white/14 p-3">
-            <div className="flex items-center justify-between gap-1">
-              <p className="text-[11px] font-bold text-white/70">{t('home.monthIncome')}</p>
-              <button
-                type="button"
-                onClick={() => setIncomeOpen(true)}
-                aria-label={t('cash.income')}
-                className="tap -me-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/20 text-white"
-              >
+          <button
+            type="button"
+            onClick={() => setIncomeOpen(true)}
+            aria-label={t('cash.income')}
+            className="tap rounded-2xl bg-white/14 p-3 text-start"
+          >
+            <div className="flex items-center justify-between gap-2">
+              <p className="min-w-0 truncate text-[11px] font-bold text-white/70">{t('home.monthIncome')}</p>
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/20 text-white">
                 <Icon name="plus" className="h-3.5 w-3.5" />
-              </button>
+              </span>
             </div>
             <p className="num mt-0.5 text-base font-extrabold">{fmt.currency(money.income)}</p>
-          </div>
+          </button>
           <div className="rounded-2xl bg-white/14 p-3">
             <p className="text-[11px] font-bold text-white/70">{t('home.monthExpense')}</p>
             <p className="num mt-0.5 text-base font-extrabold">{fmt.currency(money.expense)}</p>

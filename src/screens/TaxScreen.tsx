@@ -126,7 +126,7 @@ export function TaxScreen() {
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="text-base font-extrabold text-ink">{profile.name}</p>
+            {profile.name && <p className="text-base font-extrabold text-ink">{profile.name}</p>}
             <Badge tone="success">{t('tax.taxClass', { n: fmt.num(demo.tax.profile.taxClass) })}</Badge>
           </div>
           <div className="mt-1 flex items-baseline justify-between gap-2 text-sm">

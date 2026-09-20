@@ -153,7 +153,9 @@ export function SettingsScreen() {
             <Card className="flex min-h-14 items-center gap-3 !p-4">
               <IconBubble name="user" />
               <span className="flex-1 text-sm font-bold text-ink">{t('set.name')}</span>
-              <span className="max-w-[55%] truncate text-sm font-medium text-ink-soft">{profile.name}</span>
+              <span className="max-w-[55%] truncate text-sm font-medium text-ink-soft">
+                {profile.name || '—'}
+              </span>
               <Icon name="chevron" className="h-4 w-4 shrink-0 text-ink-soft" />
             </Card>
           </button>
@@ -161,7 +163,9 @@ export function SettingsScreen() {
             <Card className="flex min-h-14 items-center gap-3 !p-4">
               <IconBubble name="receipt" />
               <span className="flex-1 text-sm font-bold text-ink">{t('set.email')}</span>
-              <span className="max-w-[55%] truncate text-sm font-medium text-ink-soft">{profile.email}</span>
+              <span className="max-w-[55%] truncate text-sm font-medium text-ink-soft">
+                {profile.email || '—'}
+              </span>
               <Icon name="chevron" className="h-4 w-4 shrink-0 text-ink-soft" />
             </Card>
           </button>
@@ -191,20 +195,9 @@ export function SettingsScreen() {
       {/* notifications */}
       <section>
         <GroupHeader label={t('set.notifGroup')} />
-        <Card className="flex min-h-14 items-center gap-3 !p-4">
-          <IconBubble name="bell" />
-          <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('set.notifyDays')}</span>
-          <div className="flex shrink-0 items-center gap-1.5">
-            {NOTIFY_OPTIONS.map((d) => (
-              <SelectPill key={d} active={notifyDays === d} onSelect={() => selectNotify(d)}>
-                <span className="num">{fmt.num(d)}</span>
-              </SelectPill>
-            ))}
-          </div>
-        </Card>
-        <Card className="flex flex-col gap-2 !p-4">
+        <Card className="flex flex-col gap-3 !p-4">
           <div className="flex min-h-11 items-center gap-3">
-            <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('notif.reminders')}</span>
+            <span className="min-w-0 flex-1 truncate text-sm font-bold text-ink">{t('notif.reminders')}</span>
             {perm === 'granted' ? (
               <Badge tone="success">
                 <Icon name="check" className="h-3 w-3" />
@@ -225,6 +218,16 @@ export function SettingsScreen() {
                 {t('notif.enable')}
               </button>
             )}
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <p className="text-xs font-bold text-ink-soft">{t('set.notifyDays')}</p>
+            <div className="flex items-center gap-1.5">
+              {NOTIFY_OPTIONS.map((d) => (
+                <SelectPill key={d} active={notifyDays === d} onSelect={() => selectNotify(d)}>
+                  <span className="num">{fmt.num(d)}</span>
+                </SelectPill>
+              ))}
+            </div>
           </div>
           {perm === 'granted' && (
             <div className="flex items-center justify-between gap-2">

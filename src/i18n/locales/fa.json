@@ -48,11 +48,12 @@
     "recipient": "گیرنده",
     "uncategorizedNudge": "{n} تراکنش بدون دسته‌بندی داری",
     "categorizeNow": "همین حالا دسته‌بندی کن",
-    "monthIncome": "درآمد ماه",
-    "monthExpense": "خرج ماه",
-    "balance": "تراز ماه",
+    "monthIncome": "درآمد",
+    "monthExpense": "خرج",
+    "balance": "تراز این ماه",
     "surplus": "مازاد",
-    "deficit": "کسری"
+    "deficit": "کسری",
+    "guest": "سلام! 👋"
   },
   "cal": {
     "monthTitle": "تقویم پرداخت‌ها",
