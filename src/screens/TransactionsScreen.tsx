@@ -20,6 +20,7 @@ import type { IncomeType } from '../data/editStore'
 import { useBankConnection } from '../bank/bankConnection'
 import { INCOME_TYPES, removeCashTx, saveTxEdit, tombstoneTx } from '../data/editStore'
 import { visibleTransactions } from '../data/incomeView'
+import { todayLocalISO } from '../data/demo'
 
 const CATEGORY_IDS = Object.keys(CATEGORIES) as CategoryId[]
 
@@ -363,7 +364,7 @@ export function TransactionsScreen() {
                 categoryId: editTx.categoryId,
                 incomeType: (editTx as Tx & { incomeType?: IncomeType }).incomeType,
               }
-            : { name: '', amount: 0, date: new Date().toISOString().slice(0, 10), categoryId: null }
+            : { name: '', amount: 0, date: todayLocalISO(), categoryId: null }
         }
         onSave={saveEdit}
         onDelete={deleteTx}

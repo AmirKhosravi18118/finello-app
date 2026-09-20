@@ -4,8 +4,8 @@ import { Icon, Modal, Pill } from './ui'
 import { CATEGORIES, type CategoryId } from '../data/demo'
 
 const CATEGORY_IDS = Object.keys(CATEGORIES) as CategoryId[]
-import { INCOME_TYPES } from '../data/editStore'
-import { addCashTx } from '../data/editStore'
+import { INCOME_TYPES, addCashTx } from '../data/editStore'
+import { todayLocalISO } from '../data/demo'
 
 /** Explicit money-entry sheet (WP9): clear expense/income toggle.
  *  Income rows store a positive amount + incomeType; expenses are negated and left uncategorized. */
@@ -24,7 +24,7 @@ export function AddMoneySheet({
   const [mode, setMode] = useState<'expense' | 'income'>(initialMode)
   const [name, setName] = useState('')
   const [amount, setAmount] = useState('')
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10))
+  const [date, setDate] = useState(todayLocalISO())
   const [incomeType, setIncomeType] = useState<string>('salary')
   const [categoryId, setCategoryId] = useState<CategoryId | null>(null)
 
@@ -32,7 +32,7 @@ export function AddMoneySheet({
     setMode(initialMode)
     setName('')
     setAmount('')
-    setDate(new Date().toISOString().slice(0, 10))
+    setDate(todayLocalISO())
     setIncomeType('salary')
     setCategoryId(null)
   }

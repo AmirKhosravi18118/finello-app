@@ -1,4 +1,5 @@
 import type { CategoryId, Expense, TaxItem, Tx } from './demo'
+import type { VisibleTx } from './incomeView'
 
 /** Edit overlay + cash/payment/tax stores (WP5→WP6). Injectable Storage keeps it unit-testable. */
 
@@ -140,9 +141,12 @@ export function removeCashTx(id: string, store: StorageLike = defaultStorage()) 
   store.setItem(CASH_KEY, JSON.stringify(getCashTx(store).filter((t) => t.id !== id)))
 }
 
-/** Uncategorized total across demo + bank imports + cash, respecting edits. */
-export function uncategorizedCount(allTx: Tx[], store: StorageLike = defaultStorage()): number {
-  return applyEdits(allTx, store).filter((t) => t.categoryId === null).length
+/** Uncategorized total across demo + bank imports + cash, respecting edits.
+ *  Inflows count as uncategorized until an income TYPE is assigned (not category). */
+export function uncategorizedCount(allTx: VisibleTx[], store: StorageLike = defaultStorage()): number {
+  return applyEdits(allTx, store).filter((t) =>
+    t.amount >= 0 ? t.incomeType === undefined : t.categoryId === null,
+  ).length
 }
 
 /* ---------- user payments (WP6: real CRUD from FAB) ---------- */

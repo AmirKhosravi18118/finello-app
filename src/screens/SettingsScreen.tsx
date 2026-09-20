@@ -87,7 +87,11 @@ export function SettingsScreen() {
   })
   const [sync, setSync] = useState<boolean>(() => localStorage.getItem(SYNC_KEY) !== '0')
   const [wipeOpen, setWipeOpen] = useState(false)
-  const [bankOpen, setBankOpen] = useState(false)
+  const [bankOpen, setBankOpen] = useState(() => {
+    const flag = localStorage.getItem('finello_open_bank') === '1'
+    if (flag) localStorage.removeItem('finello_open_bank')
+    return flag
+  })
   const [pickedBank, setPickedBank] = useState<BankRef | null>(null)
 
   const selectNotify = (d: number) => {

@@ -225,6 +225,12 @@ const transactions: Tx[] = [
  *  Settings ▸ Demo data toggles 'finello_demo_data' and reloads. */
 const DEMO_KEY = 'finello_demo_data'
 
+/** Today's local date as yyyy-mm-dd (never shifts like UTC ISO at midnight). */
+export const todayLocalISO = () => {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
 export function demoDataEnabled(): boolean {
   try {
     return localStorage.getItem(DEMO_KEY) === '1'

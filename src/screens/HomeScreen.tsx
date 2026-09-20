@@ -142,7 +142,12 @@ export function HomeScreen() {
         <>
           {/* payday + savings tiles */}
           <section className="grid grid-cols-2 gap-3">
-            <button type="button" className="tap w-full text-start" onClick={() => setSalaryOpen(true)}>
+            <button
+              type="button"
+              aria-label={t('home.salaryCountdown')}
+              className="tap w-full text-start"
+              onClick={() => setSalaryOpen(true)}
+            >
               <StatTile
                 tone="success"
                 icon="calendar"
@@ -216,17 +221,7 @@ export function HomeScreen() {
         </>
       )}
 
-      {/* action row: add installment / add income */}
-      <section className="flex gap-3">
-        <button type="button" className="btn-ghost flex-1" onClick={() => setAddOpen(true)}>
-          <Icon name="plus" className="h-4.5 w-4.5" />
-          {t('home.addPayment')}
-        </button>
-        <button type="button" className="btn-primary flex-1" onClick={() => setIncomeOpen(true)}>
-          <Icon name="down" className="h-4.5 w-4.5 rotate-180" />
-          {t('cash.income')}
-        </button>
-      </section>
+      {/* quick-add lives in the nav + menu (drop-up); income chip above also opens income */}
 
       <EditPaymentSheet
         open={editPayment !== null}

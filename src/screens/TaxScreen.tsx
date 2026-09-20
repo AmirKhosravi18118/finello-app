@@ -15,6 +15,7 @@ import {
 } from '../components/ui'
 import { TaxWizard, getWizardResult, type TaxWizardResult } from '../components/TaxWizard'
 import { addTaxExtra, getTaxExtras } from '../data/editStore'
+import { todayLocalISO } from '../data/demo'
 import { userProfile } from '../auth/account'
 
 const CURRENT_YEAR = new Date().getFullYear()
@@ -64,7 +65,7 @@ export function TaxScreen() {
         category: category.trim(),
         amount: Number(amount),
         note: note.trim(),
-        date: date || new Date().toISOString().slice(0, 10),
+        date: date || todayLocalISO(),
         year,
       }),
       ...prev,
@@ -82,7 +83,7 @@ export function TaxScreen() {
             type="button"
             aria-label={t('tax.wizard')}
             onClick={() => setWizardOpen(true)}
-            className="tap shadow-card flex h-10 w-10 items-center justify-center rounded-2xl bg-navy text-white"
+            className="tap shadow-card flex h-11 w-11 items-center justify-center rounded-2xl bg-navy text-white"
           >
             <Icon name="tax" className="h-5 w-5" />
           </button>

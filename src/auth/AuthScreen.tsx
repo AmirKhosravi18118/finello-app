@@ -245,6 +245,7 @@ export function AuthScreen({ onDone }: { onDone: () => void }) {
             className="btn-primary w-full"
             onClick={() => {
               localStorage.setItem('finello_tab', 'settings')
+              localStorage.setItem('finello_open_bank', '1')
               finish({
                 name: name.trim() || existing?.name || 'Friend',
                 email: email || existing?.email || '',

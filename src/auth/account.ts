@@ -46,5 +46,5 @@ export function userProfile(): { name: string; email: string; status: string } {
             : a.setup?.occupation || '—'
     return { name: a.name, email: a.email || '—', status }
   }
-  return { name: 'Finello', email: '—', status: '—' }
+  return { name: '👋', email: '—', status: '—' }
 }
