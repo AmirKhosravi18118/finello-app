@@ -225,7 +225,7 @@ export function TransactionsScreen() {
             <EmptyState icon="receipt" text={t('tx.emptyTx')} />
           </Card>
         ) : (
-          <div className="flex flex-col gap-2">
+          <div className="anim-stagger flex flex-col gap-2">
             {txs.map((tx) => {
               const inflow = tx.amount >= 0
               const classified = inflow ? tx.incomeType !== undefined : tx.categoryId !== null

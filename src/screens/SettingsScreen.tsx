@@ -116,25 +116,8 @@ export function SettingsScreen() {
   }
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="anim-stagger flex flex-col gap-5">
       <AppHeader overline={t('app.name')} title={t('set.title')} />
-
-      {/* display & tour */}
-      <section>
-        <GroupHeader label={t('set.privacyGroup')} />
-        <Card className="flex min-h-14 items-center gap-3">
-          <IconBubble name="receipt" />
-          <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('set.demoData')}</span>
-          <div className="flex shrink-0 items-center gap-1.5">
-            <SelectPill active={demoOn} onSelect={() => toggleDemo(true)}>
-              <span className="text-[10px]">{t('set.demoDataOn')}</span>
-            </SelectPill>
-            <SelectPill active={!demoOn} onSelect={() => toggleDemo(false)}>
-              <span className="text-[10px]">{t('set.demoDataOff')}</span>
-            </SelectPill>
-          </div>
-        </Card>
-      </section>
 
       {/* display-orig */}
       <section>
@@ -345,6 +328,18 @@ export function SettingsScreen() {
       <section>
         <GroupHeader label={t('set.privacyGroup')} />
         <div className="flex flex-col gap-2">
+          <Card className="flex min-h-14 items-center gap-3 !p-4">
+            <IconBubble name="receipt" />
+            <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('set.demoData')}</span>
+            <div className="flex shrink-0 items-center gap-1.5">
+              <SelectPill active={demoOn} onSelect={() => toggleDemo(true)}>
+                <span className="text-[10px]">{t('set.demoDataOn')}</span>
+              </SelectPill>
+              <SelectPill active={!demoOn} onSelect={() => toggleDemo(false)}>
+                <span className="text-[10px]">{t('set.demoDataOff')}</span>
+              </SelectPill>
+            </div>
+          </Card>
           <button
             type="button"
             className="tap w-full text-start"

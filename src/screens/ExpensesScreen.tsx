@@ -202,7 +202,7 @@ export function ExpensesScreen() {
             <EmptyState icon="wallet" text={t('exp.emptyExpenses')} />
           </Card>
         ) : (
-          <div className="card px-4">
+          <div className="card anim-stagger px-4">
             {sorted.map((e) => (
               <button
                 key={e.id}

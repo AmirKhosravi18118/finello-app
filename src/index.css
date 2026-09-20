@@ -127,6 +127,85 @@ html.dark body {
   animation: screen-in 0.25s ease;
 }
 
+/* motion system (WP19 polish): rise for cards/rows, sheet & backdrop for modals,
+   stagger containers, quick-add pop — all respect reduced motion */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.anim-rise {
+  animation: rise 0.3s ease-out both;
+}
+.anim-stagger > * {
+  animation: rise 0.3s ease-out both;
+}
+.anim-stagger > *:nth-child(2) {
+  animation-delay: 40ms;
+}
+.anim-stagger > *:nth-child(3) {
+  animation-delay: 80ms;
+}
+.anim-stagger > *:nth-child(4) {
+  animation-delay: 120ms;
+}
+.anim-stagger > *:nth-child(5) {
+  animation-delay: 160ms;
+}
+.anim-stagger > *:nth-child(6) {
+  animation-delay: 200ms;
+}
+.sheet-in {
+  animation: sheet-in 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.backdrop-in {
+  animation: backdrop-in 0.2s ease both;
+}
+
+/* global keyboard focus (a11y) */
+:where(button, a, input, select, textarea):focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* safe area for the floating nav */
+.pill-nav {
+  margin-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .screen-in,
+  .anim-rise,
+  .anim-stagger > *,
+  .sheet-in,
+  .backdrop-in {
+    animation: none !important;
+  }
+}
+
 /* skeleton shimmer (DESIGN_SYSTEM_V2 §1) — token-based, adapts to dark theme */
 @keyframes skeleton {
   from {

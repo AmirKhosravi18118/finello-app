@@ -186,7 +186,7 @@ export function HomeScreen() {
             {nextPayments.length === 0 ? (
               <p className="py-4 text-center text-sm font-medium text-ink-soft">{t('home.emptyPayments')}</p>
             ) : (
-              <div className="card px-4">
+              <div className="card anim-stagger px-4">
                 {nextPayments.map((p) => (
                   <button
                     key={p.id}

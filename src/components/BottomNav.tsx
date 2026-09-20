@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useI18n } from '../i18n/I18nContext'
 import type { TabId } from '../data/demo'
 import { Icon, type IconName } from './ui'
@@ -46,6 +46,17 @@ const QUICK_ACTIONS: Array<{
 export function BottomNav({ tab, onTab }: { tab: TabId; onTab: (t: TabId) => void }) {
   const { t } = useI18n()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [sheetOpen, setSheetOpen] = useState(false)
+
+  /** Smart + (WP16): hide whenever ANY modal/sheet is open anywhere in the app
+   *  (auth sheets, edit sheets, wizard, legal, notifications…), spring back on close. */
+  useEffect(() => {
+    const check = () => setSheetOpen(!!document.querySelector('[role="dialog"]'))
+    check()
+    const observer = new MutationObserver(check)
+    observer.observe(document.body, { childList: true, subtree: true })
+    return () => observer.disconnect()
+  }, [])
 
   const quickAdd = (detail: QuickAddDetail) => {
     setMenuOpen(false)
@@ -92,14 +103,16 @@ export function BottomNav({ tab, onTab }: { tab: TabId; onTab: (t: TabId) => voi
         </div>
       )}
 
-      {/* floating + — outside the bar, end edge, above the nav */}
+      {/* floating + — outside the bar, end edge, above the nav; hides behind sheets */}
       <button
         type="button"
         onClick={() => setMenuOpen((v) => !v)}
         aria-expanded={menuOpen}
         aria-label={t('qa.title')}
-        className="tap fixed bottom-24 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-white/25 bg-gradient-to-br from-primary to-primary-deep text-white shadow-fab transition-transform duration-300"
-        style={{ insetInlineEnd: '1.25rem', transform: menuOpen ? 'rotate(45deg)' : undefined }}
+        className={`shadow-fab tap fixed bottom-24 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-white/25 bg-gradient-to-br from-primary to-primary-deep text-white transition-all duration-300 ${
+          menuOpen ? 'rotate-45' : ''
+        } ${sheetOpen ? 'pointer-events-none translate-y-8 scale-50 opacity-0' : 'translate-y-0 scale-100 opacity-100'}`}
+        style={{ insetInlineEnd: '1.25rem' }}
       >
         <Icon name="plus" className="h-6 w-6" />
       </button>

@@ -412,12 +412,12 @@ export function Modal({
   if (!open) return null
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-navy/40 backdrop-blur-[2px] sm:items-center"
+      className="backdrop-in fixed inset-0 z-50 flex items-end justify-center bg-navy/40 backdrop-blur-[2px] sm:items-center"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
     >
-      <div className="card w-full max-w-md p-5 pb-6" onClick={(e) => e.stopPropagation()}>
+      <div className="sheet-in card w-full max-w-md p-5 pb-6" onClick={(e) => e.stopPropagation()}>
         <div className="mb-3 flex items-center justify-between">
           <h3 className="text-base font-extrabold text-ink">{title}</h3>
           <button
