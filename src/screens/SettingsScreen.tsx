@@ -12,7 +12,6 @@ import {
 import { getTheme, setTheme, type Theme } from '../theme/theme'
 import { LegalSheet } from '../components/LegalSheet'
 import type { LegalDocKey } from '../legal/legalContent'
-import { demoDataEnabled } from '../data/demo'
 import { userProfile, getAccount, saveAccount } from '../auth/account'
 import { downloadFile, exportableTransactions, paymentsIcs, transactionsCsv } from '../data/exporters'
 import { allPayments } from '../data/paymentsView'
@@ -66,12 +65,6 @@ export function SettingsScreen() {
   const liveCatalog = useLiveBankCatalog()
   const catalog = isLive() ? liveCatalog : mockCatalog
   const profile = userProfile()
-  const [demoOn, setDemoOn] = useState(() => demoDataEnabled())
-  const toggleDemo = (on: boolean) => {
-    localStorage.setItem('finello_demo_data', on ? '1' : '0')
-    setDemoOn(on)
-    window.location.reload()
-  }
   const [theme, setThemeState] = useState<Theme>(() => getTheme())
   const [, setVersion] = useState(0)
   const [profileOpen, setProfileOpen] = useState(false)
@@ -331,18 +324,6 @@ export function SettingsScreen() {
       <section>
         <GroupHeader label={t('set.privacyGroup')} />
         <div className="flex flex-col gap-3">
-          <Card className="flex min-h-14 items-center gap-3 !p-4">
-            <IconBubble name="receipt" />
-            <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('set.demoData')}</span>
-            <div className="flex shrink-0 items-center gap-1.5">
-              <SelectPill active={demoOn} onSelect={() => toggleDemo(true)}>
-                <span className="text-[10px]">{t('set.demoDataOn')}</span>
-              </SelectPill>
-              <SelectPill active={!demoOn} onSelect={() => toggleDemo(false)}>
-                <span className="text-[10px]">{t('set.demoDataOff')}</span>
-              </SelectPill>
-            </div>
-          </Card>
           <button
             type="button"
             className="tap w-full text-start"

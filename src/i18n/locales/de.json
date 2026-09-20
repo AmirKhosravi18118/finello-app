@@ -91,7 +91,8 @@
     "date": "Datum",
     "assignIncome": "Einnahmeart wählen",
     "methodCash": "Bar",
-    "methodCard": "Karte"
+    "methodCard": "Karte",
+    "notifBody": "{n} neue Transaktionen von {bank} — jetzt kategorisieren"
   },
   "tax": {
     "year": "Jahr",

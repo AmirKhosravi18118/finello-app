@@ -91,7 +91,8 @@
     "date": "تاریخ",
     "assignIncome": "تعیین نوع درآمد",
     "methodCash": "نقدی",
-    "methodCard": "کارت"
+    "methodCard": "کارت",
+    "notifBody": "{n} تراکنش جدید از {bank} — دسته‌بندی‌شان کن"
   },
   "tax": {
     "year": "سال",

@@ -109,7 +109,7 @@ export function BottomNav({ tab, onTab }: { tab: TabId; onTab: (t: TabId) => voi
         onClick={() => setMenuOpen((v) => !v)}
         aria-expanded={menuOpen}
         aria-label={t('qa.title')}
-        className={`shadow-fab tap fixed bottom-24 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-white/25 bg-gradient-to-br from-primary to-primary-deep text-white transition-all duration-300 ${
+        className={`shadow-fab tap fixed bottom-32 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-white/25 bg-gradient-to-br from-primary to-primary-deep text-white transition-all duration-300 ${
           menuOpen ? 'rotate-45' : ''
         } ${sheetOpen ? 'pointer-events-none translate-y-8 scale-50' : ''}`}
         style={{

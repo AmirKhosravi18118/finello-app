@@ -20,6 +20,7 @@ import type { IncomeType } from '../data/editStore'
 import { useBankConnection } from '../bank/bankConnection'
 import { INCOME_TYPES, removeCashTx, saveTxEdit, tombstoneTx } from '../data/editStore'
 import { visibleTransactions } from '../data/incomeView'
+import { notifyNewTransactions } from '../notifications/reminders'
 import { todayLocalISO } from '../data/demo'
 
 const CATEGORY_IDS = Object.keys(CATEGORIES) as CategoryId[]
@@ -196,9 +197,19 @@ export function TransactionsScreen() {
         <button
           type="button"
           className="btn-ghost w-full"
-          onClick={() => {
-            setImportFlash(importNow())
+          onClick={async () => {
+            const bankLabel = banks.map((b) => b.name).join(' + ')
+            const n = importNow()
+            setImportFlash(n)
             refresh()
+            if (n > 0) {
+              await notifyNewTransactions(
+                n,
+                bankLabel,
+                'Finello · ' + (bankLabel || 'Bank'),
+                t('tx.notifBody', { n, bank: bankLabel }),
+              )
+            }
           }}
         >
           <Icon name={banks.length > 0 ? 'bank' : 'download'} className="h-5 w-5" />

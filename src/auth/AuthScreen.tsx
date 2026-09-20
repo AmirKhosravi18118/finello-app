@@ -27,8 +27,8 @@ export function AuthScreen({ onDone }: { onDone: () => void }) {
   const [answers, setAnswers] = useState({
     marital: 'single',
     occupation: 'werkstudent',
-    hours: '18',
-    km: '8',
+    hours: '',
+    km: '',
   })
 
   useEffect(() => {
@@ -153,61 +153,82 @@ export function AuthScreen({ onDone }: { onDone: () => void }) {
           </div>
 
           {step === 0 && (
-            <div className="flex flex-wrap gap-2">
-              {(['single', 'married', 'separated'] as const).map((v) => (
-                <Pill
-                  key={v}
-                  active={answers.marital === v}
-                  onClick={() => setAnswers({ ...answers, marital: v })}
-                >
-                  {v === 'single'
-                    ? t('taxwiz.single')
-                    : v === 'married'
-                      ? t('taxwiz.marriedBoth')
-                      : t('taxwiz.separated')}
-                </Pill>
-              ))}
+            <div className="flex flex-col gap-2">
+              <p className="text-sm font-extrabold text-ink">{t('auth.q1')}</p>
+              <div className="flex flex-wrap gap-2">
+                {(['single', 'married', 'separated'] as const).map((v) => (
+                  <Pill
+                    key={v}
+                    active={answers.marital === v}
+                    onClick={() => setAnswers({ ...answers, marital: v })}
+                  >
+                    {v === 'single'
+                      ? t('taxwiz.single')
+                      : v === 'married'
+                        ? t('taxwiz.marriedBoth')
+                        : t('taxwiz.separated')}
+                  </Pill>
+                ))}
+              </div>
             </div>
           )}
           {step === 1 && (
-            <div className="flex flex-wrap gap-2">
-              {(['werkstudent', 'job', 'student', 'other'] as const).map((v) => (
-                <Pill
-                  key={v}
-                  active={answers.occupation === v}
-                  onClick={() => setAnswers({ ...answers, occupation: v })}
-                >
-                  {v === 'werkstudent'
-                    ? 'Werkstudent'
-                    : v === 'job'
-                      ? 'Vollzeit/Teilzeit'
-                      : v === 'student'
-                        ? t('taxwiz.q5')
-                        : t('cat.other')}
-                </Pill>
-              ))}
+            <div className="flex flex-col gap-2">
+              <p className="text-sm font-extrabold text-ink">{t('auth.q2')}</p>
+              <div className="flex flex-wrap gap-2">
+                {(['werkstudent', 'job', 'student', 'other'] as const).map((v) => (
+                  <Pill
+                    key={v}
+                    active={answers.occupation === v}
+                    onClick={() => setAnswers({ ...answers, occupation: v })}
+                  >
+                    {v === 'werkstudent'
+                      ? 'Werkstudent'
+                      : v === 'job'
+                        ? 'Vollzeit/Teilzeit'
+                        : v === 'student'
+                          ? t('taxwiz.q5')
+                          : t('cat.other')}
+                  </Pill>
+                ))}
+              </div>
             </div>
           )}
           {step === 2 && (
-            <input
-              className="field num"
-              type="number"
-              min={0}
-              max={80}
-              value={answers.hours}
-              onChange={(e) => setAnswers({ ...answers, hours: e.target.value })}
-              placeholder={t('auth.q3')}
-            />
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="fin-hours" className="text-sm font-extrabold text-ink">
+                {t('auth.q3')}
+              </label>
+              <input
+                id="fin-hours"
+                className="field num"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={2}
+                value={answers.hours}
+                onChange={(e) => setAnswers({ ...answers, hours: e.target.value.replace(/[^0-9]/g, '') })}
+                placeholder="20"
+              />
+            </div>
           )}
           {step === 3 && (
-            <input
-              className="field num"
-              type="number"
-              min={0}
-              value={answers.km}
-              onChange={(e) => setAnswers({ ...answers, km: e.target.value })}
-              placeholder={t('auth.q4')}
-            />
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="fin-km" className="text-sm font-extrabold text-ink">
+                {t('auth.q4')}
+              </label>
+              <input
+                id="fin-km"
+                className="field num"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={3}
+                value={answers.km}
+                onChange={(e) => setAnswers({ ...answers, km: e.target.value.replace(/[^0-9]/g, '') })}
+                placeholder="12"
+              />
+            </div>
           )}
 
           <div className="mt-1 flex gap-3">
