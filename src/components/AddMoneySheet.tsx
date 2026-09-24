@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useI18n } from '../i18n/I18nContext'
 import { Icon, Modal, Pill } from './ui'
 import { CATEGORIES, type CategoryId } from '../data/demo'
@@ -27,6 +27,12 @@ export function AddMoneySheet({
   const [date, setDate] = useState(todayLocalISO())
   const [incomeType, setIncomeType] = useState<string>('salary')
   const [categoryId, setCategoryId] = useState<CategoryId | null>(null)
+
+  // sync mode with the caller every time the sheet opens (bug A: first open
+  // of "income" previously showed the expense sheet)
+  useEffect(() => {
+    if (open) setMode(initialMode)
+  }, [open, initialMode])
 
   const reset = () => {
     setMode(initialMode)

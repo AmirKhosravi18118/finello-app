@@ -55,7 +55,8 @@
     "balance": "This month’s balance",
     "surplus": "Surplus",
     "deficit": "Deficit",
-    "guest": "Hi there! 👋"
+    "guest": "Hi there! 👋",
+    "editPayment": "Edit payment"
   },
   "cal": {
     "monthTitle": "Payments calendar",
@@ -177,7 +178,7 @@
     "blocked": "Blocked — enable in browser settings",
     "test": "Send test notification",
     "testSent": "Test notification sent",
-    "dailyNote": "Once a day on app open: reminder of upcoming and overdue payments",
+    "dailyNote": "Fetching transactions from connected banks triggers a categorization notification.",
     "reminders": "Payment reminders"
   },
   "cash": {

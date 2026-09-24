@@ -55,7 +55,8 @@
     "balance": "Bilanz diesen Monat",
     "surplus": "Überschuss",
     "deficit": "Defizit",
-    "guest": "Hallo! 👋"
+    "guest": "Hallo! 👋",
+    "editPayment": "Rate bearbeiten"
   },
   "cal": {
     "monthTitle": "Zahlungskalender",
@@ -177,7 +178,7 @@
     "blocked": "Blockiert — in den Browser-Einstellungen aktivieren",
     "test": "Test-Benachrichtigung senden",
     "testSent": "Test-Benachrichtigung gesendet",
-    "dailyNote": "Einmal täglich beim Öffnen der App: Erinnerung an nahe und überfällige Zahlungen",
+    "dailyNote": "Beim Abruf von Transaktionen verbundener Banken kommt eine Kategorisierungs-Benachrichtigung.",
     "reminders": "Zahlungserinnerungen"
   },
   "cash": {

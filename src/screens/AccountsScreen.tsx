@@ -13,6 +13,7 @@ import {
 import { useBankConnection, useLiveBankCatalog, isLive } from '../bank/bankConnection'
 import { getImportedTx } from '../bank/bankConnection'
 import { getCashTx } from '../data/editStore'
+import { notifyNewTransactions } from '../notifications/reminders'
 
 export function AccountsScreen() {
   const { t, fmt } = useI18n()
@@ -52,9 +53,19 @@ export function AccountsScreen() {
           <button
             type="button"
             aria-label={t('knt.fetch')}
-            onClick={() => {
-              setFlash(importNow())
+            onClick={async () => {
+              const bankLabel = banks.map((b) => b.name).join(' + ')
+              const n = importNow()
+              setFlash(n)
               refresh()
+              if (n > 0) {
+                await notifyNewTransactions(
+                  n,
+                  bankLabel,
+                  'Finello · ' + (bankLabel || 'Bank'),
+                  t('tx.notifBody', { n, bank: bankLabel }),
+                )
+              }
             }}
             className="tap shadow-card flex h-11 w-11 items-center justify-center rounded-2xl bg-surface text-ink"
           >

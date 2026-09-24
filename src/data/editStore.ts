@@ -194,6 +194,10 @@ export function addTaxExtra(
   return item
 }
 
+export function removeTaxExtra(id: string, store: StorageLike = defaultStorage()) {
+  store.setItem(TAX_KEY, JSON.stringify(getTaxExtras(store).filter((x) => x.id !== id)))
+}
+
 /* ---------- salary override ---------- */
 
 export interface SalaryConfig {

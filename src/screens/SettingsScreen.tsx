@@ -23,7 +23,6 @@ const LANGS: Array<{ id: Lang; label: string }> = [
 ]
 
 const NOTIFY_KEY = 'finello_notify_days'
-const SYNC_KEY = 'finello_sync_calendar'
 const NOTIFY_OPTIONS = [1, 3, 7]
 const DEFAULT_NOTIFY = 3
 
@@ -73,7 +72,6 @@ export function SettingsScreen() {
     const saved = Number(localStorage.getItem(NOTIFY_KEY))
     return NOTIFY_OPTIONS.includes(saved) ? saved : DEFAULT_NOTIFY
   })
-  const [sync, setSync] = useState<boolean>(() => localStorage.getItem(SYNC_KEY) !== '0')
   const [wipeOpen, setWipeOpen] = useState(false)
   const [bankOpen, setBankOpen] = useState(() => {
     const flag = localStorage.getItem('finello_open_bank') === '1'
@@ -85,12 +83,6 @@ export function SettingsScreen() {
   const selectNotify = (d: number) => {
     localStorage.setItem(NOTIFY_KEY, String(d))
     setNotifyDays(d)
-  }
-
-  const toggleSync = () => {
-    const next = !sync
-    localStorage.setItem(SYNC_KEY, next ? '1' : '0')
-    setSync(next)
   }
 
   const wipeAll = () => {
@@ -237,29 +229,6 @@ export function SettingsScreen() {
       <section>
         <GroupHeader label={t('set.calendarGroup')} />
         <div className="flex flex-col gap-3">
-          <Card className="flex min-h-14 items-center gap-3 !p-4">
-            <IconBubble name="calendar" />
-            <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('set.syncCalendar')}</span>
-            <button
-              type="button"
-              onClick={toggleSync}
-              aria-pressed={sync}
-              aria-label={t('set.syncCalendar')}
-              className="tap -me-2.5 flex shrink-0 items-center justify-center p-2.5"
-            >
-              <span
-                className={`relative block h-6 w-11 rounded-full transition-colors ${
-                  sync ? 'bg-primary' : 'bg-line'
-                }`}
-              >
-                <span
-                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-surface shadow transition-all duration-200 ${
-                    sync ? 'start-[22px]' : 'start-0.5'
-                  }`}
-                />
-              </span>
-            </button>
-          </Card>
           <Card className="flex min-h-14 items-center gap-3 !p-4">
             <IconBubble name="calendar" />
             <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('set.shareIcs')}</span>

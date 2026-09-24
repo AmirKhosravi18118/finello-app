@@ -81,6 +81,14 @@ export function CalendarScreen() {
           <div className="flex items-center gap-1.5">
             <button
               type="button"
+              aria-label={t('common.add')}
+              onClick={() => setAddOpen(true)}
+              className="tap shadow-card flex h-11 w-11 items-center justify-center rounded-2xl bg-navy text-white"
+            >
+              <Icon name="plus" className="h-5 w-5" />
+            </button>
+            <button
+              type="button"
               aria-label={t('cal.prev')}
               onClick={() => goMonth(-1)}
               className="tap shadow-card flex h-11 w-11 items-center justify-center rounded-2xl bg-surface text-ink rtl:rotate-180"

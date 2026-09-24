@@ -51,7 +51,7 @@ export function EditPaymentSheet({
   }
 
   return (
-    <Modal open={open} onClose={onClose} title={t('home.addPayment')}>
+    <Modal open={open} onClose={onClose} title={t('home.editPayment')}>
       <div className="flex flex-col gap-3">
         <div>
           <label htmlFor="fin-pay-edit-title" className="mb-1 block ps-1 text-xs font-bold text-ink-soft">

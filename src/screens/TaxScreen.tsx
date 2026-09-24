@@ -15,7 +15,7 @@ import {
   StatTile,
 } from '../components/ui'
 import { TaxWizard, getWizardResult, type TaxWizardResult } from '../components/TaxWizard'
-import { addTaxExtra, getTaxExtras } from '../data/editStore'
+import { addTaxExtra, getTaxExtras, removeTaxExtra } from '../data/editStore'
 import { todayLocalISO } from '../data/demo'
 import { userProfile } from '../auth/account'
 
@@ -176,6 +176,19 @@ export function TaxScreen() {
                       <span className="num shrink-0 text-end text-sm font-extrabold leading-[1.1] text-ink">
                         {fmt.currency(it.amount)}
                       </span>
+                      {it.id.startsWith('tax-') && (
+                        <button
+                          type="button"
+                          aria-label={t('common.delete')}
+                          onClick={() => {
+                            removeTaxExtra(it.id)
+                            setExtras(getTaxExtras())
+                          }}
+                          className="tap flex h-9 w-9 items-center justify-center rounded-xl text-danger"
+                        >
+                          <Icon name="trash" className="h-4 w-4" />
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
