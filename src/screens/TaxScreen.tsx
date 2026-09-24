@@ -7,6 +7,7 @@ import {
   Card,
   EmptyState,
   Icon,
+  IconChip,
   Modal,
   Pill,
   SectionHeader,
@@ -93,25 +94,37 @@ export function TaxScreen() {
       {/* wizard result card */}
       {wizardResult && (
         <Card className="!bg-primary-soft/30">
-          <div className="flex flex-wrap items-center gap-2">
-            <Icon name="check" className="h-4 w-4 text-primary-deep" />
-            <p className="text-xs font-extrabold text-ink">{t('taxwiz.summary')}</p>
-            <Badge tone="success">{t('taxwiz.resultClass', { n: fmt.num(wizardResult.taxClass) })}</Badge>
-            <Badge tone={wizardResult.mandatory ? 'danger' : 'neutral'}>
-              {wizardResult.mandatory ? t('taxwiz.mandatory') : t('taxwiz.optional')}
-            </Badge>
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary-soft text-primary-deep">
+              <Icon name="check" className="h-5 w-5" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-extrabold text-ink">{t('taxwiz.summary')}</p>
+              <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                <Badge tone="success">{t('taxwiz.resultClass', { n: fmt.num(wizardResult.taxClass) })}</Badge>
+                <Badge tone={wizardResult.mandatory ? 'danger' : 'neutral'}>
+                  {wizardResult.mandatory ? t('taxwiz.mandatory') : t('taxwiz.optional')}
+                </Badge>
+              </div>
+            </div>
           </div>
         </Card>
       )}
 
-      {/* wizard */}
-      <button type="button" className="btn-ghost w-full" onClick={() => setWizardOpen(true)}>
-        <Icon name="tax" className="h-5 w-5" />
-        {t('tax.wizard')}
+      {/* wizard entry card (v3 premium) */}
+      <button type="button" className="tap w-full text-start" onClick={() => setWizardOpen(true)}>
+        <Card className="flex items-center gap-3">
+          <IconChip icon="tax" tone="success" />
+          <span className="min-w-0 flex-1">
+            <span className="t-section block">{t('tax.wizard')}</span>
+            <span className="t-caption block">{t('taxwiz.title')}</span>
+          </span>
+          <Icon name="chevron" className="h-4 w-4 shrink-0 text-ink-soft" />
+        </Card>
       </button>
 
       {/* year selector */}
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         {YEARS.map((y) => (
           <Pill key={y} active={year === y} onClick={() => setYear(y)}>
             <span className="num">{fmt.num(y)}</span>
@@ -121,9 +134,7 @@ export function TaxScreen() {
 
       {/* tax profile */}
       <Card className="flex items-center gap-3">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary-soft text-primary-deep">
-          <Icon name="user" />
-        </span>
+        <IconChip icon="user" tone="success" />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             {profile.name && <p className="text-base font-extrabold text-ink">{profile.name}</p>}
@@ -131,7 +142,7 @@ export function TaxScreen() {
           </div>
           <div className="mt-1 flex items-baseline justify-between gap-2 text-sm">
             <span className="shrink-0 font-medium text-ink-soft">{t('tax.employment')}</span>
-            <span className="line-clamp-2 text-end font-bold text-ink">{demo.tax.profile.employment}</span>
+            <span className="text-end font-bold text-ink">{demo.tax.profile.employment}</span>
           </div>
         </div>
       </Card>
@@ -153,15 +164,16 @@ export function TaxScreen() {
               <>
                 <div className="divide-y divide-line">
                   {filtered.map((it) => (
-                    <div key={it.id} className="flex items-start justify-between gap-3 py-3">
-                      <div className="min-w-0">
-                        <p className="text-sm font-bold text-ink">{it.category}</p>
-                        <p className="mt-0.5 flex flex-wrap items-center gap-x-2 text-xs text-ink-soft">
-                          <span>{fmt.date(parseDate(it.date))}</span>
+                    <div key={it.id} className="flex items-center gap-3 py-3">
+                      <IconChip icon="receipt" />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-bold leading-snug text-ink">{it.category}</p>
+                        <p className="t-caption mt-0.5 flex flex-wrap items-center gap-x-2">
+                          <span className="num">{fmt.date(parseDate(it.date))}</span>
                           {it.note && <span>{it.note}</span>}
                         </p>
                       </div>
-                      <span className="num shrink-0 text-end text-sm font-bold text-ink">
+                      <span className="num shrink-0 text-end text-sm font-extrabold leading-[1.1] text-ink">
                         {fmt.currency(it.amount)}
                       </span>
                     </div>
@@ -169,7 +181,9 @@ export function TaxScreen() {
                 </div>
                 <div className="flex items-center justify-between border-t border-line/70 pt-3">
                   <span className="text-sm font-bold text-ink-soft">{t('common.total')}</span>
-                  <span className="num text-end text-base font-extrabold text-ink">{fmt.currency(sum)}</span>
+                  <span className="num text-end text-base font-extrabold leading-[1.1] text-ink">
+                    {fmt.currency(sum)}
+                  </span>
                 </div>
               </>
             )}

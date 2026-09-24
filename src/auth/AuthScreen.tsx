@@ -59,16 +59,35 @@ export function AuthScreen({ onDone }: { onDone: () => void }) {
     </div>
   )
 
+  /* step progress dots (v3): one per setup question, filled as the user advances */
+  const stepDots = (
+    <div
+      className="flex items-center gap-1.5"
+      role="img"
+      aria-label={t('auth.step', { n: String(step + 1), total: '4' })}
+    >
+      {[0, 1, 2, 3].map((i) => (
+        <span
+          key={i}
+          className={`h-1.5 rounded-full transition-all duration-300 ${
+            i === step ? 'w-5 bg-primary' : i < step ? 'w-1.5 bg-primary/50' : 'w-1.5 bg-line'
+          }`}
+        />
+      ))}
+    </div>
+  )
+
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-5 py-8">
-      <div className="hero-gradient screen-in mb-6 rounded-[28px] p-6 text-white shadow-card">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15 text-xl font-extrabold">
+      {/* minimal split hero (v3): compact identity block, form lives below the fold */}
+      <div className="hero-gradient screen-in mb-6 rounded-[24px] p-5 text-white shadow-card">
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/12 text-lg font-extrabold backdrop-blur-sm">
           F
         </div>
-        <h1 className="mt-4 text-2xl font-extrabold tracking-tight">
+        <h1 className="mt-4 text-[24px] font-extrabold leading-[1.1] tracking-[-0.02em]">
           {mode === 'login' ? t('auth.helloBack') : t('auth.welcome')}
         </h1>
-        <p className="mt-1 text-sm text-white/75">{t('auth.sub')}</p>
+        <p className="mt-1.5 text-sm font-[450] leading-[1.4] text-white/75">{t('auth.sub')}</p>
         <div className="mt-4">{langRow}</div>
       </div>
 
@@ -145,11 +164,12 @@ export function AuthScreen({ onDone }: { onDone: () => void }) {
       {mode === 'setup' && (
         <Card className="screen-in flex flex-col gap-4 !p-5">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-soft">
-              {t('auth.step', { n: String(step + 1), total: '4' })}
-            </p>
-            <h2 className="mt-1 text-lg font-extrabold text-ink">{t('auth.setupTitle')}</h2>
-            <p className="text-xs text-ink-soft">{t('auth.setupSub')}</p>
+            <div className="flex items-center justify-between gap-3">
+              <p className="eyebrow">{t('auth.step', { n: String(step + 1), total: '4' })}</p>
+              {stepDots}
+            </div>
+            <h2 className="t-section mt-2">{t('auth.setupTitle')}</h2>
+            <p className="t-caption mt-0.5">{t('auth.setupSub')}</p>
           </div>
 
           {step === 0 && (
@@ -254,9 +274,11 @@ export function AuthScreen({ onDone }: { onDone: () => void }) {
 
       {mode === 'bank' && (
         <Card className="screen-in flex flex-col gap-3 !p-5">
-          <div className="flex items-center gap-2">
-            <Icon name="bank" className="h-5 w-5 text-primary-deep" />
-            <p className="text-sm font-extrabold text-ink">{t('auth.bankNow')}</p>
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary-soft text-primary-deep">
+              <Icon name="bank" className="h-5 w-5" />
+            </span>
+            <p className="min-w-0 flex-1 text-sm font-extrabold leading-snug text-ink">{t('auth.bankNow')}</p>
             <Badge tone={isLive() ? 'success' : 'warn'}>
               {isLive() ? t('auth.liveBadge') : t('auth.demoBadge')}
             </Badge>

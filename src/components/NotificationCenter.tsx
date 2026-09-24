@@ -37,11 +37,11 @@ export function NotificationCenter({ onGo }: { onGo: (tab: TabId) => void }) {
       {uncategorized > 0 && (
         <button type="button" onClick={() => onGo('transactions')} className="tap w-full text-start">
           <Card className="flex min-h-16 items-center gap-3 !border-amber-soft !bg-amber-soft/70">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-soft text-amber-600">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-amber-soft text-amber-600">
               <Icon name="bell" className="h-5 w-5" />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="num text-sm font-extrabold text-ink">
+              <p className="num text-sm font-extrabold leading-snug text-ink">
                 {t('home.uncategorizedNudge', { n: fmt.num(uncategorized) })}
               </p>
               <p className="text-xs font-bold text-primary-deep">{t('home.categorizeNow')} →</p>
@@ -53,7 +53,7 @@ export function NotificationCenter({ onGo }: { onGo: (tab: TabId) => void }) {
       {overdues > 0 && (
         <button type="button" onClick={() => onGo('home')} className="tap w-full text-start">
           <Card className="flex min-h-16 items-center gap-3 !border-danger-soft !bg-danger-soft/70">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-danger-soft text-danger">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-danger-soft text-danger">
               <Icon name="receipt" className="h-5 w-5" />
             </span>
             <p className="num flex-1 text-sm font-extrabold text-ink">
@@ -75,7 +75,7 @@ export function NotificationCenter({ onGo }: { onGo: (tab: TabId) => void }) {
                   className="flex items-center justify-between gap-3 border-t border-line py-2.5 first:border-t-0"
                 >
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-bold text-ink">{p.title}</p>
+                    <p className="text-sm font-bold leading-snug text-ink">{p.title}</p>
                     <p className="num text-xs font-medium text-ink-soft">
                       {diff === 0 ? t('status.today') : t('notif.dueIn', { n: fmt.num(diff) })}
                     </p>

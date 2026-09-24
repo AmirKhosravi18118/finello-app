@@ -7,7 +7,6 @@ import {
   DonutChart,
   EmptyState,
   Icon,
-  Pill,
   SectionHeader,
   SkeletonCard,
 } from '../components/ui'
@@ -107,20 +106,18 @@ export function AnalysenScreen() {
         }
       />
 
-      {/* numeric hero: month total + comparison caption */}
+      {/* numeric hero (v3): month total + comparison caption */}
       <section className="card p-5">
         <p className="eyebrow">{t('exp.monthTotal')}</p>
-        <div className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <p className="num text-[28px] font-extrabold leading-tight tracking-[-0.02em] text-ink">
-            {fmt.currency(curTotal)}
-          </p>
+        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-2">
+          <p className="t-display num">{fmt.currency(curTotal)}</p>
           {deltaText(curTotal, prevTotal)}
         </div>
       </section>
 
-      {/* donut: share of spend */}
+      {/* donut card + legend with % and amounts (Finanzguru-style analytics) */}
       {byCat.length > 0 && (
-        <Card className="flex items-center gap-5">
+        <Card className="flex flex-wrap items-center gap-5">
           <DonutChart
             segments={byCat.map(({ categoryId, total }) => ({
               color: CATEGORIES[categoryId].color,
@@ -129,18 +126,23 @@ export function AnalysenScreen() {
             centerValue={fmt.currency(curTotal)}
             centerLabel={t('exp.monthTotal')}
           />
-          <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+          <div className="flex min-w-0 flex-1 flex-col gap-2">
             {byCat.slice(0, 5).map(({ categoryId, total }) => (
-              <div key={categoryId} className="flex items-center justify-between gap-2 text-xs">
-                <span className="flex min-w-0 items-center gap-1.5 font-bold text-ink">
+              <div key={categoryId} className="flex items-center justify-between gap-2">
+                <span className="flex min-w-0 items-center gap-1.5 text-xs font-bold text-ink">
                   <span
                     className="h-2.5 w-2.5 shrink-0 rounded-full"
                     style={{ backgroundColor: CATEGORIES[categoryId].color }}
                   />
-                  <span className="truncate">{t(`cat.${categoryId}`)}</span>
+                  <span className="min-w-0">{t(`cat.${categoryId}`)}</span>
                 </span>
-                <span className="num shrink-0 font-bold text-ink-soft">
-                  {curTotal > 0 ? Math.round((total / curTotal) * 100) : 0}%
+                <span className="flex shrink-0 items-baseline gap-2">
+                  <span className="num text-xs font-bold text-ink-soft">
+                    {curTotal > 0 ? Math.round((total / curTotal) * 100) : 0}%
+                  </span>
+                  <span className="num w-20 text-end text-xs font-extrabold text-ink">
+                    {fmt.currency(total)}
+                  </span>
                 </span>
               </div>
             ))}
@@ -183,27 +185,11 @@ export function AnalysenScreen() {
                 className="h-2 w-2 shrink-0 rounded-full"
                 style={{ backgroundColor: CATEGORIES[categoryId].color }}
               />
-              <span className="max-w-24 truncate">{t(`cat.${categoryId}`)}</span>
+              <span className="min-w-0">{t(`cat.${categoryId}`)}</span>
             </span>
           ))}
         </div>
       </Card>
-
-      <div className="flex flex-wrap items-stretch gap-2">
-        {byCat.map(({ categoryId }) => (
-          <span key={categoryId} className="flex min-h-11 items-center">
-            <Pill>
-              <span className="flex items-center gap-1.5">
-                <span
-                  className="h-2 w-2 rounded-full"
-                  style={{ backgroundColor: CATEGORIES[categoryId].color }}
-                />
-                {t(`cat.${categoryId}`)}
-              </span>
-            </Pill>
-          </span>
-        ))}
-      </div>
 
       {/* month-over-month comparison */}
       <Card>
@@ -220,7 +206,7 @@ export function AnalysenScreen() {
                   className="h-2.5 w-2.5 shrink-0 rounded-full"
                   style={{ backgroundColor: CATEGORIES[categoryId].color }}
                 />
-                <span className="truncate">{t(`cat.${categoryId}`)}</span>
+                <span className="min-w-0">{t(`cat.${categoryId}`)}</span>
               </span>
               {renderDelta(total, prevByCat.get(categoryId) ?? 0)}
             </div>
@@ -242,7 +228,7 @@ export function AnalysenScreen() {
             <EmptyState icon="wallet" text={t('exp.emptyExpenses')} />
           </Card>
         ) : (
-          <div className="card anim-stagger px-4">
+          <div className="card anim-stagger px-5">
             {sorted.map((e) => (
               <button
                 key={e.id}
@@ -253,7 +239,7 @@ export function AnalysenScreen() {
                 <span className="shrink-0 text-xs font-medium text-ink-soft">
                   {fmt.date(new Date(e.date))}
                 </span>
-                <span className="min-w-0 flex-1 truncate text-sm font-bold text-ink">{e.title}</span>
+                <span className="min-w-0 flex-1 text-sm font-bold leading-snug text-ink">{e.title}</span>
                 <span className="shrink-0">
                   <Badge tone="neutral">
                     <span
@@ -263,7 +249,9 @@ export function AnalysenScreen() {
                     {t(`cat.${e.categoryId}`)}
                   </Badge>
                 </span>
-                <span className="num shrink-0 text-sm font-extrabold text-ink">{fmt.currency(e.amount)}</span>
+                <span className="num shrink-0 text-sm font-extrabold leading-[1.1] text-ink">
+                  {fmt.currency(e.amount)}
+                </span>
               </button>
             ))}
           </div>

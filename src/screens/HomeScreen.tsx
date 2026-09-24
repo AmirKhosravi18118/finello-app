@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react'
 import { useI18n } from '../i18n/I18nContext'
 import {
   Badge,
+  Card,
+  EmptyState,
   Icon,
+  IconChip,
   Modal,
   SectionHeader,
   SkeletonCard,
@@ -75,48 +78,48 @@ export function HomeScreen() {
 
   return (
     <div className="flex flex-col gap-5">
-      {/* gradient hero: greeting + big white month balance + income/expense chips */}
-      <section className="hero-gradient shadow-card screen-in rounded-[28px] p-5 text-white">
+      {/* gradient hero (v3): greeting small → balance HUGE → surplus badge inline → glass chips */}
+      <section className="hero-gradient shadow-card screen-in rounded-[24px] p-5 text-white">
         <div className="flex items-center justify-between gap-2">
-          <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-white/70">
+          <p className="min-w-0 text-[11px] font-bold uppercase tracking-[0.12em] text-white/70">
             {profile.name ? t('home.greeting', { name: profile.name }) : t('home.guest')}
           </p>
           {profile.status && (
-            <span className="rounded-full bg-white/14 px-2.5 py-1 text-[10px] font-bold text-white/80">
+            <span className="shrink-0 rounded-full bg-white/12 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.06em] text-white/80 backdrop-blur-sm">
               {profile.status}
             </span>
           )}
         </div>
-        <p className="mt-3 text-xs font-medium text-white/60">{t('home.balance')}</p>
-        <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1">
-          <p className="num text-[28px] font-extrabold leading-tight tracking-[-0.02em]">
+        <p className="mt-4 text-xs font-medium text-white/60">{t('home.balance')}</p>
+        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-2">
+          <p className="num text-[30px] font-extrabold leading-[1.1] tracking-[-0.02em]">
             {fmt.currency(money.balance)}
           </p>
           <span
-            className={`badge ${money.balance >= 0 ? 'bg-white/14 text-primary' : 'bg-white/14 text-danger'}`}
+            className={`badge backdrop-blur-sm ${money.balance >= 0 ? 'bg-white/12 text-primary' : 'bg-white/12 text-danger'}`}
           >
             {money.balance >= 0 ? t('home.surplus') : t('home.deficit')}
           </span>
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-3">
+        <div className="mt-5 grid grid-cols-2 gap-3">
           <button
             type="button"
             onClick={() => setIncomeOpen(true)}
             aria-label={t('cash.income')}
-            className="tap rounded-2xl bg-white/14 p-3 text-start"
+            className="tap rounded-2xl bg-white/12 p-3 text-start backdrop-blur-sm"
           >
             <div className="flex items-center justify-between gap-2">
-              <p className="min-w-0 truncate text-[11px] font-bold text-white/70">{t('home.monthIncome')}</p>
+              <p className="min-w-0 text-[11px] font-bold text-white/70">{t('home.monthIncome')}</p>
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/20 text-white">
                 <Icon name="plus" className="h-3.5 w-3.5" />
               </span>
             </div>
-            <p className="num mt-0.5 text-base font-extrabold">{fmt.currency(money.income)}</p>
+            <p className="num mt-0.5 text-base font-extrabold leading-[1.1]">{fmt.currency(money.income)}</p>
           </button>
-          <div className="rounded-2xl bg-white/14 p-3">
+          <div className="rounded-2xl bg-white/12 p-3 backdrop-blur-sm">
             <p className="text-[11px] font-bold text-white/70">{t('home.monthExpense')}</p>
-            <p className="num mt-0.5 text-base font-extrabold">{fmt.currency(money.expense)}</p>
+            <p className="num mt-0.5 text-base font-extrabold leading-[1.1]">{fmt.currency(money.expense)}</p>
           </div>
         </div>
 
@@ -142,6 +145,49 @@ export function HomeScreen() {
         </>
       ) : (
         <>
+          {/* quick actions (v3): payment / income / expense via existing quick-add wiring */}
+          <section className="grid grid-cols-3 gap-3" aria-label={t('qa.title')}>
+            <button
+              type="button"
+              onClick={() =>
+                window.dispatchEvent(new CustomEvent<'payment'>(QUICK_ADD_EVENT, { detail: 'payment' }))
+              }
+              className="tap card flex flex-col items-center gap-2 p-3"
+            >
+              <IconChip icon="calendar" tone="warn" />
+              <span className="text-center text-[11px] font-bold leading-tight text-ink">
+                {t('qa.payment')}
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setIncomeOpen(true)}
+              className="tap card flex flex-col items-center gap-2 p-3"
+            >
+              <IconChip icon="down" tone="success" />
+              <span className="text-center text-[11px] font-bold leading-tight text-ink">
+                {t('qa.income')}
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                window.dispatchEvent(new CustomEvent('finello:goto', { detail: 'transactions' }))
+                window.setTimeout(
+                  () =>
+                    window.dispatchEvent(new CustomEvent<'expense'>(QUICK_ADD_EVENT, { detail: 'expense' })),
+                  80,
+                )
+              }}
+              className="tap card flex flex-col items-center gap-2 p-3"
+            >
+              <IconChip icon="up" tone="danger" />
+              <span className="text-center text-[11px] font-bold leading-tight text-ink">
+                {t('qa.expense')}
+              </span>
+            </button>
+          </section>
+
           {/* payday + savings tiles */}
           <section className="grid grid-cols-2 gap-3">
             <button
@@ -188,9 +234,11 @@ export function HomeScreen() {
               }
             />
             {nextPayments.length === 0 ? (
-              <p className="py-4 text-center text-sm font-medium text-ink-soft">{t('home.emptyPayments')}</p>
+              <Card>
+                <EmptyState icon="calendar" text={t('home.emptyPayments')} />
+              </Card>
             ) : (
-              <div className="card anim-stagger px-4">
+              <div className="card anim-stagger px-5">
                 {nextPayments.map((p) => (
                   <button
                     key={p.id}
@@ -209,12 +257,14 @@ export function HomeScreen() {
                         {fmt.num(p.dayOfMonth)}
                       </span>
                       <div className="min-w-0">
-                        <p className="truncate text-sm font-bold text-ink">{p.title}</p>
-                        <p className="truncate text-xs text-ink-soft">{p.recipient}</p>
+                        <p className="text-sm font-bold leading-snug text-ink">{p.title}</p>
+                        <p className="t-caption">{p.recipient}</p>
                       </div>
                     </div>
                     <div className="flex shrink-0 flex-col items-end gap-1">
-                      <span className="num text-sm font-extrabold text-ink">{fmt.currency(p.amount)}</span>
+                      <span className="num text-sm font-extrabold leading-[1.1] text-ink">
+                        {fmt.currency(p.amount)}
+                      </span>
                       <Badge tone={STATUS_TONE[p.status]}>{t(`status.${p.status}`)}</Badge>
                     </div>
                   </button>

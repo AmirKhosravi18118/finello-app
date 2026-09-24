@@ -32,10 +32,11 @@ export function IconChip({ icon, tone = 'neutral' }: { icon: IconName; tone?: To
   )
 }
 
-/* ---------- sticky page header (DESIGN_SYSTEM_V2 §2) ---------- */
+/* ---------- sticky page header (v3 §4: bottom hairline, optional below-row) ---------- */
 
 /** Sticky blurred page header: small overline above the 20px title, optional
- *  subtitle, trailing text/icon action and optional demo badge (home only).
+ *  subtitle, trailing text/icon action, optional demo badge (home only) and an
+ *  optional `below` row (e.g. sticky filter chips) inside the hairline frame.
  *  t()-free by design — callers pass ready strings. */
 export function AppHeader({
   overline,
@@ -43,26 +44,29 @@ export function AppHeader({
   subtitle,
   trailing,
   badge,
+  below,
 }: {
   overline: string
   title: string
   subtitle?: string
   trailing?: ReactNode
   badge?: string
+  below?: ReactNode
 }) {
   return (
-    <div className="sticky top-0 z-30 -mx-5 bg-canvas/85 px-5 pb-3 pt-2 backdrop-blur-md">
+    <div className="sticky top-0 z-30 -mx-5 border-b border-line bg-canvas/85 px-5 pb-3 pt-2 backdrop-blur-md">
       <div className="flex items-end justify-between gap-3">
         <div className="min-w-0">
           <p className="eyebrow">{overline}</p>
           <div className="mt-0.5 flex items-center gap-2">
-            <h1 className="line-clamp-2 text-[20px] font-extrabold leading-tight text-ink">{title}</h1>
+            <h1 className="text-[20px] font-extrabold leading-tight text-ink">{title}</h1>
             {badge && <Badge tone="warn">{badge}</Badge>}
           </div>
-          {subtitle && <p className="mt-0.5 line-clamp-2 text-xs font-medium text-ink-soft">{subtitle}</p>}
+          {subtitle && <p className="t-caption mt-0.5">{subtitle}</p>}
         </div>
         {trailing && <div className="flex shrink-0 items-center gap-2">{trailing}</div>}
       </div>
+      {below && <div className="mt-3">{below}</div>}
     </div>
   )
 }
@@ -93,13 +97,13 @@ export function SkeletonCard({ className = '' }: { className?: string }) {
 export function SkeletonStats() {
   return (
     <div className="grid grid-cols-2 gap-3">
-      <Skeleton className="h-32 rounded-[28px]" />
-      <Skeleton className="h-32 rounded-[28px]" />
+      <Skeleton className="h-32 rounded-[24px]" />
+      <Skeleton className="h-32 rounded-[24px]" />
     </div>
   )
 }
 
-/* ---------- section header (DESIGN_SYSTEM_V2 §2) ---------- */
+/* ---------- section header (v3 §1: 15px/700 section titles) ---------- */
 
 export function SectionHeader({
   icon,
@@ -116,7 +120,7 @@ export function SectionHeader({
     <div className="mb-2 flex items-center justify-between gap-2">
       <div className="flex min-w-0 items-center gap-2.5">
         <IconChip icon={icon} tone={tone} />
-        <h2 className="truncate text-sm font-bold text-ink">{title}</h2>
+        <h2 className="t-section min-w-0 text-ink">{title}</h2>
       </div>
       {action}
     </div>
@@ -157,7 +161,13 @@ export function ProgressRing({ value, size = 44, label }: { value: number; size?
   )
 }
 
-/* ---------- stat tile (DESIGN_SYSTEM_V2 §2) ---------- */
+/* ---------- stat tile (v3 §4: icon chip top, big value, delta arrow) ---------- */
+
+export interface StatDelta {
+  dir: 'up' | 'down'
+  text: string
+  tone?: 'success' | 'danger' | 'neutral'
+}
 
 export function StatTile({
   label,
@@ -167,6 +177,7 @@ export function StatTile({
   icon,
   progress,
   progressLabel,
+  delta,
   className = '',
 }: {
   label: string
@@ -177,6 +188,8 @@ export function StatTile({
   /** 0..1 — renders a small ProgressRing next to the icon chip. */
   progress?: number
   progressLabel?: string
+  /** Optional comparison row with a direction arrow under the value. */
+  delta?: StatDelta
   className?: string
 }) {
   const valueColor =
@@ -188,6 +201,12 @@ export function StatTile({
           ? 'text-danger'
           : 'text-ink'
   const chipTone: Tone = tone === 'default' ? 'neutral' : tone
+  const deltaColor =
+    delta?.tone === 'danger'
+      ? 'text-danger'
+      : delta?.tone === 'success'
+        ? 'text-primary-deep'
+        : 'text-ink-soft'
   return (
     <div className={`card flex flex-col gap-3 p-4 ${className}`}>
       <div className="flex items-center justify-between gap-2">
@@ -195,9 +214,15 @@ export function StatTile({
         {progress !== undefined && <ProgressRing value={progress} size={40} label={progressLabel ?? label} />}
       </div>
       <div className="min-w-0">
-        <p className="text-xs font-medium text-ink-soft">{label}</p>
-        <p className={`num mt-0.5 text-xl font-extrabold ${valueColor}`}>{value}</p>
-        {sub && <p className="mt-0.5 text-xs font-medium text-ink-soft">{sub}</p>}
+        <p className="t-caption">{label}</p>
+        <p className={`num mt-0.5 text-[20px] font-extrabold leading-[1.1] ${valueColor}`}>{value}</p>
+        {delta && (
+          <p className={`mt-1 flex items-center gap-1 text-[11px] font-bold ${deltaColor}`}>
+            <Icon name={delta.dir} className="h-3 w-3" />
+            <span className="min-w-0">{delta.text}</span>
+          </p>
+        )}
+        {sub && <p className="t-caption mt-0.5">{sub}</p>}
       </div>
     </div>
   )
@@ -222,6 +247,7 @@ export function ProgressBar({ value, label }: { value: number; label?: string })
   )
 }
 
+/** Selectable chip (v3 §4: min 48px height for primary selectors). */
 export function Pill({
   active,
   onClick,
@@ -235,7 +261,7 @@ export function Pill({
     <button
       type="button"
       onClick={onClick}
-      className={`tap min-h-11 shrink-0 rounded-full px-4 py-2 text-xs font-bold ${
+      className={`tap flex min-h-12 shrink-0 items-center justify-center rounded-full px-4 py-2 text-xs font-bold ${
         active ? 'bg-navy text-white shadow-md' : 'border border-line bg-surface text-ink-soft'
       }`}
     >
@@ -371,16 +397,18 @@ export function Icon({ name, className = 'h-5 w-5' }: { name: IconName; classNam
   )
 }
 
-/* ---------- empty state (DESIGN_SYSTEM_V2 §2) ---------- */
+/* ---------- empty state (v3 §4: stacked icon + title + hint) ---------- */
 
 export function EmptyState({
   icon,
   text,
+  hint,
   tone = 'neutral',
   action,
 }: {
   icon: IconName
   text: string
+  hint?: string
   tone?: Tone
   action?: ReactNode
 }) {
@@ -389,17 +417,18 @@ export function EmptyState({
       <span className={`flex h-14 w-14 items-center justify-center rounded-3xl p-3.5 ${TONE_CLASS[tone]}`}>
         <Icon name={icon} className="h-full w-full" />
       </span>
-      <p className="text-sm font-bold text-ink-soft">{text}</p>
+      <p className="text-sm font-bold text-ink">{text}</p>
+      {hint && <p className="t-caption max-w-64">{hint}</p>}
       {action}
     </div>
   )
 }
 
-/* ---------- donut chart (Finanzguru-style analytics) ---------- */
+/* ---------- donut chart (v3 §4: 18px ring, rounded caps, center stack) ---------- */
 
 export function DonutChart({
   segments,
-  size = 148,
+  size = 160,
   centerLabel,
   centerValue,
 }: {
@@ -415,7 +444,7 @@ export function DonutChart({
   return (
     <div className="relative inline-flex items-center justify-center">
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} role="img">
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--color-chip)" strokeWidth="16" />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--color-chip)" strokeWidth="18" />
         {segments.map((seg, i) => {
           const len = (seg.value / total) * c
           const el = (
@@ -426,7 +455,7 @@ export function DonutChart({
               r={r}
               fill="none"
               stroke={seg.color}
-              strokeWidth="16"
+              strokeWidth="18"
               strokeDasharray={`${Math.max(0, len - 2)} ${c - Math.max(0, len - 2)}`}
               strokeDashoffset={-offset}
               strokeLinecap="round"
@@ -438,14 +467,20 @@ export function DonutChart({
         })}
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-        {centerValue && <p className="num text-base font-extrabold text-ink">{centerValue}</p>}
-        {centerLabel && <p className="text-[10px] font-bold text-ink-soft">{centerLabel}</p>}
+        {centerValue && (
+          <p className="num text-[15px] font-extrabold leading-[1.1] text-ink">{centerValue}</p>
+        )}
+        {centerLabel && (
+          <p className="mt-0.5 max-w-20 text-[10px] font-bold uppercase tracking-[0.08em] text-ink-soft">
+            {centerLabel}
+          </p>
+        )}
       </div>
     </div>
   )
 }
 
-/* ---------- modal ---------- */
+/* ---------- modal / bottom sheet (v3 §5: rounded-t-[28px] + grabber handle) ---------- */
 
 export function Modal({
   open,
@@ -467,9 +502,13 @@ export function Modal({
       role="dialog"
       aria-modal="true"
     >
-      <div className="sheet-in card w-full max-w-md p-5 pb-6" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="sheet-in w-full max-w-md rounded-t-[28px] border border-line bg-surface p-5 pb-6 shadow-card sm:rounded-[24px]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="grabber mb-3 sm:hidden" aria-hidden="true" />
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-base font-extrabold text-ink">{title}</h3>
+          <h3 className="min-w-0 text-base font-extrabold text-ink">{title}</h3>
           <button
             type="button"
             onClick={onClose}

@@ -1,6 +1,15 @@
 import { useState } from 'react'
 import { useI18n } from '../i18n/I18nContext'
-import { Card, EmptyState, Icon, Modal, SectionHeader, SkeletonCard, StatTile } from '../components/ui'
+import {
+  AppHeader,
+  Card,
+  EmptyState,
+  Icon,
+  IconChip,
+  Modal,
+  SectionHeader,
+  SkeletonCard,
+} from '../components/ui'
 import { useBankConnection, useLiveBankCatalog, isLive } from '../bank/bankConnection'
 import { getImportedTx } from '../bank/bankConnection'
 import { getCashTx } from '../data/editStore'
@@ -36,57 +45,80 @@ export function AccountsScreen() {
 
   return (
     <div className="anim-stagger flex flex-col gap-5">
-      <section>
-        <SectionHeader icon="bank" tone="success" title={t('knt.total')} />
-        {loaded ? (
-          <StatTile tone="success" icon="bank" label={t('knt.total')} value={fmt.currency(total)} />
-        ) : (
-          <SkeletonCard />
-        )}
-      </section>
+      <AppHeader
+        overline={t('app.name')}
+        title={t('nav.konten')}
+        trailing={
+          <button
+            type="button"
+            aria-label={t('knt.fetch')}
+            onClick={() => {
+              setFlash(importNow())
+              refresh()
+            }}
+            className="tap shadow-card flex h-11 w-11 items-center justify-center rounded-2xl bg-surface text-ink"
+          >
+            <Icon name="download" className="h-5 w-5" />
+          </button>
+        }
+      />
 
-      <section className="flex flex-col gap-2">
-        <SectionHeader
-          icon="bank"
-          title={t('set.bankGroup')}
-          action={
-            <button
-              type="button"
-              aria-label={t('knt.fetch')}
-              onClick={() => {
-                setFlash(importNow())
-                refresh()
-              }}
-              className="tap flex h-11 w-11 items-center justify-center rounded-2xl bg-chip text-ink"
-            >
-              <Icon name="download" className="h-5 w-5" />
-            </button>
-          }
-        />
-        {flash > 0 && (
-          <p className="num text-xs font-bold text-primary-deep">{t('tx.importedNew', { n: flash })}</p>
-        )}
+      {flash > 0 && (
+        <p className="num text-xs font-bold text-primary-deep">{t('tx.importedNew', { n: flash })}</p>
+      )}
+
+      {/* total hero */}
+      {loaded ? (
+        <section className="hero-gradient shadow-card screen-in rounded-[24px] p-5 text-white">
+          <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-white/70">{t('knt.total')}</p>
+          <p className="num mt-1 text-[30px] font-extrabold leading-[1.1] tracking-[-0.02em]">
+            {fmt.currency(total)}
+          </p>
+          {(bankRows.length > 0 || cashRows.length > 0) && (
+            <p className="num mt-2 text-xs font-medium text-white/70">
+              {t('knt.txCount', {
+                n: bankRows.reduce((s, r) => s + r.count, 0) + cashRows.length,
+              })}
+            </p>
+          )}
+        </section>
+      ) : (
+        <SkeletonCard />
+      )}
+
+      {/* accounts */}
+      <section className="flex flex-col gap-3">
+        <SectionHeader icon="bank" tone="success" title={t('set.bankGroup')} />
 
         {bankRows.length === 0 && cashRows.length === 0 ? (
           <Card>
-            <EmptyState icon="bank" text={t('knt.empty')} />
+            <EmptyState
+              icon="bank"
+              text={t('knt.empty')}
+              action={
+                <button type="button" onClick={() => setConnectOpen(true)} className="btn-primary mt-2">
+                  <Icon name="plus" className="h-4 w-4" />
+                  {t('knt.connect')}
+                </button>
+              }
+            />
           </Card>
         ) : (
           <>
             {bankRows.map(({ bank, count, balance, lastDate }) => (
               <Card key={bank.id} className="flex items-center gap-3 !p-4">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary-soft text-primary-deep">
-                  <Icon name="bank" className="h-5 w-5" />
-                </span>
+                <IconChip icon="bank" tone="success" />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-extrabold text-ink">{bank.name}</p>
-                  <p className="num text-xs text-ink-soft">
+                  <p className="text-sm font-extrabold leading-snug text-ink">{bank.name}</p>
+                  <p className="num t-caption truncate">
                     {t('knt.txCount', { n: count })}
                     {lastDate ? ` · ${fmt.date(new Date(lastDate))}` : ''}
                   </p>
                 </div>
                 <div className="flex shrink-0 flex-col items-end gap-1">
-                  <span className="num text-sm font-extrabold text-ink">{fmt.currency(balance)}</span>
+                  <span className="num text-sm font-extrabold leading-[1.1] text-ink">
+                    {fmt.currency(balance)}
+                  </span>
                   <button
                     type="button"
                     onClick={() => {
@@ -98,19 +130,18 @@ export function AccountsScreen() {
                     {t('set.disconnect')}
                   </button>
                 </div>
+                <Icon name="chevron" className="h-4 w-4 shrink-0 text-ink-soft" />
               </Card>
             ))}
 
             {cashRows.length > 0 && (
               <Card className="flex items-center gap-3 !p-4">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-amber-soft text-amber-600">
-                  <Icon name="hand" className="h-5 w-5" />
-                </span>
+                <IconChip icon="hand" tone="warn" />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-extrabold text-ink">{t('knt.cash')}</p>
-                  <p className="num text-xs text-ink-soft">{t('knt.txCount', { n: cashRows.length })}</p>
+                  <p className="text-sm font-extrabold leading-snug text-ink">{t('knt.cash')}</p>
+                  <p className="num t-caption truncate">{t('knt.txCount', { n: cashRows.length })}</p>
                 </div>
-                <span className="num shrink-0 text-sm font-extrabold text-ink">
+                <span className="num shrink-0 text-sm font-extrabold leading-[1.1] text-ink">
                   {fmt.currency(cashBalance)}
                 </span>
               </Card>
@@ -120,7 +151,7 @@ export function AccountsScreen() {
 
         <button type="button" onClick={() => setConnectOpen(true)} className="tap w-full text-start">
           <Card className="flex min-h-14 items-center gap-3 !p-4">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-chip text-ink">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-chip text-ink">
               <Icon name="plus" className="h-5 w-5" />
             </span>
             <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('knt.connect')}</span>
@@ -153,7 +184,7 @@ export function AccountsScreen() {
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-chip text-ink-soft">
                     <Icon name="bank" className="h-4 w-4" />
                   </span>
-                  <span className="flex-1 truncate text-sm font-bold text-ink">{b.name}</span>
+                  <span className="min-w-0 flex-1 text-sm font-bold text-ink">{b.name}</span>
                   {isConnected ? (
                     <Icon name="check" className="h-5 w-5 shrink-0 text-primary-deep" />
                   ) : (

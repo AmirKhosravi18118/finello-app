@@ -214,12 +214,14 @@ export function CalendarScreen() {
                         style={{ backgroundColor: CATEGORIES[p.categoryId].color }}
                       />
                       <div className="min-w-0">
-                        <p className="truncate text-sm font-bold text-ink">{p.title}</p>
-                        <p className="truncate text-xs text-ink-soft">{p.recipient}</p>
+                        <p className="text-sm font-bold leading-snug text-ink">{p.title}</p>
+                        <p className="t-caption">{p.recipient}</p>
                       </div>
                     </div>
                     <div className="flex shrink-0 flex-col items-end gap-1">
-                      <span className="num text-sm font-extrabold text-ink">{fmt.currency(p.amount)}</span>
+                      <span className="num text-sm font-extrabold leading-[1.1] text-ink">
+                        {fmt.currency(p.amount)}
+                      </span>
                       <Badge
                         tone={
                           isCurrentMonth ? STATUS_TONE[p.status] : monthOffset > 0 ? 'neutral' : 'success'

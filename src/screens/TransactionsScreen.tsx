@@ -6,6 +6,7 @@ import {
   Card,
   EmptyState,
   Icon,
+  IconChip,
   Pill,
   SectionHeader,
   SkeletonCard,
@@ -125,23 +126,25 @@ export function TransactionsScreen() {
             <Icon name="settings" className="h-5 w-5" />
           </button>
         }
+        below={
+          banks.length > 0 && filtersVisible ? (
+            /* filter chips sticky under the header (v3 §5) */
+            <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+              <Pill active={bankFilter === null} onClick={() => setBankFilter(null)}>
+                {t('common.all')}
+              </Pill>
+              {banks.map((b) => (
+                <Pill key={b.id} active={bankFilter === b.id} onClick={() => setBankFilter(b.id)}>
+                  <span className="flex items-center gap-1.5">
+                    <Icon name="bank" className="h-3.5 w-3.5" />
+                    {b.name}
+                  </span>
+                </Pill>
+              ))}
+            </div>
+          ) : undefined
+        }
       />
-
-      {banks.length > 0 && filtersVisible && (
-        <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
-          <Pill active={bankFilter === null} onClick={() => setBankFilter(null)}>
-            {t('common.all')}
-          </Pill>
-          {banks.map((b) => (
-            <Pill key={b.id} active={bankFilter === b.id} onClick={() => setBankFilter(b.id)}>
-              <span className="flex items-center gap-1.5">
-                <Icon name="bank" className="h-3.5 w-3.5" />
-                {b.name}
-              </span>
-            </Pill>
-          ))}
-        </div>
-      )}
 
       {/* stats: 3-tile grid */}
       {!loaded ? (
@@ -244,16 +247,13 @@ export function TransactionsScreen() {
               return (
                 <Card key={tx.id} className="tap !p-4" onClick={() => classified && setEditTx(tx)}>
                   <div className="flex items-center gap-3">
-                    <span
-                      className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${
-                        inflow ? 'bg-primary-soft text-primary-deep' : 'bg-chip text-ink-soft'
-                      }`}
-                    >
-                      <Icon name={tx.source === 'bank' ? 'bank' : 'hand'} className="h-5 w-5" />
-                    </span>
+                    <IconChip
+                      icon={tx.source === 'bank' ? 'bank' : 'hand'}
+                      tone={inflow ? 'success' : 'neutral'}
+                    />
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-bold text-ink">{tx.name}</p>
-                      <p className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-ink-soft">
+                      <p className="text-sm font-bold leading-snug text-ink">{tx.name}</p>
+                      <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs font-medium text-ink-soft">
                         <span>{fmt.date(new Date(tx.date))}</span>
                         {tx.source === 'manual' ? (
                           <Badge tone="neutral">
@@ -273,7 +273,7 @@ export function TransactionsScreen() {
                     </div>
                     <div className="flex shrink-0 flex-col items-end gap-1">
                       <span
-                        className={`num text-sm font-extrabold ${tx.amount < 0 ? 'text-ink' : 'text-primary-deep'}`}
+                        className={`num text-sm font-extrabold leading-[1.1] ${tx.amount < 0 ? 'text-ink' : 'text-primary-deep'}`}
                       >
                         {fmt.currency(tx.amount)}
                       </span>

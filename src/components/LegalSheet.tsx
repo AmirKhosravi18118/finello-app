@@ -15,8 +15,9 @@ export function LegalSheet({ docKey, onClose }: { docKey: LegalDocKey | null; on
       aria-modal="true"
     >
       <div className="flex max-h-[92dvh] w-full max-w-md flex-col overflow-hidden rounded-t-[28px] border border-line bg-surface shadow-card">
-        <div className="flex items-center justify-between border-b border-line px-5 py-4">
-          <h2 className="text-base font-extrabold text-ink">{doc.title}</h2>
+        <div className="grabber mt-3" aria-hidden="true" />
+        <div className="flex items-center justify-between px-5 py-3">
+          <h2 className="min-w-0 text-base font-extrabold text-ink">{doc.title}</h2>
           <button
             type="button"
             onClick={onClose}

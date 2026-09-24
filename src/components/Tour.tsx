@@ -64,10 +64,11 @@ export function Tour() {
       role="dialog"
       aria-modal="true"
     >
-      <div className="w-full max-w-md px-4 pb-8">
-        <div className="card hero-gradient !rounded-[28px] p-5 text-white">
+      <div className="sheet-in w-full max-w-md">
+        <div className="hero-gradient rounded-t-[28px] p-5 pb-8 text-white shadow-card">
+          <div className="grabber mb-4 !bg-white/30" aria-hidden="true" />
           <div className="flex items-center justify-between">
-            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15">
+            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/12 backdrop-blur-sm">
               <Icon name={s.icon} className="h-6 w-6" />
             </span>
             <div className="flex items-center gap-1.5">
@@ -82,7 +83,7 @@ export function Tour() {
             </div>
           </div>
           <h3 className="mt-4 text-lg font-extrabold">{t(s.titleKey)}</h3>
-          <p className="mt-1.5 text-sm leading-relaxed text-white/80">{t(s.descKey)}</p>
+          <p className="mt-1.5 text-sm font-[450] leading-[1.4] text-white/80">{t(s.descKey)}</p>
           <div className="mt-5 flex gap-3">
             <button
               type="button"

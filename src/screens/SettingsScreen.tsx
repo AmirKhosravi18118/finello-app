@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { useI18n, type Lang } from '../i18n/I18nContext'
-import { AppHeader, Badge, Card, Icon, Modal, Pill, type IconName } from '../components/ui'
+import { AppHeader, Badge, Card, Icon, IconChip, Modal, Pill, type IconName } from '../components/ui'
 import { requestTour } from '../components/Tour'
 import { useBankConnection, useLiveBankCatalog, isLive, type BankRef } from '../bank/bankConnection'
 import {
@@ -32,15 +32,7 @@ function GroupHeader({ label }: { label: string }) {
 }
 
 function IconBubble({ name, danger = false }: { name: IconName; danger?: boolean }) {
-  return (
-    <span
-      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl p-2.5 ${
-        danger ? 'bg-danger-soft text-danger' : 'bg-chip text-ink-soft'
-      }`}
-    >
-      <Icon name={name} className="h-full w-full" />
-    </span>
-  )
+  return <IconChip icon={name} tone={danger ? 'danger' : 'neutral'} />
 }
 
 function SelectPill({
@@ -146,7 +138,7 @@ export function SettingsScreen() {
             <Card className="flex min-h-14 items-center gap-3 !p-4">
               <IconBubble name="user" />
               <span className="flex-1 text-sm font-bold text-ink">{t('set.name')}</span>
-              <span className="max-w-[55%] truncate text-sm font-medium text-ink-soft">
+              <span className="max-w-[55%] text-end text-sm font-medium text-ink-soft">
                 {profile.name || '—'}
               </span>
               <Icon name="chevron" className="h-4 w-4 shrink-0 text-ink-soft" />
@@ -156,7 +148,7 @@ export function SettingsScreen() {
             <Card className="flex min-h-14 items-center gap-3 !p-4">
               <IconBubble name="receipt" />
               <span className="flex-1 text-sm font-bold text-ink">{t('set.email')}</span>
-              <span className="max-w-[55%] truncate text-sm font-medium text-ink-soft">
+              <span className="max-w-[55%] text-end text-sm font-medium text-ink-soft">
                 {profile.email || '—'}
               </span>
               <Icon name="chevron" className="h-4 w-4 shrink-0 text-ink-soft" />
@@ -165,7 +157,7 @@ export function SettingsScreen() {
           <Card className="flex min-h-14 items-center gap-3 !p-4">
             <IconBubble name="check" />
             <span className="flex-1 text-sm font-bold text-ink">{t('set.status')}</span>
-            <span className="max-w-[55%] truncate text-sm font-medium text-ink-soft">{profile.status}</span>
+            <span className="max-w-[55%] text-end text-sm font-medium text-ink-soft">{profile.status}</span>
           </Card>
         </div>
       </section>
@@ -190,7 +182,7 @@ export function SettingsScreen() {
         <GroupHeader label={t('set.notifGroup')} />
         <Card className="flex flex-col gap-3 !p-4">
           <div className="flex min-h-11 items-center gap-3">
-            <span className="min-w-0 flex-1 truncate text-sm font-bold text-ink">{t('notif.reminders')}</span>
+            <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('notif.reminders')}</span>
             {perm === 'granted' ? (
               <Badge tone="success">
                 <Icon name="check" className="h-3 w-3" />
@@ -296,7 +288,7 @@ export function SettingsScreen() {
           {banks.map((b) => (
             <Card key={b.id} className="flex min-h-14 items-center gap-3 !p-4">
               <IconBubble name="bank" />
-              <span className="min-w-0 flex-1 truncate text-sm font-bold text-ink">
+              <span className="min-w-0 flex-1 text-sm font-bold text-ink">
                 {t('set.connectedBank', { bank: b.name })}
               </span>
               <button

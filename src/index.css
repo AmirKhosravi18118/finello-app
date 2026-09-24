@@ -51,9 +51,12 @@ html {
 
 body {
   margin: 0;
-  background: linear-gradient(180deg, #f6f7fb 0%, #eef1f7 100%);
+  background: linear-gradient(180deg, #f7f8fc 0%, #eef1f7 100%);
   color: var(--color-ink);
   min-height: 100vh;
+  /* v3 typography: calm 1.4 body rhythm; German long words wrap instead of clipping */
+  line-height: 1.4;
+  overflow-wrap: break-word;
   transition:
     background 0.3s ease,
     color 0.3s ease;
@@ -64,20 +67,21 @@ html.dark body {
 }
 
 @layer components {
+  /* v3 «Edition Pro 2»: 24px cards, hairline border, refined dual-layer shadow */
   .card {
-    @apply rounded-[28px] bg-surface/90 backdrop-blur-sm border border-line;
+    @apply rounded-[24px] bg-surface/95 backdrop-blur-sm border border-line;
     box-shadow:
-      0 1px 2px rgba(16, 23, 38, 0.04),
-      0 16px 40px -16px rgba(16, 23, 38, 0.16);
+      0 1px 2px rgba(16, 23, 38, 0.05),
+      0 12px 32px -12px rgba(16, 23, 38, 0.14);
   }
-  /* identity gradient (DESIGN_SYSTEM_V2 §1) — hero card + onboarding + nav + calendar center day only */
+  /* identity gradient (v3: calmer navy → deep green, 135deg) — hero card + onboarding + nav + calendar center day only */
   .hero-gradient {
-    background: linear-gradient(135deg, #0e1b2c 0%, #123b2f 60%, #0f5132 100%);
+    background: linear-gradient(135deg, #0e1b2c 0%, #132e29 55%, #0e4730 100%);
   }
   .shadow-card {
     box-shadow:
-      0 1px 2px rgba(16, 23, 38, 0.04),
-      0 16px 40px -16px rgba(16, 23, 38, 0.16);
+      0 1px 2px rgba(16, 23, 38, 0.05),
+      0 12px 32px -12px rgba(16, 23, 38, 0.14);
   }
   .shadow-fab {
     box-shadow: 0 12px 28px -8px rgba(16, 185, 129, 0.55);
@@ -85,8 +89,21 @@ html.dark body {
   .eyebrow {
     @apply text-[10px] font-bold uppercase tracking-[0.12em] text-ink-soft;
   }
+  /* v3 strict type scale — display 28px/800 for hero numbers, 1.1 numeral leading */
+  .t-display {
+    @apply text-[28px] font-extrabold leading-[1.1] tracking-[-0.02em] text-ink;
+  }
+  .t-section {
+    @apply text-[15px] font-bold leading-snug text-ink;
+  }
+  .t-body {
+    @apply text-sm font-[450] leading-[1.4] text-ink;
+  }
+  .t-caption {
+    @apply text-xs font-medium leading-[1.4] text-ink-soft;
+  }
   .badge {
-    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold leading-none;
+    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.06em] leading-none;
   }
   .tap {
     @apply transition-transform duration-200 active:scale-[0.97] cursor-pointer select-none;
@@ -98,11 +115,15 @@ html.dark body {
     @apply w-full rounded-2xl border border-line bg-surface px-4 py-3 text-base font-medium text-ink outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/25 placeholder:text-ink-soft;
   }
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-bold text-white shadow-[0_10px_24px_-8px_rgba(16,185,129,0.6)] transition active:scale-[0.97] cursor-pointer;
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-bold text-white shadow-[0_10px_24px_-8px_rgba(16,185,129,0.6)] transition active:scale-[0.97] cursor-pointer;
     background: linear-gradient(135deg, #059669, #047857);
   }
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-2xl border border-line bg-surface px-5 py-3 text-sm font-bold text-ink transition active:scale-[0.97] cursor-pointer;
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-line bg-surface px-5 py-3 text-sm font-bold text-ink transition active:scale-[0.97] cursor-pointer;
+  }
+  /* sheet grabber handle (v3 §5 sheets) */
+  .grabber {
+    @apply mx-auto h-1.5 w-10 shrink-0 rounded-full bg-line;
   }
 }
 
