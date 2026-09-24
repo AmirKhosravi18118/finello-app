@@ -395,6 +395,56 @@ export function EmptyState({
   )
 }
 
+/* ---------- donut chart (Finanzguru-style analytics) ---------- */
+
+export function DonutChart({
+  segments,
+  size = 148,
+  centerLabel,
+  centerValue,
+}: {
+  segments: Array<{ color: string; value: number }>
+  size?: number
+  centerLabel?: string
+  centerValue?: string
+}) {
+  const total = segments.reduce((s, x) => s + x.value, 0) || 1
+  const r = size / 2 - 12
+  const c = 2 * Math.PI * r
+  let offset = 0
+  return (
+    <div className="relative inline-flex items-center justify-center">
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} role="img">
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--color-chip)" strokeWidth="16" />
+        {segments.map((seg, i) => {
+          const len = (seg.value / total) * c
+          const el = (
+            <circle
+              key={i}
+              cx={size / 2}
+              cy={size / 2}
+              r={r}
+              fill="none"
+              stroke={seg.color}
+              strokeWidth="16"
+              strokeDasharray={`${Math.max(0, len - 2)} ${c - Math.max(0, len - 2)}`}
+              strokeDashoffset={-offset}
+              strokeLinecap="round"
+              transform={`rotate(-90 ${size / 2} ${size / 2})`}
+            />
+          )
+          offset += len
+          return el
+        })}
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+        {centerValue && <p className="num text-base font-extrabold text-ink">{centerValue}</p>}
+        {centerLabel && <p className="text-[10px] font-bold text-ink-soft">{centerLabel}</p>}
+      </div>
+    </div>
+  )
+}
+
 /* ---------- modal ---------- */
 
 export function Modal({

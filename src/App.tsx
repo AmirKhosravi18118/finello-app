@@ -1,10 +1,11 @@
-import { useState, type JSX } from 'react'
+import { useEffect, useState, type JSX } from 'react'
 import type { TabId } from './data/demo'
 import { AppShell } from './components/AppShell'
 import { AuthScreen } from './auth/AuthScreen'
 import { HomeScreen } from './screens/HomeScreen'
 import { CalendarScreen } from './screens/CalendarScreen'
-import { ExpensesScreen } from './screens/ExpensesScreen'
+import { AnalysenScreen } from './screens/ExpensesScreen'
+import { AccountsScreen } from './screens/AccountsScreen'
 import { TransactionsScreen } from './screens/TransactionsScreen'
 import { TaxScreen } from './screens/TaxScreen'
 import { SettingsScreen } from './screens/SettingsScreen'
@@ -12,7 +13,8 @@ import { SettingsScreen } from './screens/SettingsScreen'
 const SCREENS: Record<TabId, () => JSX.Element> = {
   home: HomeScreen,
   calendar: CalendarScreen,
-  expenses: ExpensesScreen,
+  konten: AccountsScreen,
+  analysen: AnalysenScreen,
   transactions: TransactionsScreen,
   tax: TaxScreen,
   settings: SettingsScreen,
@@ -32,6 +34,12 @@ export default function App() {
     localStorage.setItem(TAB_KEY, t)
     setTab(t)
   }
+
+  useEffect(() => {
+    const handler = (e: Event) => changeTab((e as CustomEvent<TabId>).detail)
+    window.addEventListener('finello:goto', handler)
+    return () => window.removeEventListener('finello:goto', handler)
+  }, [])
 
   if (!onboarded) {
     return (

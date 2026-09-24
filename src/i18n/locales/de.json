@@ -8,7 +8,9 @@
     "expenses": "Ausgaben",
     "transactions": "Umsätze",
     "tax": "Steuer",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "konten": "Konten",
+    "analysen": "Analysen"
   },
   "status": {
     "upcoming": "Bevorstehend",
@@ -276,5 +278,14 @@
     "bankLater": "Später",
     "liveBadge": "Echte Verbindung",
     "demoBadge": "Demo-Modus"
+  },
+  "knt": {
+    "total": "Gesamtsaldo",
+    "cash": "Bargeld",
+    "lastImport": "Letzter Abruf",
+    "connect": "Bank verbinden",
+    "empty": "Noch keine Bank verbunden — verbinde deine erste Bank",
+    "fetch": "Von allen Banken abrufen",
+    "txCount": "{n} Umsätze"
   }
 }

@@ -1,6 +1,16 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { useI18n } from '../i18n/I18nContext'
-import { AppHeader, Badge, Card, EmptyState, Icon, Pill, SectionHeader, SkeletonCard } from '../components/ui'
+import {
+  AppHeader,
+  Badge,
+  Card,
+  DonutChart,
+  EmptyState,
+  Icon,
+  Pill,
+  SectionHeader,
+  SkeletonCard,
+} from '../components/ui'
 import { EditEntrySheet, type EntryDraft } from '../components/EditEntrySheet'
 import { AddMoneySheet } from '../components/AddMoneySheet'
 import { BY_CATEGORY, CATEGORIES, MONTH_TOTAL, SPLIT_MONTHS, demo } from '../data/demo'
@@ -29,7 +39,7 @@ function allExpenses(): Expense[] {
   return applyExpenseEdits([...demo.expenses, ...txExpenses])
 }
 
-export function ExpensesScreen() {
+export function AnalysenScreen() {
   const { t, fmt } = useI18n()
   const [editExp, setEditExp] = useState<Expense | null>(null)
   const [addOpen, setAddOpen] = useState(false)
@@ -84,7 +94,7 @@ export function ExpensesScreen() {
     <div className="flex flex-col gap-5">
       <AppHeader
         overline={fmt.month(new Date())}
-        title={t('nav.expenses')}
+        title={t('nav.analysen')}
         trailing={
           <button
             type="button"
@@ -107,6 +117,36 @@ export function ExpensesScreen() {
           {deltaText(curTotal, prevTotal)}
         </div>
       </section>
+
+      {/* donut: share of spend */}
+      {byCat.length > 0 && (
+        <Card className="flex items-center gap-5">
+          <DonutChart
+            segments={byCat.map(({ categoryId, total }) => ({
+              color: CATEGORIES[categoryId].color,
+              value: total,
+            }))}
+            centerValue={fmt.currency(curTotal)}
+            centerLabel={t('exp.monthTotal')}
+          />
+          <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+            {byCat.slice(0, 5).map(({ categoryId, total }) => (
+              <div key={categoryId} className="flex items-center justify-between gap-2 text-xs">
+                <span className="flex min-w-0 items-center gap-1.5 font-bold text-ink">
+                  <span
+                    className="h-2.5 w-2.5 shrink-0 rounded-full"
+                    style={{ backgroundColor: CATEGORIES[categoryId].color }}
+                  />
+                  <span className="truncate">{t(`cat.${categoryId}`)}</span>
+                </span>
+                <span className="num shrink-0 font-bold text-ink-soft">
+                  {curTotal > 0 ? Math.round((total / curTotal) * 100) : 0}%
+                </span>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
 
       {/* category chart */}
       <Card>

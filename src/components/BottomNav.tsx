@@ -5,8 +5,8 @@ import { Icon, type IconName } from './ui'
 
 const TABS: Array<{ id: TabId; key: string; icon: IconName }> = [
   { id: 'home', key: 'nav.home', icon: 'home' },
-  { id: 'calendar', key: 'nav.calendar', icon: 'calendar' },
-  { id: 'expenses', key: 'nav.expenses', icon: 'wallet' },
+  { id: 'konten', key: 'nav.konten', icon: 'bank' },
+  { id: 'analysen', key: 'nav.analysen', icon: 'wallet' },
   { id: 'transactions', key: 'nav.transactions', icon: 'receipt' },
   { id: 'tax', key: 'nav.tax', icon: 'tax' },
 ]

@@ -1,4 +1,4 @@
-export type TabId = 'home' | 'calendar' | 'expenses' | 'transactions' | 'tax' | 'settings'
+export type TabId = 'home' | 'calendar' | 'konten' | 'analysen' | 'transactions' | 'tax' | 'settings'
 export type PayStatus = 'upcoming' | 'today' | 'overdue' | 'paid'
 
 export interface Payment {

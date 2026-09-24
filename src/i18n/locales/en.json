@@ -8,7 +8,9 @@
     "expenses": "Expenses",
     "transactions": "Activity",
     "tax": "Tax",
-    "settings": "Settings"
+    "settings": "Settings",
+    "konten": "Accounts",
+    "analysen": "Analytics"
   },
   "status": {
     "upcoming": "Upcoming",
@@ -276,5 +278,14 @@
     "bankLater": "Later",
     "liveBadge": "Live connection",
     "demoBadge": "Demo mode"
+  },
+  "knt": {
+    "total": "Total balance",
+    "cash": "Cash",
+    "lastImport": "Last fetch",
+    "connect": "Connect new bank",
+    "empty": "No bank connected yet — connect your first bank",
+    "fetch": "Fetch from all banks",
+    "txCount": "{n} transactions"
   }
 }
