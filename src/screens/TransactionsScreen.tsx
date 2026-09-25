@@ -43,6 +43,7 @@ export function TransactionsScreen() {
     setCashOpen(true)
   }
   const [bankFilter, setBankFilter] = useState<string | null>(null)
+  const [query, setQuery] = useState('')
   const [, setVersion] = useState(0) // bump re-renders after persisted edits/cash changes
 
   // simulated fetch so skeleton states are actually visible
@@ -67,7 +68,9 @@ export function TransactionsScreen() {
 
   const all = visibleTransactions() as Array<Tx & { incomeType?: IncomeType; bankId?: string }>
   const bankName = (id?: string) => banks.find((b) => b.id === id)?.name ?? id ?? ''
-  const txs = bankFilter ? all.filter((tx) => tx.bankId === bankFilter) : all
+  const txs = (bankFilter ? all.filter((tx) => tx.bankId === bankFilter) : all).filter(
+    (tx) => query.trim() === '' || tx.name.toLowerCase().includes(query.trim().toLowerCase()),
+  )
   const uncategorizedCount = txs.filter((tx) =>
     tx.amount >= 0 ? tx.incomeType === undefined : tx.categoryId === null,
   ).length
@@ -227,6 +230,29 @@ export function TransactionsScreen() {
 
       {/* recent transactions */}
       <section>
+        <div className="relative">
+          <input
+            type="text"
+            className="field ps-11"
+            placeholder={t('tx.search')}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            aria-label={t('tx.search')}
+          />
+          <span className="pointer-events-none absolute inset-y-0 start-4 flex items-center text-ink-soft">
+            <svg
+              viewBox="0 0 24 24"
+              className="h-4.5 w-4.5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" />
+            </svg>
+          </span>
+        </div>
         <SectionHeader icon="receipt" title={t('tx.recent')} />
         {!loaded ? (
           <div className="flex flex-col gap-3">

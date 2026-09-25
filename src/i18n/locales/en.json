@@ -288,5 +288,11 @@
     "empty": "No bank connected yet — connect your first bank",
     "fetch": "Fetch from all banks",
     "txCount": "{n} transactions"
+  },
+  "ins": {
+    "title": "Monthly insight",
+    "topSpend": "Biggest spend: {cat}",
+    "vsPrev": "vs. last month: {delta}",
+    "noData": "Log expenses to see smart insights"
   }
 }

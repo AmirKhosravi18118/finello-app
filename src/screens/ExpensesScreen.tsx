@@ -7,6 +7,9 @@ import {
   DonutChart,
   EmptyState,
   Icon,
+  Modal,
+  Pill,
+  ProgressBar,
   SectionHeader,
   SkeletonCard,
 } from '../components/ui'
@@ -14,7 +17,7 @@ import { EditEntrySheet, type EntryDraft } from '../components/EditEntrySheet'
 import { AddMoneySheet } from '../components/AddMoneySheet'
 import { BY_CATEGORY, CATEGORIES, MONTH_TOTAL, SPLIT_MONTHS, demo } from '../data/demo'
 import type { Expense } from '../data/demo'
-import { applyExpenseEdits, saveTxEdit, tombstoneTx } from '../data/editStore'
+import { applyExpenseEdits, getBudgets, saveTxEdit, setBudget, tombstoneTx } from '../data/editStore'
 import { visibleTransactions } from '../data/incomeView'
 
 /** Whole-number percent for `diff` relative to `base` (no decimals; 0 or 100 when base is empty). */
@@ -49,7 +52,36 @@ export function AnalysenScreen() {
   const byCat = BY_CATEGORY(cur)
   const prevByCat = new Map(BY_CATEGORY(prev).map((row) => [row.categoryId, row.total]))
   const sorted = [...cur].sort((a, b) => b.date.localeCompare(a.date))
+  const now = new Date()
   const max = byCat[0]?.total ?? 0
+
+  // budgets (WP26)
+  const [budgets, setBudgetsState] = useState(() => getBudgets())
+  const [budgetOpen, setBudgetOpen] = useState(false)
+  const [budgetCat, setBudgetCat] = useState<string>('rent')
+  const [budgetAmt, setBudgetAmt] = useState('')
+  const saveBudgetEntry = () => {
+    if (Number(budgetAmt) > 0) {
+      setBudget(budgetCat as never, Number(budgetAmt))
+      setBudgetsState(getBudgets())
+    }
+    setBudgetOpen(false)
+    setBudgetAmt('')
+  }
+
+  // 6-month trend (WP26)
+  const trend = Array.from({ length: 6 }, (_, i) => {
+    const d = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1)
+    const total = demo.expenses
+      .concat()
+      .filter((e) => {
+        const ed = new Date(e.date)
+        return ed.getFullYear() === d.getFullYear() && ed.getMonth() === d.getMonth()
+      })
+      .reduce((sum, e) => sum + e.amount, 0)
+    return { label: fmt.weekday(d).slice(0, 2), total }
+  })
+  const trendMax = Math.max(...trend.map((x) => x.total), 1)
 
   // simulated fetch so skeleton states are actually visible
   const [loaded, setLoaded] = useState(false)
@@ -216,6 +248,93 @@ export function AnalysenScreen() {
 
       {/* list */}
       <section>
+        {/* budgets (WP26) */}
+        <Card>
+          <SectionHeader
+            icon="wallet"
+            tone="warn"
+            title={t('bud.title')}
+            action={
+              <button
+                type="button"
+                aria-label={t('bud.add')}
+                onClick={() => setBudgetOpen(true)}
+                className="tap flex h-11 w-11 items-center justify-center rounded-2xl bg-chip text-ink"
+              >
+                <Icon name="plus" className="h-4.5 w-4.5" />
+              </button>
+            }
+          />
+          {Object.entries(budgets).length === 0 ? (
+            <p className="py-3 text-center text-sm font-medium text-ink-soft">{t('bud.empty')}</p>
+          ) : (
+            <div className="flex flex-col gap-3">
+              {Object.entries(budgets).map(([cat, amt]) => {
+                const spent = byCat.find((x) => x.categoryId === cat)?.total ?? 0
+                const over = spent > (amt as number)
+                return (
+                  <div key={cat} className="flex flex-col gap-1">
+                    <div className="flex items-center justify-between gap-2 text-xs">
+                      <span className="flex items-center gap-1.5 font-bold text-ink">
+                        <span
+                          className="h-2.5 w-2.5 rounded-full"
+                          style={{ backgroundColor: CATEGORIES[cat as keyof typeof CATEGORIES].color }}
+                        />
+                        {t(`cat.${cat}`)}
+                      </span>
+                      <span className="num font-bold text-ink-soft">
+                        {fmt.currency(spent)} / {fmt.currency(amt as number)}
+                      </span>
+                    </div>
+                    <ProgressBar value={spent / (amt as number)} label={t(`cat.${cat}`)} />
+                    {over && (
+                      <p className="text-[10px] font-bold text-danger">
+                        {t('exp.more', {
+                          p: Math.round(((spent - (amt as number)) / (amt as number)) * 100),
+                        })}
+                      </p>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </Card>
+
+        {/* 6-month trend (WP26) */}
+        <Card>
+          <SectionHeader icon="receipt" tone="success" title={t('exp.comparePrev')} />
+          <svg viewBox="0 0 320 120" className="w-full" aria-hidden="true">
+            <line x1="0" y1="110.5" x2="320" y2="110.5" className="stroke-line" strokeWidth="1" />
+            {trend.map((m, i) => {
+              const slot = 320 / 6
+              const barW = Math.min(28, slot * 0.55)
+              const h = Math.max(4, (m.total / trendMax) * 96)
+              const x = i * slot + (slot - barW) / 2
+              return (
+                <g key={i}>
+                  <rect
+                    x={x}
+                    y={110 - h}
+                    width={barW}
+                    height={h}
+                    rx={Math.min(6, barW / 2)}
+                    className="fill-primary"
+                  />
+                  <text
+                    x={x + barW / 2}
+                    y={124}
+                    textAnchor="middle"
+                    className="fill-current text-[9px] font-bold text-ink-soft"
+                  >
+                    {m.label}
+                  </text>
+                </g>
+              )
+            })}
+          </svg>
+        </Card>
+
         <SectionHeader icon="receipt" title={t('exp.expensesList')} />
         {!loaded ? (
           <div className="flex flex-col gap-3">
@@ -291,6 +410,47 @@ export function AnalysenScreen() {
       />
 
       <AddMoneySheet open={addOpen} onClose={() => setAddOpen(false)} initialMode="expense" />
+
+      <Modal open={budgetOpen} onClose={() => setBudgetOpen(false)} title={t('bud.set')}>
+        <div className="flex flex-col gap-3">
+          <div>
+            <p className="mb-1.5 ps-1 text-xs font-bold text-ink-soft">{t('bud.category')}</p>
+            <div className="flex max-h-32 flex-wrap gap-2 overflow-y-auto">
+              {(Object.keys(CATEGORIES) as Array<keyof typeof CATEGORIES>).map((id) => (
+                <Pill key={id} active={budgetCat === id} onClick={() => setBudgetCat(id)}>
+                  {t(`cat.${id}`)}
+                </Pill>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label htmlFor="fin-budget-amt" className="mb-1 block ps-1 text-xs font-bold text-ink-soft">
+              {t('bud.amount')}
+            </label>
+            <input
+              id="fin-budget-amt"
+              type="text"
+              inputMode="numeric"
+              className="field num"
+              value={budgetAmt}
+              onChange={(e) => setBudgetAmt(e.target.value.replace(/[^0-9]/g, ''))}
+            />
+          </div>
+          <div className="mt-2 flex gap-3">
+            <button type="button" className="btn-ghost flex-1" onClick={() => setBudgetOpen(false)}>
+              {t('common.cancel')}
+            </button>
+            <button
+              type="button"
+              disabled={Number(budgetAmt) <= 0}
+              onClick={saveBudgetEntry}
+              className="btn-primary flex-1 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              {t('common.save')}
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   )
 }

@@ -198,6 +198,21 @@ export function removeTaxExtra(id: string, store: StorageLike = defaultStorage()
   store.setItem(TAX_KEY, JSON.stringify(getTaxExtras(store).filter((x) => x.id !== id)))
 }
 
+/* ---------- category budgets (WP26: competitive parity) ---------- */
+
+const BUDGETS_KEY = 'finello_budgets'
+
+export function getBudgets(store: StorageLike = defaultStorage()): Partial<Record<CategoryId, number>> {
+  return (readJson(store, BUDGETS_KEY) as Partial<Record<CategoryId, number>>) ?? {}
+}
+
+export function setBudget(cat: CategoryId, amount: number, store: StorageLike = defaultStorage()) {
+  const b = getBudgets(store)
+  if (amount > 0) b[cat] = amount
+  else delete b[cat]
+  store.setItem(BUDGETS_KEY, JSON.stringify(b))
+}
+
 /* ---------- salary override ---------- */
 
 export interface SalaryConfig {

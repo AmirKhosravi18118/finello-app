@@ -288,5 +288,11 @@
     "empty": "Noch keine Bank verbunden — verbinde deine erste Bank",
     "fetch": "Von allen Banken abrufen",
     "txCount": "{n} Umsätze"
+  },
+  "ins": {
+    "title": "Monats-Insight",
+    "topSpend": "Größte Ausgabe: {cat}",
+    "vsPrev": "vs. Vormonat: {delta}",
+    "noData": "Erfasse Ausgaben für smarte Insights"
   }
 }
