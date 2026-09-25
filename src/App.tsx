@@ -26,6 +26,9 @@ const ONBOARD_KEY = 'finello_onboarded'
 export default function App() {
   const [onboarded, setOnboarded] = useState(() => localStorage.getItem(ONBOARD_KEY) === '1')
   const [tab, setTab] = useState<TabId>(() => {
+    // showcase support: /?tab=konten deep-links a specific tab (mockups/portfolio)
+    const urlTab = new URLSearchParams(location.search).get('tab') as TabId | null
+    if (urlTab && urlTab in SCREENS) return urlTab
     const saved = localStorage.getItem(TAB_KEY) as TabId | null
     return saved && saved in SCREENS ? saved : 'home'
   })

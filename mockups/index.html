@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Finello — Showcase</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    font-family: Inter, system-ui, sans-serif;
+    background: radial-gradient(1200px 600px at 70% -10%, #123b2f 0%, #0b111d 55%), #0b111d;
+    color: #e9eef6; padding: 48px 24px; text-align: center;
+  }
+  h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.02em; }
+  h1 span { color: #10b981; }
+  p.sub { color: #93a5bd; max-width: 560px; margin: 14px auto 0; line-height: 1.6; }
+  .badge { display: inline-flex; gap: 8px; margin-top: 22px; flex-wrap: wrap; justify-content: center; }
+  .badge b { background: #1a2334; border: 1px solid #2b3850; color: #cfe0d8; font-size: 12px; font-weight: 600; padding: 7px 14px; border-radius: 999px; }
+  .grid { display: flex; flex-wrap: wrap; gap: 42px; justify-content: center; margin-top: 52px; }
+  .phone {
+    width: 300px; border-radius: 44px; padding: 10px;
+    background: linear-gradient(160deg, #2b3850, #101726);
+    box-shadow: 0 30px 70px -20px rgba(0,0,0,.75), inset 0 0 0 2px rgba(255,255,255,.08);
+  }
+  .screen { border-radius: 36px; overflow: hidden; background: #f6f7fb; height: 610px; }
+  .screen iframe { width: 100%; height: 100%; border: 0; }
+  .cap { margin-top: 16px; font-size: 13px; font-weight: 700; color: #93a5bd; letter-spacing: .04em; text-transform: uppercase; }
+  .cta { margin-top: 54px; }
+  .cta a {
+    display: inline-block; background: linear-gradient(135deg,#059669,#047857); color: #fff;
+    text-decoration: none; font-weight: 700; padding: 15px 34px; border-radius: 16px; font-size: 15px;
+    box-shadow: 0 12px 30px -10px rgba(16,185,129,.55);
+  }
+  footer { margin-top: 60px; color: #55647c; font-size: 12px; }
+  iframe { pointer-events: auto; }
+</style>
+</head>
+<body>
+  <h1>Meet <span>Finello</span></h1>
+  <p class="sub">Installments, expenses & German taxes — built for international students.
+     Trilingual (فارسی · Deutsch · English), privacy-first, your data never leaves your phone.</p>
+  <div class="badge">
+    <b>🇮🇷 فارسی RTL</b><b>🇩🇪 Deutsch</b><b>🇬🇧 English</b><b>Bank-ready (PSD2)</b><b>Dark mode</b><b>Offline PWA</b>
+  </div>
+
+  <div class="grid">
+    <div><div class="phone"><div class="screen"><iframe src="../?tab=home&demo=1" loading="lazy" title="Home"></iframe></div></div><div class="cap">Dashboard</div></div>
+    <div><div class="phone"><div class="screen"><iframe src="../?tab=konten&demo=1" loading="lazy" title="Konten"></iframe></div></div><div class="cap">Accounts & Banks</div></div>
+    <div><div class="phone"><div class="screen"><iframe src="../?tab=analysen&demo=1" loading="lazy" title="Analysen"></iframe></div></div><div class="cap">Analytics</div></div>
+    <div><div class="phone"><div class="screen"><iframe src="../?tab=transactions&demo=1" loading="lazy" title="Umsätze"></iframe></div></div><div class="cap">Transactions</div></div>
+    <div><div class="phone"><div class="screen"><iframe src="../?tab=tax&demo=1" loading="lazy" title="Steuer"></iframe></div></div><div class="cap">Tax Assistant</div></div>
+    <div><div class="phone"><div class="screen"><iframe src="../?tab=calendar&demo=1" loading="lazy" title="Kalender"></iframe></div></div><div class="cap">Payment Calendar</div></div>
+  </div>
+
+  <div class="cta"><a href="../">▶ Open the live app</a></div>
+  <footer>Finello — installment reminders · expenses · German tax prep · fa/de/en · local-first</footer>
+
+<script>
+  // seed demo data once so every iframe shows a rich, realistic state
+  try {
+    localStorage.setItem('finello_demo_data', '1');
+    localStorage.setItem('finello_account', JSON.stringify({ name: 'Sara Ahmadi', email: 'sara@finello.app', createdAt: new Date().toISOString(), setup: { marital: 'single', occupation: 'werkstudent', hours: 18, km: 8 } }));
+    localStorage.setItem('finello_onboarded', '1');
+    localStorage.setItem('finello_lang', 'de');
+    localStorage.setItem('finello_tour_seen', '1');
+    localStorage.setItem('finello_salary', JSON.stringify({ day: 15, amount: 850 }));
+    if (!localStorage.getItem('finello_banks')) localStorage.setItem('finello_banks', JSON.stringify([{ id: 'sparkasse', name: 'Sparkasse' }, { id: 'ing', name: 'ING' }]));
+    if (!localStorage.getItem('finello_budgets')) localStorage.setItem('finello_budgets', JSON.stringify({ groceries: 200, transport: 80, leisure: 60 }));
+  } catch (e) {}
+</script>
+</body>
+</html>
