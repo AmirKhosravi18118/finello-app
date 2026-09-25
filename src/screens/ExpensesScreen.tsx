@@ -262,7 +262,6 @@ export function AnalysenScreen() {
         open={editExp !== null}
         onClose={() => setEditExp(null)}
         title={t('exp.edit')}
-        allowCategoryClear={false}
         initial={
           editExp
             ? {

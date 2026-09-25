@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useI18n } from '../i18n/I18nContext'
-import { Icon, Modal, Pill } from './ui'
-import { CATEGORIES, type CategoryId } from '../data/demo'
-import { INCOME_TYPES, type IncomeType } from '../data/editStore'
-
-const CATEGORY_IDS = Object.keys(CATEGORIES) as CategoryId[]
+import { Icon, Modal } from './ui'
+import { CategoryGrid, IncomeTypeGrid } from './CategoryGrid'
+import type { CategoryId } from '../data/demo'
+import type { IncomeType } from '../data/editStore'
 
 export interface EntryDraft {
   name: string
@@ -21,7 +20,6 @@ export function EditEntrySheet({
   onClose,
   title,
   initial,
-  allowCategoryClear = true,
   showDelete = false,
   inflow = false,
   onSave,
@@ -32,7 +30,6 @@ export function EditEntrySheet({
   onClose: () => void
   title: string
   initial: EntryDraft
-  allowCategoryClear?: boolean
   showDelete?: boolean
   inflow?: boolean
   onSave: (draft: EntryDraft) => void
@@ -93,38 +90,12 @@ export function EditEntrySheet({
         {inflow ? (
           <div>
             <p className="mb-1.5 ps-1 text-xs font-bold text-ink-soft">{t('cash.incomeType')}</p>
-            <div className="flex max-h-36 flex-wrap gap-2 overflow-y-auto">
-              {INCOME_TYPES.map((id) => (
-                <Pill key={id} active={draft.incomeType === id} onClick={() => set({ incomeType: id })}>
-                  <span className="flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-primary" />
-                    {t(`inc.${id}`)}
-                  </span>
-                </Pill>
-              ))}
-            </div>
+            <IncomeTypeGrid value={draft.incomeType ?? null} onChange={(v) => set({ incomeType: v })} />
           </div>
         ) : (
           <div>
             <p className="mb-1.5 ps-1 text-xs font-bold text-ink-soft">{t('tx.assignCategory')}</p>
-            <div className="flex max-h-36 flex-wrap gap-2 overflow-y-auto">
-              {allowCategoryClear && (
-                <Pill active={draft.categoryId === null} onClick={() => set({ categoryId: null })}>
-                  —
-                </Pill>
-              )}
-              {CATEGORY_IDS.map((id) => (
-                <Pill key={id} active={draft.categoryId === id} onClick={() => set({ categoryId: id })}>
-                  <span className="flex items-center gap-1.5">
-                    <span
-                      className="h-2 w-2 rounded-full"
-                      style={{ backgroundColor: CATEGORIES[id].color }}
-                    />
-                    {t(`cat.${id}`)}
-                  </span>
-                </Pill>
-              ))}
-            </div>
+            <CategoryGrid value={draft.categoryId} onChange={(v) => set({ categoryId: v })} />
           </div>
         )}
 

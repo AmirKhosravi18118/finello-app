@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useI18n } from '../i18n/I18nContext'
-import { Icon, Modal, Pill } from './ui'
-import { CATEGORIES, type CategoryId } from '../data/demo'
+import { Icon, Modal } from './ui'
+import type { CategoryId } from '../data/demo'
+import { CategoryGrid, IncomeTypeGrid } from './CategoryGrid'
 
-const CATEGORY_IDS = Object.keys(CATEGORIES) as CategoryId[]
-import { INCOME_TYPES, addCashTx } from '../data/editStore'
+import { addCashTx } from '../data/editStore'
 import { todayLocalISO } from '../data/demo'
 
 /** Explicit money-entry sheet (WP9): clear expense/income toggle.
@@ -142,34 +142,13 @@ export function AddMoneySheet({
         {mode === 'income' && (
           <div>
             <p className="mb-1.5 ps-1 text-xs font-bold text-ink-soft">{t('cash.incomeType')}</p>
-            <div className="flex flex-wrap gap-2">
-              {INCOME_TYPES.map((id) => (
-                <Pill key={id} active={incomeType === id} onClick={() => setIncomeType(id)}>
-                  <span className="flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-primary" />
-                    {t(`inc.${id}`)}
-                  </span>
-                </Pill>
-              ))}
-            </div>
+            <IncomeTypeGrid value={incomeType as never} onChange={(v) => setIncomeType(v)} />
           </div>
         )}
         {mode === 'expense' && (
           <div>
             <p className="mb-1.5 ps-1 text-xs font-bold text-ink-soft">{t('tx.assignCategory')}</p>
-            <div className="flex max-h-32 flex-wrap gap-2 overflow-y-auto">
-              {CATEGORY_IDS.map((id) => (
-                <Pill key={id} active={categoryId === id} onClick={() => setCategoryId(id)}>
-                  <span className="flex items-center gap-1.5">
-                    <span
-                      className="h-2 w-2 rounded-full"
-                      style={{ backgroundColor: CATEGORIES[id].color }}
-                    />
-                    {t(`cat.${id}`)}
-                  </span>
-                </Pill>
-              ))}
-            </div>
+            <CategoryGrid value={categoryId} onChange={setCategoryId} />
           </div>
         )}
 
