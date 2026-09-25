@@ -245,7 +245,9 @@
     "s5t": "Stressfreie Steuern",
     "s5d": "Erfasse absetzbare Ausgaben laufend und sieh mit dem 8-Fragen-Check Klasse und Pflicht deiner Erklärung.",
     "s6t": "Alles in den Einstellungen",
-    "s6d": "Sprache, Erinnerungen, Bankverbindungen, Datenexport und diese Tour erneut — findest du hier."
+    "s6d": "Sprache, Erinnerungen, Bankverbindungen, Datenexport und diese Tour erneut — findest du hier.",
+    "knt": "Konten & Banken",
+    "kntd": "Saldo pro Bank, neue Bank verbinden und Umsätze abrufen — alles an einem Ort."
   },
   "qa": {
     "title": "Schnell hinzufügen",

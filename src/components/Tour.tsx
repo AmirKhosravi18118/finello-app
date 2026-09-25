@@ -13,7 +13,7 @@ interface TourStep {
 
 const STEPS: TourStep[] = [
   { icon: 'home', titleKey: 'tour.s1t', descKey: 'tour.s1d' },
-  { icon: 'calendar', titleKey: 'tour.s2t', descKey: 'tour.s2d' },
+  { icon: 'bank', titleKey: 'tour.knt', descKey: 'tour.kntd' },
   { icon: 'wallet', titleKey: 'tour.s3t', descKey: 'tour.s3d' },
   { icon: 'receipt', titleKey: 'tour.s4t', descKey: 'tour.s4d' },
   { icon: 'tax', titleKey: 'tour.s5t', descKey: 'tour.s5d' },

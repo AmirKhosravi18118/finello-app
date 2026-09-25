@@ -245,7 +245,9 @@
     "s5t": "Taxes without stress",
     "s5d": "Log deductible expenses all year and use the 8-question check for your class and filing status.",
     "s6t": "Everything in Settings",
-    "s6d": "Language, reminders, bank connections, data export and replaying this tour — all here."
+    "s6d": "Language, reminders, bank connections, data export and replaying this tour — all here.",
+    "knt": "Accounts & banks",
+    "kntd": "Per-bank balance, connect new banks and fetch transactions — all in one place."
   },
   "qa": {
     "title": "Quick add",
