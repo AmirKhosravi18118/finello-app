@@ -95,7 +95,8 @@
     "assignIncome": "Assign income type",
     "methodCash": "Cash",
     "methodCard": "Card",
-    "notifBody": "{n} new transactions from {bank} — categorize them"
+    "notifBody": "{n} new transactions from {bank} — categorize them",
+    "search": "Search transactions…"
   },
   "tax": {
     "year": "Year",
@@ -296,5 +297,14 @@
     "topSpend": "Biggest spend: {cat}",
     "vsPrev": "vs. last month: {delta}",
     "noData": "Log expenses to see smart insights"
+  },
+  "bud": {
+    "title": "Monthly budget",
+    "set": "Set budget",
+    "category": "Category",
+    "amount": "Amount (€)",
+    "empty": "Set category budgets to track your spending",
+    "spent": "spent",
+    "add": "Add budget"
   }
 }

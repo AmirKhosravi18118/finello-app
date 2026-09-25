@@ -95,7 +95,8 @@
     "assignIncome": "Einnahmeart wählen",
     "methodCash": "Bar",
     "methodCard": "Karte",
-    "notifBody": "{n} neue Transaktionen von {bank} — jetzt kategorisieren"
+    "notifBody": "{n} neue Transaktionen von {bank} — jetzt kategorisieren",
+    "search": "Umsätze suchen…"
   },
   "tax": {
     "year": "Jahr",
@@ -296,5 +297,14 @@
     "topSpend": "Größte Ausgabe: {cat}",
     "vsPrev": "vs. Vormonat: {delta}",
     "noData": "Erfasse Ausgaben für smarte Insights"
+  },
+  "bud": {
+    "title": "Monatsbudget",
+    "set": "Budget setzen",
+    "category": "Kategorie",
+    "amount": "Betrag (€)",
+    "empty": "Setze Budgets, um deine Ausgaben im Blick zu behalten",
+    "spent": "ausgegeben",
+    "add": "Budget hinzufügen"
   }
 }
