@@ -88,16 +88,24 @@ export function TransactionsScreen() {
   const saveEdit = (draft: EntryDraft) => {
     if (!editTx) return
     const inflow = editTx.amount >= 0
+    // keep the row kind: an outflow must stay negative, an inflow positive —
+    // otherwise a signed amount typed into the edit sheet silently turns an
+    // expense into an uncategorized income (bug found by CRIT-M4 E2E test)
     saveTxEdit(
       editTx.id,
       inflow
         ? {
             name: draft.name,
-            amount: draft.amount,
+            amount: Math.abs(draft.amount),
             date: draft.date,
             incomeType: draft.incomeType ?? 'other',
           }
-        : { name: draft.name, amount: draft.amount, date: draft.date, categoryId: draft.categoryId },
+        : {
+            name: draft.name,
+            amount: -Math.abs(draft.amount),
+            date: draft.date,
+            categoryId: draft.categoryId,
+          },
     )
     refresh()
   }

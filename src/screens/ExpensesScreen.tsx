@@ -149,7 +149,7 @@ export function AnalysenScreen() {
 
       {/* donut card + legend with % and amounts (Finanzguru-style analytics) */}
       {byCat.length > 0 && (
-        <Card className="flex flex-wrap items-center gap-5">
+        <Card className="flex flex-col items-center gap-4">
           <DonutChart
             segments={byCat.map(({ categoryId, total }) => ({
               color: CATEGORIES[categoryId].color,
@@ -393,9 +393,13 @@ export function AnalysenScreen() {
         }
         onSave={(draft: EntryDraft) => {
           if (!editExp) return
+          // tx-derived rows store negative amounts, demo expenses store positive
+          // magnitudes — keep each store's sign so an edit can't flip an expense
+          // into an income (bug found by CRIT-M4 E2E test)
+          const txDerived = editExp.id.startsWith('tx-')
           saveTxEdit(editExp.id, {
             name: draft.name,
-            amount: draft.amount,
+            amount: txDerived ? -Math.abs(draft.amount) : Math.abs(draft.amount),
             date: draft.date,
             categoryId: draft.categoryId ?? 'other',
           })
