@@ -34,7 +34,7 @@ export function CategoryGrid({
             >
               <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
             </span>
-            <span className="w-full truncate text-center text-[11px] font-bold leading-tight text-ink">
+            <span className="w-full text-center text-[11px] font-bold leading-tight text-ink [overflow-wrap:break-word]">
               {t(`cat.${id}`)}
             </span>
           </button>
@@ -70,7 +70,7 @@ export function IncomeTypeGrid({
             <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary-soft">
               <span className="h-2.5 w-2.5 rounded-full bg-primary" />
             </span>
-            <span className="w-full truncate text-center text-[11px] font-bold leading-tight text-ink">
+            <span className="w-full text-center text-[11px] font-bold leading-tight text-ink [overflow-wrap:break-word]">
               {t(`inc.${id}`)}
             </span>
           </button>

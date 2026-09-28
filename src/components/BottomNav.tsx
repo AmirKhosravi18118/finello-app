@@ -71,7 +71,7 @@ export function BottomNav({ tab, onTab }: { tab: TabId; onTab: (t: TabId) => voi
     <>
       {menuOpen && (
         <div
-          className="fixed inset-0 z-40 bg-navy/30 backdrop-blur-[2px]"
+          className="fixed inset-0 z-40 bg-navy/40 backdrop-blur-[2px]"
           onClick={() => setMenuOpen(false)}
         />
       )}
@@ -79,7 +79,7 @@ export function BottomNav({ tab, onTab }: { tab: TabId; onTab: (t: TabId) => voi
       {/* drop-up: vertical stack of three separate labeled circles above the + */}
       {menuOpen && (
         <div
-          className="fixed bottom-[10.75rem] z-50 flex flex-col items-center gap-4"
+          className="fixed bottom-[12.25rem] z-50 flex flex-col items-center gap-4"
           style={{ insetInlineEnd: '1.25rem' }}
         >
           {QUICK_ACTIONS.map(({ detail, labelKey, icon, circle, rotate }, i) => (
