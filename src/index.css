@@ -10,6 +10,7 @@
   --color-primary-deep: #059669;
   --color-primary-soft: #d1fae5;
   --color-amber-soft: #fef3c7;
+  --color-amber-700: #b45309;
   --color-danger: #dc2626;
   --color-danger-soft: #fee2e2;
   --color-canvas: #f2f4f9;
@@ -20,6 +21,10 @@
 }
 
 /* dark theme: token overrides — every existing utility class adapts */
+html:not(.dark) {
+  --color-primary-deep: #047857;
+}
+
 html.dark {
   --color-ink: #e9eef6;
   --color-ink-soft: #93a5bd;
@@ -46,6 +51,11 @@ html[lang='fa'] {
 
 html {
   font-family: var(--font-sans);
+}
+html[lang='fa'] .tracking-fa-safe {
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -116,7 +126,7 @@ html.dark body {
   }
   .btn-primary {
     @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-bold text-white shadow-[0_10px_24px_-8px_rgba(16,185,129,0.6)] transition active:scale-[0.97] cursor-pointer;
-    background: linear-gradient(135deg, #059669, #047857);
+    background: linear-gradient(135deg, #047857, #065f46);
   }
   .btn-ghost {
     @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-line bg-surface px-5 py-3 text-sm font-bold text-ink transition active:scale-[0.97] cursor-pointer;

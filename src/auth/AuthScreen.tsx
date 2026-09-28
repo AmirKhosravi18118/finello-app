@@ -331,7 +331,7 @@ export function AuthScreen({ onDone }: { onDone: () => void }) {
       {existing && mode !== 'login' && (
         <button
           type="button"
-          className="tap mt-4 text-sm font-bold text-primary-deep"
+          className="tap mt-4 inline-flex min-h-11 items-center text-sm font-bold text-primary-deep"
           onClick={() => setMode('login')}
         >
           {t('auth.haveAccount')} {t('auth.login')}

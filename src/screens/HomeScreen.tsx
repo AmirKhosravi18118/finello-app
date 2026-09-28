@@ -101,7 +101,7 @@ export function HomeScreen() {
       {/* gradient hero (v3): greeting small → balance HUGE → surplus badge inline → glass chips */}
       <section className="hero-gradient shadow-card screen-in rounded-[24px] p-5 text-white">
         <div className="flex items-center justify-between gap-2">
-          <p className="min-w-0 text-[11px] font-bold uppercase tracking-[0.12em] text-white/70">
+          <p className="min-w-0 text-[11px] font-bold uppercase tracking-[0.12em] tracking-fa-safe text-white/70">
             {profile.name ? t('home.greeting', { name: profile.name }) : t('home.guest')}
           </p>
           {profile.status && (
@@ -147,7 +147,7 @@ export function HomeScreen() {
           <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1">
             {money.incomeByType.map(({ type, total }) => (
               <span key={type} className="flex items-center gap-1.5 text-[11px] font-medium text-white/70">
-                <span className="h-2 w-2 rounded-full bg-primary" />
+                <span className="h-2 w-2 rounded-full bg-[#6ee7b7]" />
                 {t(`inc.${type}`)}
                 <span className="num font-bold">{fmt.currency(total)}</span>
               </span>

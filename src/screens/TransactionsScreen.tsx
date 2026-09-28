@@ -333,7 +333,7 @@ export function TransactionsScreen() {
                             e.stopPropagation()
                             setExpandedId(open ? null : tx.id)
                           }}
-                          className="tap flex min-h-11 items-center rounded-xl px-2 text-xs font-bold text-primary-deep"
+                          className="tap flex min-h-11 items-center rounded-2xl px-2 text-xs font-bold text-primary-deep"
                         >
                           {inflow ? t('tx.assignIncome') : t('tx.assignCategory')}
                         </button>
@@ -382,7 +382,7 @@ export function TransactionsScreen() {
                           e.stopPropagation()
                           setEditTx(tx)
                         }}
-                        className="tap flex min-h-11 items-center rounded-xl px-2 text-xs font-bold text-ink-soft underline"
+                        className="tap flex min-h-11 items-center rounded-2xl px-2 text-xs font-bold text-ink-soft underline"
                       >
                         {t('common.edit')}
                       </button>

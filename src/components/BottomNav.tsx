@@ -133,10 +133,13 @@ export function BottomNav({ tab, onTab }: { tab: TabId; onTab: (t: TabId) => voi
                 active ? 'bg-primary/15' : ''
               }`}
             >
-              <Icon name={icon} className={`h-5 w-5 ${active ? 'text-primary' : 'text-ink-soft'}`} />
+              <Icon
+                name={icon}
+                className={`h-5 w-5 ${active ? 'text-[#047857] dark:text-primary' : 'text-white/65'}`}
+              />
               <span
                 className={`max-w-full truncate text-[10px] leading-none ${
-                  active ? 'font-bold text-primary' : 'font-medium text-ink-soft'
+                  active ? 'font-bold text-[#047857] dark:text-primary' : 'font-medium text-white/65'
                 }`}
               >
                 {t(key)}

@@ -184,7 +184,7 @@ export function TaxScreen() {
                             removeTaxExtra(it.id)
                             setExtras(getTaxExtras())
                           }}
-                          className="tap flex h-9 w-9 items-center justify-center rounded-xl text-danger"
+                          className="tap flex h-11 w-11 items-center justify-center rounded-2xl text-danger"
                         >
                           <Icon name="trash" className="h-4 w-4" />
                         </button>

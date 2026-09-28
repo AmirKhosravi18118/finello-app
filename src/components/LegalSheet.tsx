@@ -41,7 +41,7 @@ export function LegalSheet({ docKey, onClose }: { docKey: LegalDocKey | null; on
             <section key={sec.heading} className="mb-4">
               <h3 className="mb-1.5 text-sm font-extrabold text-ink">{sec.heading}</h3>
               {sec.paragraphs.map((p, i) => (
-                <p key={i} className="mb-2 text-[13px] leading-relaxed text-ink-soft" dir="auto">
+                <p key={i} className="mb-2 text-sm leading-relaxed text-ink-soft" dir="auto">
                   {p}
                 </p>
               ))}

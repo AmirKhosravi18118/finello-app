@@ -136,7 +136,7 @@ export function AccountsScreen() {
                       disconnect(bank.id)
                       refresh()
                     }}
-                    className="tap text-[11px] font-bold text-danger"
+                    className="tap inline-flex min-h-11 items-center px-2 text-[11px] font-bold text-danger"
                   >
                     {t('set.disconnect')}
                   </button>
@@ -192,7 +192,7 @@ export function AccountsScreen() {
                     pickedBank?.id === b.id ? 'ring-2 ring-primary' : ''
                   }`}
                 >
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-chip text-ink-soft">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-chip text-ink-soft">
                     <Icon name="bank" className="h-4 w-4" />
                   </span>
                   <span className="min-w-0 flex-1 text-sm font-bold text-ink">{b.name}</span>

@@ -14,7 +14,7 @@ export type Tone = 'success' | 'warn' | 'danger' | 'neutral'
 
 const TONE_CLASS: Record<Tone, string> = {
   success: 'bg-primary-soft text-primary-deep',
-  warn: 'bg-amber-soft text-amber-600',
+  warn: 'bg-amber-soft text-amber-800 dark:text-amber-500',
   danger: 'bg-danger-soft text-danger',
   neutral: 'bg-chip text-ink-soft',
 }

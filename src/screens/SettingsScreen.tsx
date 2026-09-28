@@ -189,7 +189,7 @@ export function SettingsScreen() {
             ) : (
               <button
                 type="button"
-                className="tap flex min-h-11 shrink-0 items-center rounded-xl px-3 text-xs font-bold text-primary-deep"
+                className="tap flex min-h-11 shrink-0 items-center rounded-2xl px-3 text-xs font-bold text-primary-deep"
                 onClick={async () => {
                   const p = await requestPermission()
                   setPerm(p)
@@ -218,7 +218,7 @@ export function SettingsScreen() {
               <p className="text-[11px] leading-relaxed text-ink-soft">{t('notif.dailyNote')}</p>
               <button
                 type="button"
-                className="tap shrink-0 rounded-xl border border-line px-2.5 py-2 text-[11px] font-bold text-ink-soft"
+                className="tap shrink-0 rounded-2xl border border-line px-2.5 py-2 text-[11px] font-bold text-ink-soft"
                 onClick={async () => {
                   const ok = await sendTestNotification()
                   if (ok) setFlash(t('notif.testSent'))
@@ -271,7 +271,7 @@ export function SettingsScreen() {
                 type="button"
                 onClick={() => disconnect(b.id)}
                 aria-label={t('set.disconnect')}
-                className="tap flex min-h-11 shrink-0 items-center gap-1.5 rounded-xl px-2 text-xs font-bold text-danger"
+                className="tap flex min-h-11 shrink-0 items-center gap-1.5 rounded-2xl px-2 text-xs font-bold text-danger"
               >
                 <Icon name="trash" className="h-4 w-4" />
                 {t('set.disconnect')}

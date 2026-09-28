@@ -170,7 +170,7 @@ export function CalendarScreen() {
                 key={d}
                 type="button"
                 onClick={() => setSelected(d)}
-                className={`tap flex min-h-11 flex-col items-center justify-center gap-1 rounded-xl py-1 ${
+                className={`tap flex min-h-11 flex-col items-center justify-center gap-1 rounded-2xl py-1 ${
                   isCurrentMonth && todayNum === d ? 'ring-2 ring-primary' : ''
                 } ${selected === d ? 'bg-navy text-white shadow-md' : ''}`}
               >
