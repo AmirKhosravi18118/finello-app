@@ -51,12 +51,12 @@ html[lang='fa'] {
 
 html {
   font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
 }
+
 html[lang='fa'] .tracking-fa-safe {
   letter-spacing: 0 !important;
   text-transform: none !important;
-}
-  -webkit-tap-highlight-color: transparent;
 }
 
 body {
