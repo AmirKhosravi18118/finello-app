@@ -64,7 +64,7 @@ export function AppShell({
         </div>
       </header>
 
-      <main key={tab} className="screen-in pb-36">
+      <main key={tab} className="screen-in pb-52">
         {children}
       </main>
 

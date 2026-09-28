@@ -80,7 +80,7 @@ export function BottomNav({ tab, onTab }: { tab: TabId; onTab: (t: TabId) => voi
       {menuOpen && (
         <div
           className="fixed bottom-[12.25rem] z-50 flex flex-col items-center gap-4"
-          style={{ insetInlineEnd: '1.25rem' }}
+          style={{ insetInlineEnd: 'max(1.25rem, calc(50vw - 13.25rem))' }}
         >
           {QUICK_ACTIONS.map(({ detail, labelKey, icon, circle, rotate }, i) => (
             <button
@@ -113,7 +113,7 @@ export function BottomNav({ tab, onTab }: { tab: TabId; onTab: (t: TabId) => voi
           menuOpen ? 'rotate-45' : ''
         } ${sheetOpen ? 'pointer-events-none translate-y-8 scale-50' : ''}`}
         style={{
-          insetInlineEnd: '1.25rem',
+          insetInlineEnd: 'max(1.25rem, calc(50vw - 13.25rem))',
           opacity: sheetOpen ? 0 : 1,
         }}
       >
