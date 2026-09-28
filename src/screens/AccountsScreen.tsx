@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useI18n } from '../i18n/I18nContext'
 import {
   AppHeader,
@@ -39,10 +39,10 @@ export function AccountsScreen() {
 
   // simulated fetch for skeletons
   const [loaded, setLoaded] = useState(false)
-  useState(() => {
-    window.setTimeout(() => setLoaded(true), 350)
-    return null
-  })
+  useEffect(() => {
+    const id = window.setTimeout(() => setLoaded(true), 350)
+    return () => window.clearTimeout(id)
+  }, [])
 
   return (
     <div className="anim-stagger flex flex-col gap-5">

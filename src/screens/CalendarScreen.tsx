@@ -121,7 +121,7 @@ export function CalendarScreen() {
               className={`tap flex min-h-16 flex-col items-center justify-center gap-0.5 rounded-2xl px-0.5 py-1.5 ${
                 isCenter
                   ? 'hero-gradient shadow-card text-white'
-                  : `border border-line bg-surface text-ink ${todayNum === d ? 'ring-2 ring-primary' : ''}`
+                  : `border border-line bg-surface text-ink ${isCurrentMonth && todayNum === d ? 'ring-2 ring-primary' : ''}`
               }`}
             >
               <span
@@ -171,7 +171,7 @@ export function CalendarScreen() {
                 type="button"
                 onClick={() => setSelected(d)}
                 className={`tap flex min-h-11 flex-col items-center justify-center gap-1 rounded-xl py-1 ${
-                  todayNum === d ? 'ring-2 ring-primary' : ''
+                  isCurrentMonth && todayNum === d ? 'ring-2 ring-primary' : ''
                 } ${selected === d ? 'bg-navy text-white shadow-md' : ''}`}
               >
                 <span className="num text-xs font-bold">{fmt.num(d)}</span>

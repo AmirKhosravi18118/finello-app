@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { useI18n, type Lang } from '../i18n/I18nContext'
 import { AppHeader, Badge, Card, Icon, IconChip, Modal, Pill, type IconName } from '../components/ui'
 import { requestTour } from '../components/Tour'
@@ -73,11 +73,14 @@ export function SettingsScreen() {
     return NOTIFY_OPTIONS.includes(saved) ? saved : DEFAULT_NOTIFY
   })
   const [wipeOpen, setWipeOpen] = useState(false)
-  const [bankOpen, setBankOpen] = useState(() => {
-    const flag = localStorage.getItem('finello_open_bank') === '1'
-    if (flag) localStorage.removeItem('finello_open_bank')
-    return flag
-  })
+  const [bankOpen, setBankOpen] = useState(() => localStorage.getItem('finello_open_bank') === '1')
+  // consume the auth "connect bank now" deep-link flag outside render
+  useEffect(() => {
+    if (localStorage.getItem('finello_open_bank') === '1') {
+      localStorage.removeItem('finello_open_bank')
+      setBankOpen(true)
+    }
+  }, [])
   const [pickedBank, setPickedBank] = useState<BankRef | null>(null)
 
   const selectNotify = (d: number) => {
