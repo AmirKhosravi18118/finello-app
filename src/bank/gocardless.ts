@@ -13,9 +13,11 @@ import type { BankProvider, BankRef, BankTransaction } from './bankProvider'
 /** Live provider is async at the edges; the sync-shaped adapter interface
  *  stays for the mock — this partial is used only via bankConnection helpers. */
 export interface LiveBankProvider extends Omit<BankProvider, 'listBanks' | 'importTransactions'> {
-  listBanks(): Promise<BankRef[]>
+  listBanks(query?: string, country?: string): Promise<BankRef[]>
   importTransactions(bankId: string, sinceDays: number): Promise<BankTransaction[]>
   startConsent(bankId: string, redirectUrl: string): Promise<{ link: string; id: string }>
+  /** Poll a requisition until the bank consent completes. */
+  pollRequisition(requisitionId: string, timeoutMs?: number): Promise<boolean>
 }
 
 const PROXY_BASE = (import.meta.env.VITE_BANK_API as string | undefined) ?? '/api/gocardless'
@@ -37,8 +39,10 @@ async function api<T>(path: string, init?: RequestInit): Promise<T> {
 export const gocardlessProvider: LiveBankProvider = {
   id: 'gocardless',
 
-  async listBanks(): Promise<BankRef[]> {
-    const rows = await api<Array<{ id: string; name: string }>>(`/institutions/?country=DE`)
+  async listBanks(query?: string, country?: string): Promise<BankRef[]> {
+    const rows = await api<Array<{ id: string; name: string }>>(
+      `/institutions/?country=${country ?? 'de'}${query ? `&search=${encodeURIComponent(query)}` : ''}`,
+    )
     return rows.map((r) => ({ id: r.id, name: r.name }))
   },
 
@@ -50,6 +54,18 @@ export const gocardlessProvider: LiveBankProvider = {
       body: JSON.stringify({ institution_id: bankId, redirect: redirectUrl }),
     })
     return { link: r.link, id: r.id }
+  },
+
+  /** Poll the requisition until the bank links accounts (consent done) or timeout. */
+  async pollRequisition(requisitionId: string, timeoutMs = 30000): Promise<boolean> {
+    const deadline = Date.now() + timeoutMs
+    while (Date.now() < deadline) {
+      const r = await api<{ status: string; accounts: string[] }>(`/requisitions/${requisitionId}/`)
+      if (r.status === 'LN' && r.accounts.length > 0) return true
+      if (r.status === 'RJ' || r.status === 'EX') return false
+      await new Promise((res) => setTimeout(res, 1500))
+    }
+    return false
   },
 
   async importTransactions(bankId: string, _sinceDays: number): Promise<BankTransaction[]> {

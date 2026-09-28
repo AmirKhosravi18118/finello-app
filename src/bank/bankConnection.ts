@@ -121,16 +121,29 @@ export function useLiveBankCatalog(): BankRef[] {
   return catalog
 }
 
+/** Live per-bank fetch: resolves the real institution id for each connected
+ *  bank via the catalog, then pulls transactions for that institution. */
 export async function importLiveTransactions(): Promise<number> {
   if (!isLive()) return 0
   const existing = getImportedTx()
   const existingIds = new Set(existing.map((t) => t.id))
-  const rows = await gocardlessProvider.importTransactions('', 90)
-  const fresh: BankTx[] = rows
-    .filter((r) => !existingIds.has(r.id))
-    .map((r) => ({ ...r, source: 'bank', categoryId: null, bankId: 'live' }))
-  if (fresh.length) writeImported([...fresh, ...existing])
-  return fresh.length
+  let added = 0
+  for (const bank of getConnectedBanks()) {
+    try {
+      const rows = await gocardlessProvider.importTransactions(bank.id, 90)
+      const fresh: BankTx[] = rows
+        .filter((r) => !existingIds.has(r.id))
+        .map((r) => ({ ...r, source: 'bank', categoryId: null, bankId: bank.id }))
+      if (fresh.length) {
+        writeImported([...fresh, ...existing])
+        existing.push(...fresh)
+        added += fresh.length
+      }
+    } catch {
+      // one bank failing must not block the others
+    }
+  }
+  return added
 }
 
 /** Persist a live consent result (called after bank redirect back into app). */
