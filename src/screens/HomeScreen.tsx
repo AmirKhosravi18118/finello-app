@@ -19,6 +19,7 @@ import { AddMoneySheet } from '../components/AddMoneySheet'
 import { CATEGORIES, demo, type Payment } from '../data/demo'
 import type { PayStatus } from '../data/demo'
 import { getSalary, setSalary } from '../data/editStore'
+import { registerReminders } from '../notifications/push'
 import { allPayments, nearestPayments } from '../data/paymentsView'
 import { monthMoney, visibleTransactions } from '../data/incomeView'
 import { userProfile } from '../auth/account'
@@ -70,6 +71,25 @@ export function HomeScreen() {
     diff === 0 ? t('home.paydayToday') : fmt.num(diff > 0 ? diff : daysInMonth - dayNow + salary.day)
 
   const payments = allPayments()
+
+  // keep the closed-app push server in sync with upcoming payments (WP29)
+  useEffect(() => {
+    const window = 30
+    const today = new Date().getDate()
+    const items = payments
+      .filter((p) => {
+        const diff = p.dayOfMonth - today
+        return diff >= 0 && diff <= window
+      })
+      .map((p) => ({
+        title: p.title,
+        body: `${p.recipient} · ${p.amount} EUR`,
+        when: new Date(new Date().getFullYear(), new Date().getMonth(), p.dayOfMonth)
+          .toISOString()
+          .slice(0, 10),
+      }))
+    void registerReminders(items)
+  }, [payments.length])
   const nextPayments = nearestPayments(payments, 3)
   const money = monthMoney(visibleTransactions())
   const profile = userProfile()

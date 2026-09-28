@@ -9,6 +9,7 @@ import {
   sendTestNotification,
   type PermState,
 } from '../notifications/reminders'
+import { enablePush } from '../notifications/push'
 import { getTheme, setTheme, type Theme } from '../theme/theme'
 import { LegalSheet } from '../components/LegalSheet'
 import type { LegalDocKey } from '../legal/legalContent'
@@ -192,7 +193,10 @@ export function SettingsScreen() {
                 onClick={async () => {
                   const p = await requestPermission()
                   setPerm(p)
-                  if (p === 'granted') await sendTestNotification()
+                  if (p === 'granted') {
+                    await enablePush()
+                    await sendTestNotification()
+                  }
                 }}
               >
                 {t('notif.enable')}
