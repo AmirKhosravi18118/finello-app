@@ -198,6 +198,30 @@ export function removeTaxExtra(id: string, store: StorageLike = defaultStorage()
   store.setItem(TAX_KEY, JSON.stringify(getTaxExtras(store).filter((x) => x.id !== id)))
 }
 
+/* ---------- custom categories (WP31: user-defined) ---------- */
+
+const CUSTOM_KEY = 'finello_custom_cats'
+
+export interface CustomCat {
+  id: string
+  label: string
+}
+
+export function getCustomCats(store: StorageLike = defaultStorage()): CustomCat[] {
+  return (readJson(store, CUSTOM_KEY) as CustomCat[]) ?? []
+}
+
+export function addCustomCat(label: string, store: StorageLike = defaultStorage()): CustomCat {
+  const list = getCustomCats(store)
+  const cat: CustomCat = { id: `c-${Date.now()}-${list.length}`, label: label.trim() }
+  store.setItem(CUSTOM_KEY, JSON.stringify([...list, cat]))
+  return cat
+}
+
+export function removeCustomCat(id: string, store: StorageLike = defaultStorage()) {
+  store.setItem(CUSTOM_KEY, JSON.stringify(getCustomCats(store).filter((c) => c.id !== id)))
+}
+
 /* ---------- category budgets (WP26: competitive parity) ---------- */
 
 const BUDGETS_KEY = 'finello_budgets'

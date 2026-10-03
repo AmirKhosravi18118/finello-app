@@ -21,6 +21,7 @@ import type { IncomeType } from '../data/editStore'
 import { useBankConnection } from '../bank/bankConnection'
 import { INCOME_TYPES, removeCashTx, saveTxEdit, tombstoneTx } from '../data/editStore'
 import { visibleTransactions } from '../data/incomeView'
+import { SwipeRow } from '../components/SwipeRow'
 import { notifyNewTransactions } from '../notifications/reminders'
 import { todayLocalISO } from '../data/demo'
 
@@ -279,116 +280,126 @@ export function TransactionsScreen() {
               const classified = inflow ? tx.incomeType !== undefined : tx.categoryId !== null
               const open = expandedId === tx.id && !classified
               return (
-                <Card key={tx.id} className="tap !p-4" onClick={() => classified && setEditTx(tx)}>
-                  <div className="flex items-center gap-3">
-                    <IconChip
-                      icon={tx.source === 'bank' ? 'bank' : 'hand'}
-                      tone={inflow ? 'success' : 'neutral'}
-                    />
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-bold leading-snug text-ink">{tx.name}</p>
-                      <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs font-medium text-ink-soft">
-                        <span>{fmt.date(new Date(tx.date))}</span>
-                        {tx.source === 'manual' ? (
-                          <Badge tone="neutral">
-                            <Icon name="hand" className="h-3 w-3" />
-                            {t('tx.methodCash')}
-                          </Badge>
+                <SwipeRow
+                  key={tx.id}
+                  onEdit={() => setEditTx(tx)}
+                  onDelete={() => {
+                    if (tx.id.startsWith('cash-')) removeCashTx(tx.id)
+                    else tombstoneTx(tx.id)
+                    refresh()
+                  }}
+                >
+                  <Card className="tap !p-4" onClick={() => classified && setEditTx(tx)}>
+                    <div className="flex items-center gap-3">
+                      <IconChip
+                        icon={tx.source === 'bank' ? 'bank' : 'hand'}
+                        tone={inflow ? 'success' : 'neutral'}
+                      />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-bold leading-snug text-ink">{tx.name}</p>
+                        <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs font-medium text-ink-soft">
+                          <span>{fmt.date(new Date(tx.date))}</span>
+                          {tx.source === 'manual' ? (
+                            <Badge tone="neutral">
+                              <Icon name="hand" className="h-3 w-3" />
+                              {t('tx.methodCash')}
+                            </Badge>
+                          ) : (
+                            <Badge tone="neutral">
+                              <Icon name="bank" className="h-3 w-3" />
+                              {t('tx.methodCard')}
+                              {tx.bankId && bankName(tx.bankId) !== tx.bankId
+                                ? ` · ${bankName(tx.bankId)}`
+                                : ''}
+                            </Badge>
+                          )}
+                        </p>
+                      </div>
+                      <div className="flex shrink-0 flex-col items-end gap-1">
+                        <span
+                          className={`num text-sm font-extrabold leading-[1.1] ${tx.amount < 0 ? 'text-ink' : 'text-primary-deep'}`}
+                        >
+                          {fmt.currency(tx.amount)}
+                        </span>
+                        {classified ? (
+                          inflow ? (
+                            <Badge tone="success">
+                              <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                              {t(`inc.${tx.incomeType}`)}
+                            </Badge>
+                          ) : (
+                            <Badge tone="neutral">
+                              <span
+                                className="h-1.5 w-1.5 rounded-full"
+                                style={{ backgroundColor: CATEGORIES[tx.categoryId!].color }}
+                              />
+                              {t(`cat.${tx.categoryId}`)}
+                            </Badge>
+                          )
                         ) : (
-                          <Badge tone="neutral">
-                            <Icon name="bank" className="h-3 w-3" />
-                            {t('tx.methodCard')}
-                            {tx.bankId && bankName(tx.bankId) !== tx.bankId
-                              ? ` · ${bankName(tx.bankId)}`
-                              : ''}
-                          </Badge>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setExpandedId(open ? null : tx.id)
+                            }}
+                            className="tap flex min-h-11 items-center rounded-2xl px-2 text-xs font-bold text-primary-deep"
+                          >
+                            {inflow ? t('tx.assignIncome') : t('tx.assignCategory')}
+                          </button>
                         )}
-                      </p>
+                      </div>
                     </div>
-                    <div className="flex shrink-0 flex-col items-end gap-1">
-                      <span
-                        className={`num text-sm font-extrabold leading-[1.1] ${tx.amount < 0 ? 'text-ink' : 'text-primary-deep'}`}
-                      >
-                        {fmt.currency(tx.amount)}
-                      </span>
-                      {classified ? (
-                        inflow ? (
-                          <Badge tone="success">
-                            <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                            {t(`inc.${tx.incomeType}`)}
-                          </Badge>
-                        ) : (
-                          <Badge tone="neutral">
-                            <span
-                              className="h-1.5 w-1.5 rounded-full"
-                              style={{ backgroundColor: CATEGORIES[tx.categoryId!].color }}
-                            />
-                            {t(`cat.${tx.categoryId}`)}
-                          </Badge>
-                        )
-                      ) : (
+                    {open && (
+                      <div className="mt-3 flex flex-wrap items-stretch gap-2">
+                        {inflow
+                          ? INCOME_TYPES.map((id) => (
+                              <Pill
+                                key={id}
+                                onClick={() => {
+                                  saveTxEdit(tx.id, { incomeType: id })
+                                  setExpandedId(null)
+                                  refresh()
+                                }}
+                              >
+                                <span className="flex items-center gap-1.5">
+                                  <span className="h-2 w-2 rounded-full bg-primary" />
+                                  {t(`inc.${id}`)}
+                                </span>
+                              </Pill>
+                            ))
+                          : CATEGORY_IDS.map((id) => (
+                              <Pill
+                                key={id}
+                                onClick={() => {
+                                  saveTxEdit(tx.id, { categoryId: id })
+                                  setExpandedId(null)
+                                  refresh()
+                                }}
+                              >
+                                <span className="flex items-center gap-1.5">
+                                  <span
+                                    className="h-2 w-2 rounded-full"
+                                    style={{ backgroundColor: CATEGORIES[id].color }}
+                                  />
+                                  {t(`cat.${id}`)}
+                                </span>
+                              </Pill>
+                            ))}
                         <button
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation()
-                            setExpandedId(open ? null : tx.id)
+                            setEditTx(tx)
                           }}
-                          className="tap flex min-h-11 items-center rounded-2xl px-2 text-xs font-bold text-primary-deep"
+                          className="tap flex min-h-11 items-center rounded-2xl px-2 text-xs font-bold text-ink-soft underline"
                         >
-                          {inflow ? t('tx.assignIncome') : t('tx.assignCategory')}
+                          {t('common.edit')}
                         </button>
-                      )}
-                    </div>
-                  </div>
-                  {open && (
-                    <div className="mt-3 flex flex-wrap items-stretch gap-2">
-                      {inflow
-                        ? INCOME_TYPES.map((id) => (
-                            <Pill
-                              key={id}
-                              onClick={() => {
-                                saveTxEdit(tx.id, { incomeType: id })
-                                setExpandedId(null)
-                                refresh()
-                              }}
-                            >
-                              <span className="flex items-center gap-1.5">
-                                <span className="h-2 w-2 rounded-full bg-primary" />
-                                {t(`inc.${id}`)}
-                              </span>
-                            </Pill>
-                          ))
-                        : CATEGORY_IDS.map((id) => (
-                            <Pill
-                              key={id}
-                              onClick={() => {
-                                saveTxEdit(tx.id, { categoryId: id })
-                                setExpandedId(null)
-                                refresh()
-                              }}
-                            >
-                              <span className="flex items-center gap-1.5">
-                                <span
-                                  className="h-2 w-2 rounded-full"
-                                  style={{ backgroundColor: CATEGORIES[id].color }}
-                                />
-                                {t(`cat.${id}`)}
-                              </span>
-                            </Pill>
-                          ))}
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setEditTx(tx)
-                        }}
-                        className="tap flex min-h-11 items-center rounded-2xl px-2 text-xs font-bold text-ink-soft underline"
-                      >
-                        {t('common.edit')}
-                      </button>
-                    </div>
-                  )}
-                </Card>
+                      </div>
+                    )}
+                  </Card>
+                </SwipeRow>
               )
             })}
           </div>

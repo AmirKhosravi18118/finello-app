@@ -12,10 +12,18 @@ import {
 import { enablePush } from '../notifications/push'
 import { getTheme, setTheme, type Theme } from '../theme/theme'
 import { LegalSheet } from '../components/LegalSheet'
+import {
+  googleConfigured,
+  getGoogleSession,
+  consumeGoogleRedirect,
+  disconnectGoogle,
+  backupToDrive,
+} from '../integrations/google'
 import type { LegalDocKey } from '../legal/legalContent'
 import { userProfile, getAccount, saveAccount } from '../auth/account'
 import { downloadFile, exportableTransactions, paymentsIcs, transactionsCsv } from '../data/exporters'
 import { allPayments } from '../data/paymentsView'
+import { googleAuthUrl } from '../integrations/google'
 
 const LANGS: Array<{ id: Lang; label: string }> = [
   { id: 'fa', label: 'فا' },
@@ -61,6 +69,31 @@ export function SettingsScreen() {
   const [, setVersion] = useState(0)
   const [profileOpen, setProfileOpen] = useState(false)
   const [legalDocKey, setLegalDoc] = useState<LegalDocKey | null>(null)
+  const [gSession, setGSession] = useState(() => getGoogleSession())
+  useEffect(() => {
+    void consumeGoogleRedirect().then((s) => {
+      if (s) setGSession(s)
+    })
+  }, [])
+  const [backupOk, setBackupOk] = useState(false)
+
+  const connectGoogle = () => {
+    location.href = googleAuthUrl()
+  }
+  const emailExport = async () => {
+    // export via user's mail client — data never touches a server
+    const body = encodeURIComponent(JSON.stringify(exportableTransactions()))
+    location.href = `mailto:?subject=Finello%20Export&body=${body}`
+  }
+  const backupNow = async () => {
+    const payload = JSON.stringify({
+      exportedAt: new Date().toISOString(),
+      payments: allPayments(),
+      transactions: exportableTransactions(),
+    })
+    const ok = await backupToDrive(payload)
+    if (ok) setBackupOk(true)
+  }
   const [pName, setPName] = useState(() => profile.name)
   const [pEmail, setPEmail] = useState(() => profile.email)
   const selectTheme = (v: Theme) => {
@@ -321,6 +354,49 @@ export function SettingsScreen() {
 
       {/* about */}
       <section>
+        <GroupHeader label={t('int.group')} />
+        <div className="flex flex-col gap-3">
+          <Card className="flex min-h-14 flex-col gap-2 !p-4">
+            <div className="flex items-center gap-3">
+              <IconBubble name="globe" />
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-bold text-ink">{t('int.google')}</p>
+                <p className="truncate text-xs text-ink-soft">
+                  {gSession?.email ? t('int.connected', { email: gSession.email }) : t('int.googleDesc')}
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              {gSession ? (
+                <>
+                  <button type="button" className="btn-primary flex-1" onClick={backupNow}>
+                    {t('int.backupNow')}
+                  </button>
+                  <button type="button" className="btn-ghost" onClick={disconnectGoogle}>
+                    {t('int.disconnect')}
+                  </button>
+                </>
+              ) : googleConfigured() ? (
+                <button type="button" className="btn-primary w-full" onClick={connectGoogle}>
+                  {t('int.connect')}
+                </button>
+              ) : (
+                <p className="text-[11px] font-bold text-ink-soft">{t('int.notConfigured')}</p>
+              )}
+            </div>
+            {backupOk && <p className="text-xs font-bold text-primary-deep">{t('int.backupOk')}</p>}
+          </Card>
+          <button type="button" className="tap w-full text-start" onClick={emailExport}>
+            <Card className="flex min-h-14 items-center gap-3 !p-4">
+              <IconBubble name="receipt" />
+              <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t('int.emailExport')}</span>
+              <Icon name="chevron" className="h-4 w-4 shrink-0 text-ink-soft" />
+            </Card>
+          </button>
+        </div>
+      </section>
+
+      <section>
         <GroupHeader label={t('set.legalGroup')} />
         <div className="flex flex-col gap-3">
           {(['impressum', 'privacy', 'terms'] as const).map((k) => (
@@ -339,6 +415,25 @@ export function SettingsScreen() {
       <section>
         <GroupHeader label={t('set.aboutGroup')} />
         <div className="flex flex-col gap-3">
+          {/* plan display only — nelurio.com is the only sales channel (no in-app purchase) */}
+          <Card className="flex min-h-14 flex-col justify-center gap-1.5 !p-4">
+            <div className="flex items-center gap-3">
+              <span className="flex-1 text-sm font-bold text-ink">{t('set.plan')}</span>
+              <Badge tone="success">{t('set.planFree')}</Badge>
+            </div>
+            <a
+              href="https://nelurio.com/#p-finello"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="tap -ms-1 flex items-center gap-1 self-start rounded-2xl px-1 py-0.5 text-xs font-bold text-primary-deep"
+            >
+              {t('set.planUpgrade')}
+              <span dir="ltr" className="font-medium text-ink-soft">
+                nelurio.com
+              </span>
+              <Icon name="chevron" className="h-3 w-3" />
+            </a>
+          </Card>
           <Card className="flex min-h-14 items-center gap-3 !p-4">
             <span className="flex-1 text-sm font-bold text-ink">{t('set.version')}</span>
             <span className="num text-sm font-medium text-ink-soft">0.1.0</span>

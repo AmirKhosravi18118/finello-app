@@ -131,6 +131,9 @@
     "exportData": "Export data",
     "wipeData": "Wipe all data",
     "wipeConfirm": "Sure? All data will be deleted!",
+    "plan": "Plan",
+    "planFree": "Free",
+    "planUpgrade": "Go Premium",
     "version": "Version",
     "license": "License",
     "aboutDisclaimer": "This is a demo; your data stays on your device.",
@@ -306,5 +309,17 @@
     "empty": "Set category budgets to track your spending",
     "spent": "spent",
     "add": "Add budget"
+  },
+  "int": {
+    "group": "Connections",
+    "google": "Google Drive backup",
+    "googleDesc": "Private backup of your data",
+    "connected": "Connected: {email}",
+    "connect": "Connect Google",
+    "disconnect": "Disconnect",
+    "emailExport": "Email export",
+    "backupNow": "Back up now",
+    "backupOk": "Backup created ✓",
+    "notConfigured": "Disabled — Google key not set"
   }
 }

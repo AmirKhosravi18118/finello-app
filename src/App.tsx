@@ -2,6 +2,7 @@ import { useEffect, useState, type JSX } from 'react'
 import type { TabId } from './data/demo'
 import { AppShell } from './components/AppShell'
 import { AuthScreen } from './auth/AuthScreen'
+import { consumeGoogleRedirect } from './integrations/google'
 import { HomeScreen } from './screens/HomeScreen'
 import { CalendarScreen } from './screens/CalendarScreen'
 import { AnalysenScreen } from './screens/ExpensesScreen'
@@ -42,6 +43,11 @@ export default function App() {
     const handler = (e: Event) => changeTab((e as CustomEvent<TabId>).detail)
     window.addEventListener('finello:goto', handler)
     return () => window.removeEventListener('finello:goto', handler)
+  }, [])
+
+  // Google OAuth redirect (Drive backup) — consumes token if present
+  useEffect(() => {
+    void consumeGoogleRedirect()
   }, [])
 
   if (!onboarded) {

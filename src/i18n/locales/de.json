@@ -131,6 +131,9 @@
     "exportData": "Daten exportieren",
     "wipeData": "Alle Daten löschen",
     "wipeConfirm": "Sicher? Alle Daten werden gelöscht!",
+    "plan": "Plan",
+    "planFree": "Kostenlos",
+    "planUpgrade": "Go Premium",
     "version": "Version",
     "license": "Lizenz",
     "aboutDisclaimer": "Dies ist eine Demo-Version; deine Daten bleiben auf deinem Gerät.",
@@ -306,5 +309,17 @@
     "empty": "Setze Budgets, um deine Ausgaben im Blick zu behalten",
     "spent": "ausgegeben",
     "add": "Budget hinzufügen"
+  },
+  "int": {
+    "group": "Verbindungen",
+    "google": "Google-Drive-Backup",
+    "googleDesc": "Privates Backup deiner Daten",
+    "connected": "Verbunden: {email}",
+    "connect": "Mit Google verbinden",
+    "disconnect": "Trennen",
+    "emailExport": "Export per E-Mail",
+    "backupNow": "Jetzt sichern",
+    "backupOk": "Backup erstellt ✓",
+    "notConfigured": "Deaktiviert — Google-Key fehlt"
   }
 }
