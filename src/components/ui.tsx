@@ -291,6 +291,7 @@ export type IconName =
   | 'download'
   | 'globe'
   | 'check'
+  | 'pencil'
 
 const PATHS: Record<IconName, ReactNode> = {
   home: (
@@ -378,6 +379,7 @@ const PATHS: Record<IconName, ReactNode> = {
     </>
   ),
   check: <path d="m5 13 4 4L19 7" />,
+  pencil: <path d="M17 3l4 4L8 20l-5 1 1-5L17 3z" />,
 }
 
 export function Icon({ name, className = 'h-5 w-5' }: { name: IconName; className?: string }) {

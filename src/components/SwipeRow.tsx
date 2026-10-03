@@ -1,97 +1,125 @@
 import { useRef, useState, type ReactNode } from 'react'
+import { Icon, type IconName } from './ui'
 
-/** SwipeRow (WP31): drag a row horizontally to reveal Edit/Delete behind.
- *  Vertical scroll is preserved (gesture claimed only when clearly horizontal).
- *  RTL: drag direction semantics auto-mirror because positions use start/end. */
+export interface SwipeAction {
+  icon: IconName
+  label: string
+  tone: 'danger' | 'primary' | 'success'
+  onTrigger: () => void
+}
+
+/** SwipeRow v2 (Atria spec): RTL-aware snap thresholds, direction lock,
+ *  full-width tone actions with icon+label, vertical-scroll safe. */
 export function SwipeRow({
   children,
+  leadingAction,
+  trailingAction,
+  onClick,
+  className = '',
   onEdit,
+  editLabel,
   onDelete,
+  deleteLabel,
 }: {
   children: ReactNode
-  onEdit: () => void
+  leadingAction?: SwipeAction
+  trailingAction?: SwipeAction
+  onClick?: () => void
+  className?: string
+  onEdit?: () => void
+  editLabel?: string
   onDelete?: () => void
+  deleteLabel?: string
 }) {
-  const [dx, setDx] = useState(0)
-  const [claimed, setClaimed] = useState(false)
+  const lead: SwipeAction | undefined =
+    leadingAction ??
+    (onEdit ? { icon: 'check', label: editLabel ?? 'OK', tone: 'success', onTrigger: onEdit } : undefined)
+  const trail: SwipeAction | undefined =
+    trailingAction ??
+    (onDelete ? { icon: 'trash', label: deleteLabel ?? '✕', tone: 'danger', onTrigger: onDelete } : undefined)
+  const [tx, setTx] = useState(0)
+  const [dragging, setDragging] = useState(false)
   const start = useRef({ x: 0, y: 0 })
-  const MAX = 136
+  const lockDir = useRef<'h' | 'v' | null>(null)
+  const isRTL = document.documentElement.dir === 'rtl'
 
-  const onDown = (e: React.PointerEvent) => {
+  const onPointerDown = (e: React.PointerEvent) => {
     start.current = { x: e.clientX, y: e.clientY }
-    setClaimed(false)
+    lockDir.current = null
+    setDragging(true)
   }
-  const onMove = (e: React.PointerEvent) => {
-    const ddx = e.clientX - start.current.x
-    const ddy = e.clientY - start.current.y
-    if (!claimed) {
-      if (Math.abs(ddx) > Math.abs(ddy) && Math.abs(ddx) > 8) setClaimed(true)
-      else return
+
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!dragging) return
+    const dx = e.clientX - start.current.x
+    const dy = e.clientY - start.current.y
+    if (lockDir.current === null) {
+      if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+        lockDir.current = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v'
+      } else return
     }
-    setDx(Math.max(-MAX, Math.min(MAX, ddx)))
-  }
-  const onUp = () => {
-    if (claimed) setDx(Math.abs(dx) > 96 ? (dx > 0 ? MAX : -MAX) : 0)
+    if (lockDir.current === 'v') return
+    e.preventDefault()
+    const max = 120
+    setTx(Math.abs(dx) > max ? Math.sign(dx) * max : dx)
   }
 
-  const open = Math.abs(dx) > 90
+  const trigger = (a: SwipeAction) => {
+    setTx(0)
+    a.onTrigger()
+  }
+
+  const onPointerUp = () => {
+    if (!dragging) return
+    setDragging(false)
+    const th = 60
+    if ((tx <= -th && !isRTL) || (tx >= th && isRTL)) {
+      if (trailingAction) trigger(trailingAction)
+      else setTx(0)
+    } else if ((tx >= th && !isRTL) || (tx <= -th && isRTL)) {
+      if (leadingAction) trigger(leadingAction)
+      else setTx(0)
+    } else {
+      setTx(0)
+    }
+  }
+
+  const actionBtn = (a: SwipeAction, side: 'start' | 'end') => (
+    <div
+      className={`absolute inset-y-0 ${side}-0 flex w-full items-center justify-center ${
+        a.tone === 'danger' ? 'bg-danger' : a.tone === 'success' ? 'bg-primary' : 'bg-chip'
+      }`}
+    >
+      <button
+        type="button"
+        aria-label={a.label}
+        onClick={() => trigger(a)}
+        className={`flex h-full w-full items-center justify-center gap-2 ${
+          a.tone === 'danger' || a.tone === 'success' ? 'text-white' : 'text-ink'
+        }`}
+      >
+        <Icon name={a.icon} className="h-5 w-5" />
+        <span className="text-xs font-bold">{a.label}</span>
+      </button>
+    </div>
+  )
+
   return (
-    <div className="relative overflow-hidden rounded-2xl">
-      {/* actions behind */}
-      <div className="absolute inset-y-0 end-0 flex">
-        <button
-          type="button"
-          onClick={() => {
-            onEdit()
-            setDx(0)
-          }}
-          className="tap flex w-[68px] items-center justify-center bg-amber-soft text-amber-800"
-          aria-label="edit"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            className="h-5 w-5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          >
-            <path d="M17 3l4 4L8 20l-5 1 1-5L17 3z" />
-          </svg>
-        </button>
-        {onDelete && (
-          <button
-            type="button"
-            onClick={() => {
-              onDelete()
-              setDx(0)
-            }}
-            className="tap flex w-[68px] items-center justify-center bg-danger-soft text-danger"
-            aria-label="delete"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              className="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            >
-              <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />
-            </svg>
-          </button>
-        )}
-      </div>
-
-      {/* front content — slides with the drag */}
+    <div className={`relative overflow-hidden ${className}`}>
+      {trail && actionBtn(trail, 'end')}
+      {lead && actionBtn(lead, 'start')}
       <div
-        onPointerDown={onDown}
-        onPointerMove={claimed ? onMove : undefined}
-        onPointerUp={onUp}
-        onPointerCancel={onUp}
-        onClick={() => open && setDx(0)}
-        style={{ transform: `translateX(${dx}px)`, transition: claimed ? 'none' : 'transform .25s ease' }}
-        className="relative bg-surface"
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerLeave={onPointerUp}
+        onClick={onClick}
+        className="relative z-10 bg-surface"
+        style={{
+          transform: `translateX(${tx}px)`,
+          transition: dragging ? 'none' : 'transform 200ms cubic-bezier(0.22, 1, 0.36, 1)',
+          touchAction: 'pan-y',
+        }}
       >
         {children}
       </div>
