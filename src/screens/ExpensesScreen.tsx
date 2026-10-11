@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { useI18n } from '../i18n/I18nContext'
+import { catMeta } from '../data/userCats'
 import {
   AppHeader,
   Badge,
@@ -152,7 +153,7 @@ export function AnalysenScreen() {
         <Card className="flex flex-col items-center gap-4">
           <DonutChart
             segments={byCat.map(({ categoryId, total }) => ({
-              color: CATEGORIES[categoryId].color,
+              color: catMeta(categoryId, t).color,
               value: total,
             }))}
             centerValue={fmt.currency(curTotal)}
@@ -164,9 +165,9 @@ export function AnalysenScreen() {
                 <span className="flex min-w-0 items-center gap-1.5 text-xs font-bold text-ink">
                   <span
                     className="h-2.5 w-2.5 shrink-0 rounded-full"
-                    style={{ backgroundColor: CATEGORIES[categoryId].color }}
+                    style={{ backgroundColor: catMeta(categoryId, t).color }}
                   />
-                  <span className="min-w-0">{t(`cat.${categoryId}`)}</span>
+                  <span className="min-w-0">{catMeta(categoryId, t).label}</span>
                 </span>
                 <span className="flex shrink-0 items-baseline gap-2">
                   <span className="num text-xs font-bold text-ink-soft">

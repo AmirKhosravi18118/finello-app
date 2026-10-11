@@ -1,6 +1,7 @@
 /** User-defined categories (v1.2): stored in localStorage, extend the builtin
  *  palette with custom labels. Used by CategoryGrid, badges, filters. */
 
+import { CATEGORIES } from './demo'
 import type { CategoryId } from './demo'
 
 export interface UserCat {
@@ -41,6 +42,16 @@ export function updateUserCatLabel(id: string, label: string): void {
 
 /** Extended category type: builtin or user-defined. */
 export type AnyCatId = CategoryId | `uc-${string}`
+
+/** Resolve any tx categoryId (builtin or user-defined) to label + color.
+ *  Unknown/removed ids fall back to 'other' so badges never render raw keys. */
+export function catMeta(id: string, t: (k: string) => string): { label: string; color: string } {
+  const uc = id.startsWith('uc-') ? getUserCats().find((c) => c.id === id) : undefined
+  if (uc) return { label: uc.label, color: uc.color }
+  const def = (CATEGORIES as Record<string, { color: string }>)[id]
+  if (def) return { label: t(`cat.${id}`), color: def.color }
+  return { label: t('cat.other'), color: CATEGORIES.other.color }
+}
 
 export function isBuiltin(id: string): boolean {
   return id in ({} as Record<CategoryId, never>) || !id.startsWith('uc-')

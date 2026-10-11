@@ -12,7 +12,7 @@ export interface EntryEdit {
   name?: string
   amount?: number
   date?: string
-  categoryId?: CategoryId | null
+  categoryId?: CategoryId | `uc-${string}` | null
   incomeType?: IncomeType
 }
 

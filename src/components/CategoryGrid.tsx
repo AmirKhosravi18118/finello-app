@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useI18n } from '../i18n/I18nContext'
 import { CATEGORIES, type CategoryId } from '../data/demo'
-import { addUserCat } from '../data/userCats'
-import { getCustomCats, removeCustomCat, INCOME_TYPES, type IncomeType } from '../data/editStore'
+import { getUserCats, addUserCat, removeUserCat } from '../data/userCats'
+import { INCOME_TYPES, type IncomeType } from '../data/editStore'
 
 interface CatDef {
   id: string
@@ -13,15 +13,18 @@ interface CatDef {
 
 function useAllCats() {
   const { t } = useI18n()
-  const builtins: CatDef[] = (Object.keys(CATEGORIES) as CategoryId[]).map((id) => ({
-    id,
-    label: t(`cat.${id}`),
-    color: CATEGORIES[id].color,
-  }))
-  const customs: CatDef[] = getCustomCats().map((c) => ({
+  // 'income' is a tx-category (demo income rows), not a selectable expense category
+  const builtins: CatDef[] = (Object.keys(CATEGORIES) as CategoryId[])
+    .filter((id) => id !== 'income')
+    .map((id) => ({
+      id,
+      label: t(`cat.${id}`),
+      color: CATEGORIES[id].color,
+    }))
+  const customs: CatDef[] = getUserCats().map((c) => ({
     id: c.id,
     label: c.label,
-    color: '#8b5cf6',
+    color: c.color,
     custom: true,
   }))
   return [...builtins, ...customs]
@@ -36,6 +39,7 @@ export function CategoryGrid({
   value: CategoryId | null
   onChange: (v: CategoryId | null) => void
 }) {
+  const { t } = useI18n()
   const cats = useAllCats()
   const [adding, setAdding] = useState(false)
   const [, setTick] = useState(0)
@@ -84,10 +88,10 @@ export function CategoryGrid({
             {isCustom && (
               <button
                 type="button"
-                aria-label="delete"
+                aria-label={t('common.delete')}
                 onClick={(e) => {
                   e.stopPropagation()
-                  removeCustomCat(c.id)
+                  removeUserCat(c.id)
                   window.dispatchEvent(new Event('finello:cats-changed'))
                 }}
                 className="tap absolute -top-1.5 -end-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-danger text-white"
@@ -110,24 +114,24 @@ export function CategoryGrid({
       <button
         type="button"
         onClick={() => setAdding(true)}
-        aria-label="add category"
+        aria-label={t('cat.addCat')}
         className="tap flex min-h-16 flex-col items-center justify-center gap-1 rounded-2xl border border-dashed border-line p-2 text-ink-soft"
       >
         <span className="text-xl leading-none">+</span>
-        <span className="text-[10px] font-bold">+</span>
+        <span className="w-full text-center text-[10px] font-bold leading-tight">{t('cat.addCat')}</span>
       </button>
       {adding && (
         <div className="col-span-3 flex gap-2">
           <input
             autoFocus
             className="field flex-1"
-            placeholder="..."
+            placeholder={t('cat.newName')}
             value={newLabel}
             onChange={(e) => setNewLabel(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && addCat()}
           />
           <button type="button" className="btn-primary" onClick={addCat}>
-            OK
+            {t('common.add')}
           </button>
         </div>
       )}

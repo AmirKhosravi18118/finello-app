@@ -20,6 +20,7 @@ import type { CategoryId, Tx } from '../data/demo'
 import type { IncomeType } from '../data/editStore'
 import { useBankConnection } from '../bank/bankConnection'
 import { INCOME_TYPES, removeCashTx, saveTxEdit, tombstoneTx } from '../data/editStore'
+import { catMeta, getUserCats } from '../data/userCats'
 import { visibleTransactions } from '../data/incomeView'
 import { SwipeRow } from '../components/SwipeRow'
 import { notifyNewTransactions } from '../notifications/reminders'
@@ -331,9 +332,9 @@ export function TransactionsScreen() {
                             <Badge tone="neutral">
                               <span
                                 className="h-1.5 w-1.5 rounded-full"
-                                style={{ backgroundColor: CATEGORIES[tx.categoryId!].color }}
+                                style={{ backgroundColor: catMeta(tx.categoryId!, t).color }}
                               />
-                              {t(`cat.${tx.categoryId}`)}
+                              {catMeta(tx.categoryId!, t).label}
                             </Badge>
                           )
                         ) : (
@@ -368,7 +369,7 @@ export function TransactionsScreen() {
                                 </span>
                               </Pill>
                             ))
-                          : CATEGORY_IDS.map((id) => (
+                          : ([...CATEGORY_IDS, ...getUserCats().map((c) => c.id)] as (CategoryId | `uc-${string}`)[]).map((id) => (
                               <Pill
                                 key={id}
                                 onClick={() => {
@@ -380,9 +381,9 @@ export function TransactionsScreen() {
                                 <span className="flex items-center gap-1.5">
                                   <span
                                     className="h-2 w-2 rounded-full"
-                                    style={{ backgroundColor: CATEGORIES[id].color }}
+                                    style={{ backgroundColor: catMeta(id, t).color }}
                                   />
-                                  {t(`cat.${id}`)}
+                                  {catMeta(id, t).label}
                                 </span>
                               </Pill>
                             ))}
