@@ -283,6 +283,8 @@ export function TransactionsScreen() {
               return (
                 <SwipeRow
                   key={tx.id}
+                  editLabel={t('common.edit')}
+                  deleteLabel={t('common.delete')}
                   onEdit={() => setEditTx(tx)}
                   onDelete={() => {
                     if (tx.id.startsWith('cash-')) removeCashTx(tx.id)
