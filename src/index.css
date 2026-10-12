@@ -21,6 +21,15 @@
 }
 
 /* dark theme: token overrides — every existing utility class adapts */
+html {
+  /* motion tokens (DS v5.1) */
+  --dur-fast: 150ms;
+  --dur-base: 250ms;
+  --dur-slow: 350ms;
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-sheet: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
 html:not(.dark) {
   --color-primary-deep: #047857;
 }
@@ -64,13 +73,6 @@ body {
   background: linear-gradient(180deg, #f7f8fc 0%, #eef1f7 100%);
   color: var(--color-ink);
   min-height: 100vh;
-  /* motion tokens (DS v5.1): three durations + two easings, used everywhere */
-  --dur-fast: 150ms;
-  --dur-base: 250ms;
-  --dur-slow: 350ms;
-  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-sheet: cubic-bezier(0.2, 0.8, 0.2, 1);
-
   /* v3 typography: calm 1.4 body rhythm; German long words wrap instead of clipping */
   line-height: 1.4;
   overflow-wrap: break-word;
