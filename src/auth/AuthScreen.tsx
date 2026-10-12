@@ -183,11 +183,7 @@ export function AuthScreen({ onDone }: { onDone: () => void }) {
                     active={answers.marital === v}
                     onClick={() => setAnswers({ ...answers, marital: v })}
                   >
-                    {v === 'single'
-                      ? t('taxwiz.single')
-                      : v === 'married'
-                        ? t('taxwiz.marriedBoth')
-                        : t('taxwiz.separated')}
+                    {t(`auth.opt.${v}`)}
                   </Pill>
                 ))}
               </div>
@@ -203,13 +199,7 @@ export function AuthScreen({ onDone }: { onDone: () => void }) {
                     active={answers.occupation === v}
                     onClick={() => setAnswers({ ...answers, occupation: v })}
                   >
-                    {v === 'werkstudent'
-                      ? 'Werkstudent'
-                      : v === 'job'
-                        ? 'Vollzeit/Teilzeit'
-                        : v === 'student'
-                          ? t('taxwiz.q5')
-                          : t('cat.other')}
+                    {t(`auth.opt.${v}`)}
                   </Pill>
                 ))}
               </div>

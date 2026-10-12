@@ -281,14 +281,23 @@
     "q1": "Marital status?",
     "q2": "Current occupation?",
     "q3": "Working hours per week?",
-    "q4": "km home to work?",
+    "q4": "Distance to work (km)?",
     "setupTitle": "A few quick questions",
-    "setupSub": "so reminders and taxes fit you",
+    "setupSub": "so reminders and tax estimates fit you",
     "finish": "All set — let’s go",
     "bankNow": "Connect a bank now?",
     "bankLater": "Later",
     "liveBadge": "Live connection",
-    "demoBadge": "Demo mode"
+    "demoBadge": "Demo mode",
+    "opt": {
+      "single": "Single",
+      "married": "Married, 2 incomes",
+      "separated": "Separated or 1 income",
+      "werkstudent": "Working student",
+      "job": "Full-/part-time job",
+      "student": "Student",
+      "other": "Other"
+    }
   },
   "knt": {
     "total": "Total balance",

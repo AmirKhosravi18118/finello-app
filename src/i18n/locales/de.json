@@ -281,14 +281,23 @@
     "q1": "Familienstand?",
     "q2": "Aktuelle Tätigkeit?",
     "q3": "Arbeitsstunden pro Woche?",
-    "q4": "km Wohnung–Arbeit?",
+    "q4": "Entfernung zur Arbeit (km)?",
     "setupTitle": "Ein paar schnelle Fragen",
-    "setupSub": "damit Erinnerungen und Steuern passen",
+    "setupSub": "damit Erinnerungen und Steuertipps passen",
     "finish": "Fertig — los geht’s",
     "bankNow": "Jetzt Bank verbinden?",
     "bankLater": "Später",
     "liveBadge": "Echte Verbindung",
-    "demoBadge": "Demo-Modus"
+    "demoBadge": "Demo-Modus",
+    "opt": {
+      "single": "Ledig",
+      "married": "Verheiratet, 2 Einkommen",
+      "separated": "Getrennt oder 1 Einkommen",
+      "werkstudent": "Werkstudent",
+      "job": "Vollzeit/Teilzeit",
+      "student": "Student",
+      "other": "Sonstiges"
+    }
   },
   "knt": {
     "total": "Gesamtsaldo",
