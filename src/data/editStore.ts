@@ -251,3 +251,16 @@ export function getSalary(store: StorageLike = defaultStorage()): SalaryConfig |
 export function setSalary(cfg: SalaryConfig, store: StorageLike = defaultStorage()) {
   store.setItem(SALARY_KEY, JSON.stringify(cfg))
 }
+
+/* ---------- savings goal (real data, user-owned) ---------- */
+
+const SAVINGS_KEY = 'finello_savings'
+
+export function getSavings(store: StorageLike = defaultStorage()): { goal: number; amount: number } {
+  const v = readJson(store, SAVINGS_KEY) as { goal?: number; amount?: number } | null
+  return { goal: v?.goal ?? 0, amount: v?.amount ?? 0 }
+}
+
+export function setSavings(v: { goal: number; amount: number }, store: StorageLike = defaultStorage()) {
+  store.setItem(SAVINGS_KEY, JSON.stringify({ goal: Math.max(0, v.goal), amount: Math.max(0, v.amount) }))
+}

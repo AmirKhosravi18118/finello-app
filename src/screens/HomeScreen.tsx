@@ -18,7 +18,7 @@ import { EditPaymentSheet } from '../components/EditPaymentSheet'
 import { AddMoneySheet } from '../components/AddMoneySheet'
 import { CATEGORIES, demo, type Payment } from '../data/demo'
 import type { PayStatus } from '../data/demo'
-import { getSalary, setSalary } from '../data/editStore'
+import { getSalary, getSavings, setSalary, setSavings } from '../data/editStore'
 import { registerReminders } from '../notifications/push'
 import { allPayments, nearestPayments } from '../data/paymentsView'
 import { monthMoney, visibleTransactions } from '../data/incomeView'
@@ -34,12 +34,44 @@ const STATUS_TONE: Record<PayStatus, Tone> = {
 /** Cross-tab quick-add signal (DS2.0 §5) — dispatched by BottomNav. */
 const QUICK_ADD_EVENT = 'finello:quick-add'
 
+/** Real savings tile (no fake data): empty → set-a-goal CTA; goal → progress ring. */
+function SavingsTile({ goal, amount, onOpen }: { goal: number; amount: number; onOpen: () => void }) {
+  const { t, fmt } = useI18n()
+  if (goal <= 0) {
+    return (
+      <button type="button" onClick={onOpen} className="tap w-full text-start">
+        <StatTile
+          icon="bank"
+          label={t('home.savings')}
+          value={t('home.setGoal')}
+          sub={t('auth2.optional')}
+          progress={0}
+        />
+      </button>
+    )
+  }
+  return (
+    <button type="button" onClick={onOpen} className="tap w-full text-start">
+      <StatTile
+        icon="bank"
+        label={t('home.savings')}
+        value={fmt.currency(amount)}
+        sub={t('home.savingsGoal', { goal: fmt.currency(goal) })}
+        progress={Math.min(1, amount / goal)}
+      />
+    </button>
+  )
+}
+
 export function HomeScreen() {
   const { t, fmt } = useI18n()
   const [editPayment, setEditPayment] = useState<Payment | null>(null)
   const [salaryOpen, setSalaryOpen] = useState(false)
   const [moneyMode, setMoneyMode] = useState<'income' | 'expense' | null>(null)
   const [addOpen, setAddOpen] = useState(false)
+  const [savingsOpen, setSavingsOpen] = useState(false)
+  const [savGoal, setSavGoal] = useState('')
+  const [savAmount, setSavAmount] = useState('')
   const [, setVersion] = useState(0)
   const refresh = () => setVersion((v) => v + 1)
 
@@ -71,6 +103,7 @@ export function HomeScreen() {
     diff === 0 ? t('home.paydayToday') : fmt.num(diff > 0 ? diff : daysInMonth - dayNow + salary.day)
 
   const payments = allPayments()
+  const savings = getSavings()
 
   // keep the closed-app push server in sync with upcoming payments (WP29)
   useEffect(() => {
@@ -235,12 +268,14 @@ export function HomeScreen() {
                 progress={dayNow / daysInMonth}
               />
             </button>
-            <StatTile
-              icon="bank"
-              label={t('home.savings')}
-              value={fmt.currency(demo.savings.amount)}
-              sub={t('home.savingsGoal', { goal: fmt.currency(demo.savings.goal) })}
-              progress={demo.savings.amount / demo.savings.goal}
+            <SavingsTile
+              goal={savings.goal}
+              amount={savings.amount}
+              onOpen={() => {
+                setSavGoal(String(savings.goal || ''))
+                setSavAmount(String(savings.amount || ''))
+                setSavingsOpen(true)
+              }}
             />
           </section>
 
@@ -306,6 +341,57 @@ export function HomeScreen() {
       )}
 
       {/* quick-add lives in the nav + menu (drop-up); income chip above also opens income */}
+
+      <Modal open={savingsOpen} onClose={() => setSavingsOpen(false)} title={t('home.savings')}>
+        <div className="flex flex-col gap-3">
+          <div className="flex gap-3">
+            <div className="min-w-0 flex-1">
+              <label htmlFor="fin-sav-goal" className="mb-1 block ps-1 text-xs font-bold text-ink-soft">
+                {t('home.savingsGoal', { goal: '' })}
+              </label>
+              <input
+                id="fin-sav-goal"
+                className="field num"
+                inputMode="numeric"
+                value={savGoal}
+                onChange={(e) => setSavGoal(e.target.value.replace(/[^0-9]/g, ''))}
+                placeholder="2000"
+              />
+            </div>
+            <div className="min-w-0 flex-1">
+              <label htmlFor="fin-sav-amt" className="mb-1 block ps-1 text-xs font-bold text-ink-soft">
+                {t('home.savings')}
+              </label>
+              <input
+                id="fin-sav-amt"
+                className="field num"
+                inputMode="numeric"
+                value={savAmount}
+                onChange={(e) => setSavAmount(e.target.value.replace(/[^0-9]/g, ''))}
+                placeholder="0"
+              />
+            </div>
+          </div>
+          <div className="mt-2 flex gap-3">
+            <button type="button" className="btn-ghost flex-1" onClick={() => setSavingsOpen(false)}>
+              {t('common.cancel')}
+            </button>
+            <button
+              type="button"
+              className="btn-primary flex-1"
+              onClick={() => {
+                setSavings({ goal: Number(savGoal) || 0, amount: Number(savAmount) || 0 })
+                setSavGoal('')
+                setSavAmount('')
+                setSavingsOpen(false)
+                refresh()
+              }}
+            >
+              {t('common.save')}
+            </button>
+          </div>
+        </div>
+      </Modal>
 
       <EditPaymentSheet
         open={editPayment !== null}

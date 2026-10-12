@@ -7,12 +7,32 @@ export interface AccountSetup {
   km: number
 }
 
+export interface ConsentEntry {
+  doc: 'terms' | 'privacy'
+  version: string
+  acceptedAt: string
+  lang: string
+}
+
+export interface Psd2Consent {
+  bankId: string
+  scope: string
+  grantedAt: string
+  revokedAt: string | null
+}
+
+export interface AccountConsent {
+  docs: ConsentEntry[]
+  psd2: Psd2Consent[]
+}
+
 export interface Account {
   name: string
   email: string
   pin?: string
   createdAt: string
   setup?: AccountSetup
+  consent?: AccountConsent
 }
 
 const KEY = 'finello_account'

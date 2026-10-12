@@ -334,5 +334,24 @@
     "backupNow": "Jetzt sichern",
     "backupOk": "Backup erstellt ✓",
     "notConfigured": "Deaktiviert — Google-Key fehlt"
+  },
+  "auth2": {
+    "consentTitle": "Bevor es losgeht: AGB & Datenschutz",
+    "consentSub": "Bevor Sie persönliche Daten eingeben, bestätigen Sie bitte unsere AGB und die Datenschutzerklärung. Ihre Finanzdaten bleiben standardmäßig ausschließlich auf Ihrem Gerät.",
+    "acceptLabel": "Ich habe die AGB und die Datenschutzerklärung gelesen und akzeptiere sie.",
+    "consentBtn": "Zustimmen & weiter",
+    "consentRequired": "Zum Fortfahren bitten wir um Ihre Zustimmung zu AGB und Datenschutzerklärung.",
+    "optional": "optional",
+    "s1Title": "Arbeit & Alltag",
+    "s1Sub": "Für Steuerklasse und Werkstudentenprivileg",
+    "s2Title": "Gehalt & Zahlungstag",
+    "salaryDay": "Gehaltseingang – Tag im Monat",
+    "netSalary": "Netto-Monatseinkommen (€)",
+    "s3Title": "Sparziel",
+    "goalAmount": "Wie viel möchtest du sparen? (€)",
+    "s4Title": "Bank verbinden",
+    "bankExplainLive": "Die Verbindung läuft über den offiziellen PSD2-Zugang deiner Bank – rein lesend, ohne Weitergabe deiner Banking-Passwörter an Finello und jederzeit widerrufbar.",
+    "bankExplainDemo": "Aktuell läuft der Demo-Modus mit Beispieldaten; die echte PSD2-Verbindung kannst du jederzeit in den Einstellungen aktivieren.",
+    "laterInSettings": "Jetzt überspringen – später in den Einstellungen."
   }
 }

@@ -1,3 +1,5 @@
+export const LEGAL_VERSION = '2026-10-12.1'
+
 /** Legal content (Impressum / Datenschutz / AGB) — trilingual, structured.
  *  German texts are the legally relevant versions (DDG / DSGVO).
  *  Placeholders in [brackets] MUST be replaced by the owner before public launch. */

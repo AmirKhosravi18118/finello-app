@@ -4,6 +4,7 @@ import { gocardlessProvider, isLive, proxyConfigured } from './gocardless'
 
 export { isLive }
 import { demo, type Tx } from '../data/demo'
+import { getAccount, saveAccount } from '../auth/account'
 import { getCashTx, uncategorizedCount } from '../data/editStore'
 
 export type { BankRef }
@@ -171,5 +172,21 @@ export function connectLiveBank(bank: BankRef) {
   if (!next.some((b) => b.id === bank.id)) {
     next.push(bank)
     writeBanks(next)
+    // PSD2 consent audit trail (Art. 7 DSGVO) — append, never overwrite
+    try {
+      const a = getAccount()
+      if (a) {
+        a.consent = a.consent ?? { docs: [], psd2: [] }
+        a.consent.psd2.push({
+          bankId: bank.id,
+          scope: 'read-only:transactions',
+          grantedAt: new Date().toISOString(),
+          revokedAt: null,
+        })
+        saveAccount(a)
+      }
+    } catch {
+      // best-effort audit; connection itself stays authoritative
+    }
   }
 }

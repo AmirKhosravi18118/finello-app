@@ -16,7 +16,7 @@ import {
 import { TaxWizard, getWizardResult, type TaxWizardResult } from '../components/TaxWizard'
 import { addTaxExtra, getTaxExtras, removeTaxExtra } from '../data/editStore'
 import { todayLocalISO } from '../data/demo'
-import { userProfile } from '../auth/account'
+import { getAccount } from '../auth/account'
 
 const CURRENT_YEAR = new Date().getFullYear()
 const YEARS = [CURRENT_YEAR - 2, CURRENT_YEAR - 1, CURRENT_YEAR]
@@ -26,7 +26,8 @@ const parseDate = (s: string) => new Date(`${s}T00:00:00`)
 
 export function TaxScreen() {
   const { t, fmt } = useI18n()
-  const profile = userProfile()
+  const account = getAccount()
+  const setup = account?.setup
   const [year, setYear] = useState(CURRENT_YEAR)
   const [extras, setExtras] = useState<TaxItem[]>(() => getTaxExtras())
   const items = [...demo.tax.items, ...extras]
@@ -144,12 +145,19 @@ export function TaxScreen() {
         <IconChip icon="user" tone="success" />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            {profile.name && <p className="text-base font-extrabold text-ink">{profile.name}</p>}
-            <Badge tone="success">{t('tax.taxClass', { n: fmt.num(demo.tax.profile.taxClass) })}</Badge>
+            {account?.name && <p className="text-base font-extrabold text-ink">{account.name}</p>}
+            {wizardResult && (
+              <Badge tone="success">{t('tax.taxClass', { n: fmt.num(wizardResult.taxClass) })}</Badge>
+            )}
           </div>
           <div className="mt-1 flex items-baseline justify-between gap-2 text-sm">
             <span className="shrink-0 font-medium text-ink-soft">{t('tax.employment')}</span>
-            <span className="text-end font-bold text-ink">{demo.tax.profile.employment}</span>
+            {setup?.occupation && (
+              <span className="text-end font-bold text-ink">
+                {t(`auth.opt.${setup.occupation}`)}
+                {setup.hours ? ` · ${fmt.num(setup.hours)}h` : ''}
+              </span>
+            )}
           </div>
         </div>
       </Card>
