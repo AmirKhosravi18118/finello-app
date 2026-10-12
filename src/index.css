@@ -280,11 +280,11 @@ html.dark body {
   animation: fin-splash-pop 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 @keyframes fin-splash-bar {
-  0% { transform: translateX(-120%); }
-  100% { transform: translateX(340%); }
+  0% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
 }
 .fin-splash-bar {
-  animation: fin-splash-bar 1s ease-in-out infinite;
+  animation: fin-splash-bar 1.15s ease-out both;
 }
 @media (prefers-reduced-motion: reduce) {
   .fin-splash-mark,

@@ -26,7 +26,7 @@ export function AppShell({
       <header className="flex items-center justify-between gap-2 pb-2 pt-2">
         {tab === 'home' ? (
           <div className="flex min-w-0 items-center gap-2">
-            <BrandMark className="h-9 w-9 shrink-0 rounded-[18px] shadow-card" />
+            <BrandMark className="h-9 w-9 shrink-0 rounded-[8px] shadow-card" />
             <span className="truncate text-lg font-extrabold tracking-tight text-ink">{t('app.name')}</span>
             <Badge tone="warn">{t('common.demo')}</Badge>
           </div>

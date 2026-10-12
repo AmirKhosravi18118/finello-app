@@ -257,7 +257,7 @@ export function HomeScreen() {
                   onClick={() =>
                     window.dispatchEvent(new CustomEvent('finello:goto', { detail: 'calendar' }))
                   }
-                  className="tap flex h-11 w-11 items-center justify-center rounded-2xl bg-chip text-ink"
+                  className="tap me-14 flex h-11 w-11 items-center justify-center rounded-2xl bg-chip text-ink"
                 >
                   <Icon name="calendar" className="h-4.5 w-4.5" />
                 </button>

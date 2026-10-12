@@ -48,8 +48,8 @@ export function Splash() {
         <BrandMark className="h-24 w-24 rounded-[22%] shadow-card" />
       </div>
       <p className="text-xl font-extrabold tracking-tight text-ink">Finello</p>
-      <div className="h-1 w-32 overflow-hidden rounded-full bg-chip">
-        <div className="fin-splash-bar h-full w-1/2 rounded-full bg-gradient-to-r from-primary to-primary-deep" />
+      <div className="h-1 w-32 overflow-hidden rounded-full bg-ink/10">
+        <div className="fin-splash-bar h-full w-full rounded-full bg-gradient-to-r from-primary to-primary-deep" />
       </div>
     </div>
   )
