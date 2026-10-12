@@ -319,7 +319,7 @@ export function AnalysenScreen() {
                     width={barW}
                     height={h}
                     rx={Math.min(6, barW / 2)}
-                    className="fill-primary"
+                    className={m.total > 0 ? 'fill-primary' : 'fill-line'}
                   />
                   <text
                     x={x + barW / 2}
