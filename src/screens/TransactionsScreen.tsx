@@ -371,7 +371,11 @@ export function TransactionsScreen() {
                                 </span>
                               </Pill>
                             ))
-                          : ([...CATEGORY_IDS, ...getUserCats().map((c) => c.id)] as (CategoryId | `uc-${string}`)[]).map((id) => (
+                          : (
+                              [...CATEGORY_IDS, ...getUserCats().map((c) => c.id)] as (
+                                CategoryId | `uc-${string}`
+                              )[]
+                            ).map((id) => (
                               <Pill
                                 key={id}
                                 onClick={() => {

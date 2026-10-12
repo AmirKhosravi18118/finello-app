@@ -125,8 +125,8 @@ export function HomeScreen() {
         <div className="mt-5 grid grid-cols-2 gap-3">
           <button
             type="button"
-            onClick={() => setMoneyMode("income")}
-            aria-label={t("qa.income")}
+            onClick={() => setMoneyMode('income')}
+            aria-label={t('qa.income')}
             className="tap rounded-2xl bg-white/12 p-3 text-start backdrop-blur-sm"
           >
             <div className="flex items-center justify-between gap-2">
@@ -139,8 +139,8 @@ export function HomeScreen() {
           </button>
           <button
             type="button"
-            onClick={() => setMoneyMode("expense")}
-            aria-label={t("qa.expense")}
+            onClick={() => setMoneyMode('expense')}
+            aria-label={t('qa.expense')}
             className="tap rounded-2xl bg-white/12 p-3 text-start backdrop-blur-sm"
           >
             <div className="flex items-center justify-between gap-2">
@@ -191,7 +191,7 @@ export function HomeScreen() {
             </button>
             <button
               type="button"
-              onClick={() => setMoneyMode("income")}
+              onClick={() => setMoneyMode('income')}
               className="tap card flex flex-col items-center gap-2 p-3"
             >
               <IconChip icon="down" tone="success" />

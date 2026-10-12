@@ -249,7 +249,9 @@ export function ProgressBar({
     >
       <div
         className={`h-full rounded-full transition-[width] duration-500 ${
-          over ? 'bg-gradient-to-r from-rose-500 to-rose-600' : 'bg-gradient-to-r from-primary to-primary-deep'
+          over
+            ? 'bg-gradient-to-r from-rose-500 to-rose-600'
+            : 'bg-gradient-to-r from-primary to-primary-deep'
         }`}
         style={{ width: `${pct}%` }}
       />
