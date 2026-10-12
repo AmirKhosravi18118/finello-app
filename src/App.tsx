@@ -3,6 +3,7 @@ import type { TabId } from './data/demo'
 import { AppShell } from './components/AppShell'
 import { AuthScreen } from './auth/AuthScreen'
 import { consumeGoogleRedirect } from './integrations/google'
+import { Splash } from './components/Brand'
 import { HomeScreen } from './screens/HomeScreen'
 import { CalendarScreen } from './screens/CalendarScreen'
 import { AnalysenScreen } from './screens/ExpensesScreen'
@@ -52,18 +53,24 @@ export default function App() {
 
   if (!onboarded) {
     return (
-      <AuthScreen
-        onDone={() => {
-          setOnboarded(true)
-        }}
-      />
+      <>
+        <AuthScreen
+          onDone={() => {
+            setOnboarded(true)
+          }}
+        />
+        <Splash />
+      </>
     )
   }
 
   const Screen = SCREENS[tab]
   return (
-    <AppShell tab={tab} onTab={changeTab}>
-      <Screen />
-    </AppShell>
+    <>
+      <AppShell tab={tab} onTab={changeTab}>
+        <Screen />
+      </AppShell>
+      <Splash />
+    </>
   )
 }

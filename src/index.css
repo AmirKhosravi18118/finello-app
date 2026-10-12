@@ -269,3 +269,26 @@ html.dark body {
   width: 0;
   height: 0;
 }
+
+/* brand splash motion (v5) */
+@keyframes fin-splash-pop {
+  0% { opacity: 0; transform: scale(0.86) translateY(6px); }
+  60% { opacity: 1; transform: scale(1.02) translateY(0); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.fin-splash-mark {
+  animation: fin-splash-pop 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes fin-splash-bar {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(340%); }
+}
+.fin-splash-bar {
+  animation: fin-splash-bar 1s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fin-splash-mark,
+  .fin-splash-bar {
+    animation: none;
+  }
+}

@@ -4,6 +4,7 @@ import type { TabId } from '../data/demo'
 import { BottomNav } from './BottomNav'
 import { Badge, Icon, Modal } from './ui'
 import { Tour } from './Tour'
+import { BrandMark } from './Brand'
 import { uncategorizedTotal } from '../bank/bankConnection'
 import { NotificationCenter } from './NotificationCenter'
 
@@ -25,9 +26,7 @@ export function AppShell({
       <header className="flex items-center justify-between gap-2 pb-2 pt-2">
         {tab === 'home' ? (
           <div className="flex min-w-0 items-center gap-2">
-            <div className="hero-gradient shadow-card flex h-9 w-9 items-center justify-center rounded-2xl text-base font-extrabold text-primary">
-              F
-            </div>
+            <BrandMark className="h-9 w-9 shrink-0 rounded-[18px] shadow-card" />
             <span className="truncate text-lg font-extrabold tracking-tight text-ink">{t('app.name')}</span>
             <Badge tone="warn">{t('common.demo')}</Badge>
           </div>

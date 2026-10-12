@@ -7,4 +7,6 @@ export default defineConfig({
   base: process.env.VITE_BASE ?? '/',
   plugins: [react(), tailwindcss()],
   server: { host: true, port: 5173 },
+  // unit tests live in src/ — e2e/*.spec.ts belongs to Playwright, not vitest
+  test: { include: ['src/**/*.test.{ts,tsx}'] },
 })
