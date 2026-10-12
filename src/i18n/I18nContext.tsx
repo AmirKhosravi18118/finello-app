@@ -17,6 +17,7 @@ interface I18n {
     currency: (n: number) => string
     date: (d: Date) => string
     month: (d: Date) => string
+    monthShort: (d: Date) => string
     weekday: (d: Date) => string
     /** Locale digits (Persian numerals for fa) — use for every visible bare number. */
     num: (n: number | string) => string
@@ -60,6 +61,11 @@ export function I18nProvider({ children }: { children: ReactNode }) {
           }).format(n),
         date: (d) => new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short' }).format(d),
         month: (d) => new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(d),
+        // fa has no standard short month names → numeric label; de/en get real abbreviations
+        monthShort: (d) =>
+          lang === 'fa'
+            ? new Intl.NumberFormat(locale, { useGrouping: false }).format(d.getMonth() + 1)
+            : new Intl.DateTimeFormat(locale, { month: 'short' }).format(d),
         weekday: (d) => new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(d),
         num: (n) => new Intl.NumberFormat(locale, { useGrouping: false }).format(Number(n)),
       },

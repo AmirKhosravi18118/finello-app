@@ -228,7 +228,15 @@ export function StatTile({
   )
 }
 
-export function ProgressBar({ value, label }: { value: number; label?: string }) {
+export function ProgressBar({
+  value,
+  label,
+  over = false,
+}: {
+  value: number
+  label?: string
+  over?: boolean
+}) {
   const pct = Math.round(Math.min(1, Math.max(0, value)) * 100)
   return (
     <div
@@ -240,7 +248,9 @@ export function ProgressBar({ value, label }: { value: number; label?: string })
       aria-label={label}
     >
       <div
-        className="h-full rounded-full bg-gradient-to-r from-primary to-primary-deep transition-[width] duration-500"
+        className={`h-full rounded-full transition-[width] duration-500 ${
+          over ? 'bg-gradient-to-r from-rose-500 to-rose-600' : 'bg-gradient-to-r from-primary to-primary-deep'
+        }`}
         style={{ width: `${pct}%` }}
       />
     </div>

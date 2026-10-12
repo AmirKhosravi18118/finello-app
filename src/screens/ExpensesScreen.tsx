@@ -73,14 +73,13 @@ export function AnalysenScreen() {
   // 6-month trend (WP26)
   const trend = Array.from({ length: 6 }, (_, i) => {
     const d = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1)
-    const total = demo.expenses
-      .concat()
+    const total = allExpenses()
       .filter((e) => {
         const ed = new Date(e.date)
         return ed.getFullYear() === d.getFullYear() && ed.getMonth() === d.getMonth()
       })
       .reduce((sum, e) => sum + e.amount, 0)
-    return { label: fmt.weekday(d).slice(0, 2), total }
+    return { label: fmt.monthShort(d), total }
   })
   const trendMax = Math.max(...trend.map((x) => x.total), 1)
 
@@ -202,7 +201,7 @@ export function AnalysenScreen() {
                   width={barW}
                   height={h}
                   rx={Math.min(6, barW / 2, h)}
-                  fill={CATEGORIES[item.categoryId].color}
+                  fill={catMeta(item.categoryId, t).color}
                 />
               )
             })}
@@ -216,9 +215,9 @@ export function AnalysenScreen() {
             >
               <span
                 className="h-2 w-2 shrink-0 rounded-full"
-                style={{ backgroundColor: CATEGORIES[categoryId].color }}
+                style={{ backgroundColor: catMeta(categoryId, t).color }}
               />
-              <span className="min-w-0">{t(`cat.${categoryId}`)}</span>
+              <span className="min-w-0">{catMeta(categoryId, t).label}</span>
             </span>
           ))}
         </div>
@@ -237,9 +236,9 @@ export function AnalysenScreen() {
               <span className="flex min-w-0 items-center gap-2 text-sm font-bold text-ink">
                 <span
                   className="h-2.5 w-2.5 shrink-0 rounded-full"
-                  style={{ backgroundColor: CATEGORIES[categoryId].color }}
+                  style={{ backgroundColor: catMeta(categoryId, t).color }}
                 />
-                <span className="min-w-0">{t(`cat.${categoryId}`)}</span>
+                <span className="min-w-0">{catMeta(categoryId, t).label}</span>
               </span>
               {renderDelta(total, prevByCat.get(categoryId) ?? 0)}
             </div>
@@ -279,7 +278,7 @@ export function AnalysenScreen() {
                       <span className="flex items-center gap-1.5 font-bold text-ink">
                         <span
                           className="h-2.5 w-2.5 rounded-full"
-                          style={{ backgroundColor: CATEGORIES[cat as keyof typeof CATEGORIES].color }}
+                          style={{ backgroundColor: catMeta(cat, t).color }}
                         />
                         {t(`cat.${cat}`)}
                       </span>
@@ -287,7 +286,7 @@ export function AnalysenScreen() {
                         {fmt.currency(spent)} / {fmt.currency(amt as number)}
                       </span>
                     </div>
-                    <ProgressBar value={spent / (amt as number)} label={t(`cat.${cat}`)} />
+                    <ProgressBar value={spent / (amt as number)} label={t(`cat.${cat}`)} over={over} />
                     {over && (
                       <p className="text-[10px] font-bold text-danger">
                         {t('exp.more', {
@@ -304,7 +303,7 @@ export function AnalysenScreen() {
 
         {/* 6-month trend (WP26) */}
         <Card>
-          <SectionHeader icon="receipt" tone="success" title={t('exp.comparePrev')} />
+          <SectionHeader icon="receipt" tone="success" title={t('exp.trend6')} />
           <svg viewBox="0 0 320 120" className="w-full" aria-hidden="true">
             <line x1="0" y1="110.5" x2="320" y2="110.5" className="stroke-line" strokeWidth="1" />
             {trend.map((m, i) => {
@@ -326,7 +325,7 @@ export function AnalysenScreen() {
                     x={x + barW / 2}
                     y={124}
                     textAnchor="middle"
-                    className="fill-current text-[9px] font-bold text-ink-soft"
+                    className="fill-current text-[10px] font-bold text-ink-soft"
                   >
                     {m.label}
                   </text>
@@ -364,9 +363,9 @@ export function AnalysenScreen() {
                   <Badge tone="neutral">
                     <span
                       className="h-1.5 w-1.5 rounded-full"
-                      style={{ backgroundColor: CATEGORIES[e.categoryId].color }}
+                      style={{ backgroundColor: catMeta(e.categoryId, t).color }}
                     />
-                    {t(`cat.${e.categoryId}`)}
+                    {catMeta(e.categoryId, t).label}
                   </Badge>
                 </span>
                 <span className="num shrink-0 text-sm font-extrabold leading-[1.1] text-ink">

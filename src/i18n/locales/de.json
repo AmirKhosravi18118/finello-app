@@ -74,7 +74,8 @@
     "noChange": "Keine Änderung",
     "expensesList": "Ausgabenliste",
     "emptyExpenses": "Dieser Monat sind keine Ausgaben erfasst",
-    "edit": "Ausgabe bearbeiten"
+    "edit": "Ausgabe bearbeiten",
+    "trend6": "6-Monats-Verlauf"
   },
   "tx": {
     "recent": "Letzte Transaktionen",
@@ -112,7 +113,8 @@
     "amount": "Betrag (€)",
     "note": "Notiz",
     "date": "Datum",
-    "wizard": "Steuer-Check"
+    "wizard": "Steuer-Check",
+    "years": "Steuerjahr"
   },
   "set": {
     "title": "Einstellungen",

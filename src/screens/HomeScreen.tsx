@@ -38,7 +38,7 @@ export function HomeScreen() {
   const { t, fmt } = useI18n()
   const [editPayment, setEditPayment] = useState<Payment | null>(null)
   const [salaryOpen, setSalaryOpen] = useState(false)
-  const [incomeOpen, setIncomeOpen] = useState(false)
+  const [moneyMode, setMoneyMode] = useState<'income' | 'expense' | null>(null)
   const [addOpen, setAddOpen] = useState(false)
   const [, setVersion] = useState(0)
   const refresh = () => setVersion((v) => v + 1)
@@ -125,8 +125,8 @@ export function HomeScreen() {
         <div className="mt-5 grid grid-cols-2 gap-3">
           <button
             type="button"
-            onClick={() => setIncomeOpen(true)}
-            aria-label={t('cash.income')}
+            onClick={() => setMoneyMode("income")}
+            aria-label={t("qa.income")}
             className="tap rounded-2xl bg-white/12 p-3 text-start backdrop-blur-sm"
           >
             <div className="flex items-center justify-between gap-2">
@@ -137,10 +137,20 @@ export function HomeScreen() {
             </div>
             <p className="num mt-0.5 text-base font-extrabold leading-[1.1]">{fmt.currency(money.income)}</p>
           </button>
-          <div className="rounded-2xl bg-white/12 p-3 backdrop-blur-sm">
-            <p className="text-[11px] font-bold text-white/70">{t('home.monthExpense')}</p>
+          <button
+            type="button"
+            onClick={() => setMoneyMode("expense")}
+            aria-label={t("qa.expense")}
+            className="tap rounded-2xl bg-white/12 p-3 text-start backdrop-blur-sm"
+          >
+            <div className="flex items-center justify-between gap-2">
+              <p className="min-w-0 text-[11px] font-bold text-white/70">{t('home.monthExpense')}</p>
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/20 text-white">
+                <Icon name="plus" className="h-3.5 w-3.5" />
+              </span>
+            </div>
             <p className="num mt-0.5 text-base font-extrabold leading-[1.1]">{fmt.currency(money.expense)}</p>
-          </div>
+          </button>
         </div>
 
         {money.incomeByType.length > 0 && (
@@ -181,7 +191,7 @@ export function HomeScreen() {
             </button>
             <button
               type="button"
-              onClick={() => setIncomeOpen(true)}
+              onClick={() => setMoneyMode("income")}
               className="tap card flex flex-col items-center gap-2 p-3"
             >
               <IconChip icon="down" tone="success" />
@@ -305,9 +315,9 @@ export function HomeScreen() {
       />
 
       <AddMoneySheet
-        open={incomeOpen}
-        onClose={() => setIncomeOpen(false)}
-        initialMode="income"
+        open={moneyMode !== null}
+        onClose={() => setMoneyMode(null)}
+        initialMode={moneyMode ?? 'income'}
         onSaved={refresh}
       />
 

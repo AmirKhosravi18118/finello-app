@@ -9,7 +9,6 @@ import {
   Icon,
   IconChip,
   Modal,
-  Pill,
   SectionHeader,
   SkeletonCard,
   StatTile,
@@ -123,12 +122,20 @@ export function TaxScreen() {
         </Card>
       </button>
 
-      {/* year selector */}
-      <div className="flex flex-wrap gap-2">
+      {/* year selector — segmented control */}
+      <div className="flex rounded-full bg-chip p-1" role="group" aria-label={t('tax.years')}>
         {YEARS.map((y) => (
-          <Pill key={y} active={year === y} onClick={() => setYear(y)}>
-            <span className="num">{fmt.num(y)}</span>
-          </Pill>
+          <button
+            key={y}
+            type="button"
+            onClick={() => setYear(y)}
+            aria-pressed={year === y}
+            className={`tap num flex min-h-10 flex-1 items-center justify-center rounded-full px-4 text-xs font-bold ${
+              year === y ? 'bg-navy text-white shadow-md' : 'text-ink-soft'
+            }`}
+          >
+            {fmt.num(y)}
+          </button>
         ))}
       </div>
 
