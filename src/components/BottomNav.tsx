@@ -120,6 +120,12 @@ export function BottomNav({ tab, onTab }: { tab: TabId; onTab: (t: TabId) => voi
         <Icon name="plus" className="h-6 w-6" />
       </button>
 
+      {/* scroll fade: content dissolves under the floating nav (both themes) */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-x-0 bottom-0 z-30 h-24 bg-gradient-to-t from-canvas via-canvas/75 to-transparent"
+      />
+
       <nav className="pill-nav flex items-center justify-between gap-1 px-2 py-2">
         {TABS.map(({ id, key, icon }) => {
           const active = tab === id

@@ -164,7 +164,7 @@ export function TaxScreen() {
             <SkeletonCard />
           </div>
         ) : (
-          <Card>
+          <Card className="pe-14">
             {filtered.length === 0 ? (
               <EmptyState icon="tax" text={t('tax.emptyTax')} />
             ) : (
@@ -177,7 +177,7 @@ export function TaxScreen() {
                         <p className="text-sm font-bold leading-snug text-ink">{it.category}</p>
                         <p className="t-caption mt-0.5 flex flex-wrap items-center gap-x-2">
                           <span className="num">{fmt.date(parseDate(it.date))}</span>
-                          {it.note && <span>{it.note}</span>}
+                          {it.note && <span dir="ltr">{it.note}</span>}
                         </p>
                       </div>
                       <span className="num shrink-0 text-end text-sm font-extrabold leading-[1.1] text-ink">
