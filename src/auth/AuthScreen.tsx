@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useI18n, type Lang } from '../i18n/I18nContext'
 import { Badge, Card, Icon, Pill } from '../components/ui'
 import { getAccount, saveAccount, ACCOUNT_EVENT, type Account } from './account'
-import { connectLiveBank, isLive } from '../bank/bankConnection'
+import { connectLiveBank, useBankLive } from '../bank/bankConnection'
 
 /* ---------- language step ---------- */
 
@@ -15,6 +15,7 @@ const LANGS: Array<{ id: Lang; label: string }> = [
 /* ---------- auth screen (login + signup + setup + optional bank) ---------- */
 
 export function AuthScreen({ onDone }: { onDone: () => void }) {
+  const live = useBankLive()
   const { t, setLang, lang } = useI18n()
   const existing = getAccount()
   const [mode, setMode] = useState<'login' | 'signup' | 'setup' | 'bank'>(existing ? 'login' : 'signup')
@@ -279,8 +280,8 @@ export function AuthScreen({ onDone }: { onDone: () => void }) {
               <Icon name="bank" className="h-5 w-5" />
             </span>
             <p className="min-w-0 flex-1 text-sm font-extrabold leading-snug text-ink">{t('auth.bankNow')}</p>
-            <Badge tone={isLive() ? 'success' : 'warn'}>
-              {isLive() ? t('auth.liveBadge') : t('auth.demoBadge')}
+            <Badge tone={live ? 'success' : 'warn'}>
+              {live ? t('auth.liveBadge') : t('auth.demoBadge')}
             </Badge>
           </div>
           <button

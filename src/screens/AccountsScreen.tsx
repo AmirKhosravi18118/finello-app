@@ -10,7 +10,7 @@ import {
   SectionHeader,
   SkeletonCard,
 } from '../components/ui'
-import { useBankConnection, useLiveBankCatalog, isLive } from '../bank/bankConnection'
+import { useBankConnection, useLiveBankCatalog, useBankLive, startLiveConsent } from '../bank/bankConnection'
 import { getImportedTx } from '../bank/bankConnection'
 import { getCashTx } from '../data/editStore'
 import { notifyNewTransactions } from '../notifications/reminders'
@@ -19,7 +19,9 @@ export function AccountsScreen() {
   const { t, fmt } = useI18n()
   const { banks, catalog: mockCatalog, connect, disconnect, importNow } = useBankConnection()
   const liveCatalog = useLiveBankCatalog()
-  const catalog = isLive() ? liveCatalog : mockCatalog
+  const live = useBankLive()
+  const catalog = live ? liveCatalog : mockCatalog
+  const [connecting, setConnecting] = useState(false)
   const [connectOpen, setConnectOpen] = useState(false)
   const [pickedBank, setPickedBank] = useState<{ id: string; name: string } | null>(null)
   const [flash, setFlash] = useState(0)
@@ -175,7 +177,7 @@ export function AccountsScreen() {
       <Modal open={connectOpen} onClose={() => setConnectOpen(false)} title={t('set.connectBank')}>
         <div className="flex flex-col gap-2">
           <p className="text-[11px] font-bold text-ink-soft">
-            {isLive() ? t('auth.liveBadge') : t('auth.demoBadge')}
+            {live ? t('auth.liveBadge') : t('auth.demoBadge')}
           </p>
           {catalog.map((b) => {
             const isConnected = banks.some((x) => x.id === b.id)
@@ -223,9 +225,21 @@ export function AccountsScreen() {
             </button>
             <button
               type="button"
-              disabled={!pickedBank}
-              onClick={() => {
-                if (pickedBank) connect(pickedBank)
+              disabled={!pickedBank || connecting}
+              onClick={async () => {
+                if (!pickedBank) return
+                if (live) {
+                  try {
+                    setConnecting(true)
+                    window.location.href = await startLiveConsent(pickedBank.id)
+                    return
+                  } catch {
+                    setConnecting(false)
+                    connect(pickedBank)
+                  }
+                } else {
+                  connect(pickedBank)
+                }
                 setPickedBank(null)
                 setConnectOpen(false)
                 refresh()

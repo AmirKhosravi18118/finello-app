@@ -29,6 +29,8 @@ jobs:
         env:
           VITE_BASE: /finello-app/
           VITE_PUSH_API: https://finello.nelurio.com/push
+          VITE_BANK_API: https://finello.nelurio.com/api/gocardless
+          VITE_GC_ENABLED: '1'
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:
           path: dist

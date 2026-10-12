@@ -27,6 +27,23 @@ export function isLive(): boolean {
   return GC_ENABLED
 }
 
+let statusCache: { ok: boolean; at: number } | null = null
+
+/** Runtime readiness of the proxy (keys configured server-side).
+ *  Lets the app ship with GC_ENABLED=1 and fall back to the mock provider
+ *  until the owner drops the GoCardless secrets in — no redeploy needed. */
+export async function proxyConfigured(): Promise<boolean> {
+  if (statusCache && Date.now() - statusCache.at < 60_000) return statusCache.ok
+  try {
+    const r = await fetch(`${PROXY_BASE}/status`)
+    const j = (await r.json()) as { configured?: boolean }
+    statusCache = { ok: !!j.configured, at: Date.now() }
+  } catch {
+    statusCache = { ok: false, at: Date.now() }
+  }
+  return statusCache.ok
+}
+
 async function api<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${PROXY_BASE}${path}`, {
     ...init,

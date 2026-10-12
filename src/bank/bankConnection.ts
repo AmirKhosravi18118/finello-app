@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { activeBankProvider, type BankRef } from './bankProvider'
-import { gocardlessProvider, isLive } from './gocardless'
+import { gocardlessProvider, isLive, proxyConfigured } from './gocardless'
 
 export { isLive }
 import { demo, type Tx } from '../data/demo'
@@ -109,6 +109,25 @@ export function useBankConnection() {
 
 /** Live (GoCardless) variants: async catalog + async pull that lands rows in
  *  the same finello_bank_tx store so every screen keeps working unchanged. */
+/** Runtime bank mode: 'live' only when the build enables GC AND the proxy
+ *  reports configured keys — otherwise the demo provider stays in charge. */
+export function useBankLive(): boolean {
+  const [live, setLive] = useState(false)
+  useEffect(() => {
+    if (!isLive()) return
+    void proxyConfigured().then(setLive)
+  }, [])
+  return live
+}
+
+/** Kick off the real PSD2 consent: requisition → GoCardless hosted bank link.
+ *  The redirect carries ?live=1&bank=<institutionId>; App.tsx consumes it. */
+export async function startLiveConsent(bankId: string): Promise<string> {
+  const redirect = `${location.origin}${location.pathname}?live=1&bank=${encodeURIComponent(bankId)}`
+  const { link } = await gocardlessProvider.startConsent(bankId, redirect)
+  return link
+}
+
 export function useLiveBankCatalog(): BankRef[] {
   const [catalog, setCatalog] = useState<BankRef[]>(() => (isLive() ? [] : activeBankProvider.listBanks()))
   useEffect(() => {

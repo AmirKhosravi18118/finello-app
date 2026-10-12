@@ -4,6 +4,7 @@ import { AppShell } from './components/AppShell'
 import { AuthScreen } from './auth/AuthScreen'
 import { consumeGoogleRedirect } from './integrations/google'
 import { Splash } from './components/Brand'
+import { connectLiveBank } from './bank/bankConnection'
 import { HomeScreen } from './screens/HomeScreen'
 import { CalendarScreen } from './screens/CalendarScreen'
 import { AnalysenScreen } from './screens/ExpensesScreen'
@@ -49,6 +50,16 @@ export default function App() {
   // Google OAuth redirect (Drive backup) — consumes token if present
   useEffect(() => {
     void consumeGoogleRedirect()
+  }, [])
+
+  // PSD2 consent return (?live=1&bank=<institutionId>) — for every user
+  useEffect(() => {
+    const p = new URLSearchParams(location.search)
+    if (p.get('live') === '1') {
+      const id = p.get('bank') ?? 'live'
+      connectLiveBank({ id, name: id })
+      history.replaceState(null, '', location.pathname)
+    }
   }, [])
 
   if (!onboarded) {
