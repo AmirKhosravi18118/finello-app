@@ -280,9 +280,7 @@ export function AuthScreen({ onDone }: { onDone: () => void }) {
               <Icon name="bank" className="h-5 w-5" />
             </span>
             <p className="min-w-0 flex-1 text-sm font-extrabold leading-snug text-ink">{t('auth.bankNow')}</p>
-            <Badge tone={live ? 'success' : 'warn'}>
-              {live ? t('auth.liveBadge') : t('auth.demoBadge')}
-            </Badge>
+            <Badge tone={live ? 'success' : 'warn'}>{live ? t('auth.liveBadge') : t('auth.demoBadge')}</Badge>
           </div>
           <button
             type="button"
