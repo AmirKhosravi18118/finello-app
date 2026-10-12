@@ -64,12 +64,19 @@ body {
   background: linear-gradient(180deg, #f7f8fc 0%, #eef1f7 100%);
   color: var(--color-ink);
   min-height: 100vh;
+  /* motion tokens (DS v5.1): three durations + two easings, used everywhere */
+  --dur-fast: 150ms;
+  --dur-base: 250ms;
+  --dur-slow: 350ms;
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-sheet: cubic-bezier(0.2, 0.8, 0.2, 1);
+
   /* v3 typography: calm 1.4 body rhythm; German long words wrap instead of clipping */
   line-height: 1.4;
   overflow-wrap: break-word;
   transition:
-    background 0.3s ease,
-    color 0.3s ease;
+    background var(--dur-base) var(--ease-out-soft),
+    color var(--dur-base) var(--ease-out-soft);
 }
 
 html.dark body {
@@ -116,7 +123,7 @@ html.dark body {
     @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.06em] leading-none;
   }
   .tap {
-    @apply transition-transform duration-200 active:scale-[0.97] cursor-pointer select-none;
+    @apply transition-transform duration-[var(--dur-fast)] active:scale-[0.97] cursor-pointer select-none;
   }
   .pill-nav {
     @apply fixed bottom-4 inset-x-5 z-40 mx-auto w-full max-w-[26.5rem] rounded-full bg-navy/95 backdrop-blur-md shadow-[0_18px_40px_-10px_rgba(16,23,38,0.55)] border border-white/10;
@@ -155,7 +162,7 @@ html.dark body {
   }
 }
 .screen-in {
-  animation: screen-in 0.25s ease;
+  animation: screen-in var(--dur-base) var(--ease-out-soft);
 }
 
 /* motion system (WP19 polish): rise for cards/rows, sheet & backdrop for modals,
@@ -189,10 +196,10 @@ html.dark body {
   }
 }
 .anim-rise {
-  animation: rise 0.3s ease-out both;
+  animation: rise var(--dur-base) var(--ease-out-soft) both;
 }
 .anim-stagger > * {
-  animation: rise 0.3s ease-out both;
+  animation: rise var(--dur-base) var(--ease-out-soft) both;
 }
 .anim-stagger > *:nth-child(2) {
   animation-delay: 40ms;
@@ -210,10 +217,10 @@ html.dark body {
   animation-delay: 200ms;
 }
 .sheet-in {
-  animation: sheet-in 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation: sheet-in 280ms var(--ease-sheet) both;
 }
 .backdrop-in {
-  animation: backdrop-in 0.2s ease both;
+  animation: backdrop-in var(--dur-fast) var(--ease-out-soft) both;
 }
 
 /* global keyboard focus (a11y) */
@@ -228,12 +235,13 @@ html.dark body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .screen-in,
-  .anim-rise,
-  .anim-stagger > *,
-  .sheet-in,
-  .backdrop-in {
-    animation: none !important;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 

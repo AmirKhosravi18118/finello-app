@@ -130,7 +130,7 @@ export function TaxScreen() {
             type="button"
             onClick={() => setYear(y)}
             aria-pressed={year === y}
-            className={`tap num flex min-h-10 flex-1 items-center justify-center rounded-full px-4 text-xs font-bold ${
+            className={`tap num flex min-h-11 flex-1 items-center justify-center rounded-full px-4 text-xs font-bold ${
               year === y ? 'bg-navy text-white shadow-md' : 'text-ink-soft'
             }`}
           >

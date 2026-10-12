@@ -248,7 +248,7 @@ export function ProgressBar({
       aria-label={label}
     >
       <div
-        className={`h-full rounded-full transition-[width] duration-500 ${
+        className={`h-full rounded-full transition-[width] duration-[var(--dur-slow)] ${
           over
             ? 'bg-gradient-to-r from-rose-500 to-rose-600'
             : 'bg-gradient-to-r from-primary to-primary-deep'
