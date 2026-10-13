@@ -76,28 +76,31 @@ export function BottomNav({ tab, onTab }: { tab: TabId; onTab: (t: TabId) => voi
         />
       )}
 
-      {/* drop-up: vertical stack of three separate labeled circles above the + */}
+      {/* quick menu: anchored speed-dial card above the FAB (DS: surface, 12px gap, stagger) */}
       {menuOpen && (
         <div
-          className="fixed bottom-[12.25rem] z-50 flex flex-col items-center gap-4"
-          style={{ insetInlineEnd: 'max(1.25rem, calc(50vw - 13.25rem))' }}
+          role="menu"
+          aria-label={t('qa.title')}
+          className="screen-in fixed z-50 w-60 overflow-hidden rounded-[20px] border border-line bg-surface shadow-card"
+          style={{
+            bottom: '9.875rem',
+            insetInlineEnd: 'max(1.25rem, calc(50vw - 13.25rem))',
+          }}
         >
           {QUICK_ACTIONS.map(({ detail, labelKey, icon, circle, rotate }, i) => (
             <button
               key={detail}
               type="button"
+              role="menuitem"
               onClick={() => quickAdd(detail)}
-              className="screen-in tap flex w-24 flex-col items-center gap-1.5"
-              style={{ animationDelay: `${(QUICK_ACTIONS.length - 1 - i) * 60}ms` }}
+              className="tap flex min-h-14 w-full items-center gap-3 border-b border-line px-4 text-start last:border-b-0"
+              style={{ animationDelay: `${(QUICK_ACTIONS.length - 1 - i) * 50}ms` }}
             >
-              <span
-                className={`flex h-14 w-14 items-center justify-center rounded-full border border-line bg-surface shadow-card ${circle}`}
-              >
-                <Icon name={icon} className={`h-6 w-6 ${rotate ? 'rotate-180' : ''}`} />
+              <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${circle}`}>
+                <Icon name={icon} className={`h-5 w-5 ${rotate ? 'rotate-180' : ''}`} />
               </span>
-              <span className="w-full truncate rounded-full bg-surface/95 px-1 py-1 text-center text-[11px] font-bold leading-tight text-ink shadow-card">
-                {t(labelKey)}
-              </span>
+              <span className="min-w-0 flex-1 text-sm font-bold text-ink">{t(labelKey)}</span>
+              <Icon name="plus" className="h-4 w-4 shrink-0 text-ink-soft" />
             </button>
           ))}
         </div>
@@ -109,7 +112,7 @@ export function BottomNav({ tab, onTab }: { tab: TabId; onTab: (t: TabId) => voi
         onClick={() => setMenuOpen((v) => !v)}
         aria-expanded={menuOpen}
         aria-label={t('qa.title')}
-        className={`shadow-fab tap fixed bottom-32 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-white/25 bg-gradient-to-br from-primary to-primary-deep text-white transition-all duration-300 ${
+        className={`shadow-fab tap fixed bottom-[5.625rem] z-50 flex h-14 w-14 items-center justify-center rounded-full border border-white/25 bg-gradient-to-br from-primary to-primary-deep text-white transition-all duration-300 ${
           menuOpen ? 'rotate-45' : ''
         } ${sheetOpen ? 'pointer-events-none translate-y-8 scale-50' : ''}`}
         style={{

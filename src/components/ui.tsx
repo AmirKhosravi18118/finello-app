@@ -517,7 +517,7 @@ export function Modal({
       aria-modal="true"
     >
       <div
-        className="sheet-in w-full max-w-md rounded-t-[28px] border border-line bg-surface p-5 pb-6 shadow-card sm:rounded-[24px]"
+        className="sheet-in mx-auto w-full max-w-[26.5rem] rounded-t-[28px] border border-line bg-surface p-5 pb-6 shadow-card sm:rounded-[24px]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="grabber mb-3 sm:hidden" aria-hidden="true" />
