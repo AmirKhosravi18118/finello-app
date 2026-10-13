@@ -409,7 +409,14 @@ export function AuthScreen({ onDone }: { onDone: () => void }) {
           >
             {t('auth.bankNow')}
           </button>
-          <button type="button" className="btn-ghost w-full" onClick={() => finish(buildAccount())}>
+          <button
+            type="button"
+            className="btn-ghost w-full"
+            onClick={() => {
+              persistExtras()
+              finish(buildAccount())
+            }}
+          >
             {t('auth.bankLater')}
           </button>
         </Card>

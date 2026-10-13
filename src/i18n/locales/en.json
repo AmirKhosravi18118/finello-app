@@ -56,7 +56,8 @@
     "surplus": "Surplus",
     "deficit": "Deficit",
     "guest": "Hi there! 👋",
-    "editPayment": "Edit payment"
+    "editPayment": "Edit payment",
+    "setGoal": "Set a goal"
   },
   "cal": {
     "monthTitle": "Payments calendar",

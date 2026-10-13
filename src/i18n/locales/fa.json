@@ -56,7 +56,8 @@
     "surplus": "مازاد",
     "deficit": "کسری",
     "guest": "سلام! 👋",
-    "editPayment": "ویرایش قسط"
+    "editPayment": "ویرایش قسط",
+    "setGoal": "هدف را تعیین کن"
   },
   "cal": {
     "monthTitle": "تقویم پرداخت‌ها",

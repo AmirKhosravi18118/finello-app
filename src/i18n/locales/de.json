@@ -56,7 +56,8 @@
     "surplus": "Überschuss",
     "deficit": "Defizit",
     "guest": "Hallo! 👋",
-    "editPayment": "Rate bearbeiten"
+    "editPayment": "Rate bearbeiten",
+    "setGoal": "Ziel setzen"
   },
   "cal": {
     "monthTitle": "Zahlungskalender",

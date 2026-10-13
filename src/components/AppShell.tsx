@@ -6,6 +6,7 @@ import { Badge, Icon, Modal } from './ui'
 import { Tour } from './Tour'
 import { BrandMark } from './Brand'
 import { uncategorizedTotal } from '../bank/bankConnection'
+import { demoDataEnabled } from '../data/demo'
 import { NotificationCenter } from './NotificationCenter'
 
 /** App shell: brand header (logo + demo badge on Home only), global bell/settings,
@@ -28,7 +29,7 @@ export function AppShell({
           <div className="flex min-w-0 items-center gap-2">
             <BrandMark className="h-9 w-9 shrink-0 rounded-[8px] shadow-card" />
             <span className="truncate text-lg font-extrabold tracking-tight text-ink">{t('app.name')}</span>
-            <Badge tone="warn">{t('common.demo')}</Badge>
+            {demoDataEnabled() && <Badge tone="warn">{t('common.demo')}</Badge>}
           </div>
         ) : (
           <span className="flex-1" />
