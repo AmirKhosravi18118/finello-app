@@ -83,7 +83,7 @@ export function BottomNav({ tab, onTab }: { tab: TabId; onTab: (t: TabId) => voi
           aria-label={t('qa.title')}
           className="screen-in fixed z-50 w-60 overflow-hidden rounded-[20px] border border-line bg-surface shadow-card"
           style={{
-            bottom: 'calc(158px + env(safe-area-inset-bottom, 0px))',
+            bottom: 'calc(170px + env(safe-area-inset-bottom, 0px))',
             insetInlineEnd: 'max(1.25rem, calc(50vw - 13.25rem))',
           }}
         >
