@@ -52,12 +52,12 @@ export default function App() {
     void consumeGoogleRedirect()
   }, [])
 
-  // PSD2 consent return (?live=1&bank=<institutionId>) — for every user
+  // PSD2 consent return (?live=1&bank=<id>&name=<display name>) — for every user
   useEffect(() => {
     const p = new URLSearchParams(location.search)
     if (p.get('live') === '1') {
       const id = p.get('bank') ?? 'live'
-      connectLiveBank({ id, name: id })
+      connectLiveBank({ id, name: p.get('name') ?? id })
       history.replaceState(null, '', location.pathname)
     }
   }, [])
