@@ -290,6 +290,7 @@
     "bankLater": "Später",
     "liveBadge": "Echte Verbindung",
     "demoBadge": "Demo-Modus",
+    "bankSoon": "Echte Bankverbindung wird gerade freigeschaltet — keine Demo-Banken.",
     "opt": {
       "single": "Ledig",
       "married": "Verheiratet, 2 Einkommen",

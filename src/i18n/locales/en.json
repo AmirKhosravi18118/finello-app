@@ -290,6 +290,7 @@
     "bankLater": "Later",
     "liveBadge": "Live connection",
     "demoBadge": "Demo mode",
+    "bankSoon": "Real bank connection is being activated — no demo banks are shown.",
     "opt": {
       "single": "Single",
       "married": "Married, 2 incomes",

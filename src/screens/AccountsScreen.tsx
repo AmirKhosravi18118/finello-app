@@ -177,8 +177,13 @@ export function AccountsScreen() {
       <Modal open={connectOpen} onClose={() => setConnectOpen(false)} title={t('set.connectBank')}>
         <div className="flex flex-col gap-2">
           <p className="text-[11px] font-bold text-ink-soft">
-            {live ? t('auth.liveBadge') : t('auth.demoBadge')}
+            {live ? t('auth.liveBadge') : t('auth.bankSoon')}
           </p>
+          {catalog.length === 0 && (
+            <Card className="!p-4">
+              <p className="text-sm font-bold leading-snug text-ink-soft">{t('auth.bankSoon')}</p>
+            </Card>
+          )}
           {catalog.map((b) => {
             const isConnected = banks.some((x) => x.id === b.id)
             return (
