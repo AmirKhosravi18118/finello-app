@@ -4,7 +4,7 @@ import { AppShell } from './components/AppShell'
 import { AuthScreen } from './auth/AuthScreen'
 import { consumeGoogleRedirect } from './integrations/google'
 import { Splash } from './components/Brand'
-import { connectLiveBank } from './bank/bankConnection'
+import { connectLiveBank, importLiveTransactions } from './bank/bankConnection'
 import { HomeScreen } from './screens/HomeScreen'
 import { CalendarScreen } from './screens/CalendarScreen'
 import { AnalysenScreen } from './screens/ExpensesScreen'
@@ -59,6 +59,10 @@ export default function App() {
       const id = p.get('bank') ?? 'live'
       connectLiveBank({ id, name: p.get('name') ?? id })
       history.replaceState(null, '', location.pathname)
+      // first pull lands automatically — no manual "fetch" click needed
+      void importLiveTransactions().then((n) =>
+        window.dispatchEvent(new CustomEvent('finello:bank-imported', { detail: n })),
+      )
     }
   }, [])
 

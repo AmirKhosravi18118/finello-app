@@ -5,7 +5,7 @@ import { LegalSheet } from '../components/LegalSheet'
 import type { LegalDocKey } from '../legal/legalContent'
 import { LEGAL_VERSION } from '../legal/legalContent'
 import { getAccount, saveAccount, ACCOUNT_EVENT, type Account, type AccountConsent } from './account'
-import { connectLiveBank, useBankLive } from '../bank/bankConnection'
+import { connectLiveBank, importLiveTransactions, useBankLive } from '../bank/bankConnection'
 import { setSalary, setSavings } from '../data/editStore'
 import { BrandMark } from '../components/Brand'
 
@@ -46,12 +46,15 @@ export function AuthScreen({ onDone }: { onDone: () => void }) {
   const [legalOpen, setLegalOpen] = useState<LegalDocKey | null>(null)
 
   useEffect(() => {
-    // pull live bank redirect result (?live=1&bank=<id|name>) after consent
+    // pull live bank redirect result (?live=1&bank=<id>&name=<display>) after consent
     const p = new URLSearchParams(location.search)
     if (p.get('live') === '1') {
       const id = p.get('bank') ?? 'live'
-      connectLiveBank({ id, name: id })
+      connectLiveBank({ id, name: p.get('name') ?? id })
       history.replaceState(null, '', location.pathname)
+      void importLiveTransactions().then((n) =>
+        window.dispatchEvent(new CustomEvent('finello:bank-imported', { detail: n })),
+      )
     }
   }, [])
 

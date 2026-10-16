@@ -64,6 +64,13 @@ export function useBankConnection() {
   const [banks, setBanks] = useState<BankRef[]>(() => getConnectedBanks())
   const [imported, setImported] = useState<BankTx[]>(() => getImportedTx())
 
+  // auto-import after the PSD2 consent return (App/AuthScreen fire this)
+  useEffect(() => {
+    const onImported = () => setImported(getImportedTx())
+    window.addEventListener('finello:bank-imported', onImported)
+    return () => window.removeEventListener('finello:bank-imported', onImported)
+  }, [])
+
   const connect = useCallback((bank: BankRef) => {
     const next = getConnectedBanks()
     if (!next.some((b) => b.id === bank.id)) {
