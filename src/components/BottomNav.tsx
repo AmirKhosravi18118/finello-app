@@ -83,7 +83,7 @@ export function BottomNav({ tab, onTab }: { tab: TabId; onTab: (t: TabId) => voi
           aria-label={t('qa.title')}
           className="screen-in fixed z-50 w-60 overflow-hidden rounded-[20px] border border-line bg-surface shadow-card"
           style={{
-            bottom: '9.875rem',
+            bottom: 'calc(9.875rem + env(safe-area-inset-bottom, 0px))',
             insetInlineEnd: 'max(1.25rem, calc(50vw - 13.25rem))',
           }}
         >
@@ -112,10 +112,11 @@ export function BottomNav({ tab, onTab }: { tab: TabId; onTab: (t: TabId) => voi
         onClick={() => setMenuOpen((v) => !v)}
         aria-expanded={menuOpen}
         aria-label={t('qa.title')}
-        className={`shadow-fab tap fixed bottom-[5.625rem] z-50 flex h-14 w-14 items-center justify-center rounded-full border border-white/25 bg-gradient-to-br from-primary to-primary-deep text-white transition-all duration-300 ${
+        className={`shadow-fab tap fixed z-50 flex h-14 w-14 items-center justify-center rounded-full border border-white/25 bg-gradient-to-br from-primary to-primary-deep text-white transition-all duration-300 ${
           menuOpen ? 'rotate-45' : ''
         } ${sheetOpen ? 'pointer-events-none translate-y-8 scale-50' : ''}`}
         style={{
+          bottom: 'calc(5.625rem + env(safe-area-inset-bottom, 0px))',
           insetInlineEnd: 'max(1.25rem, calc(50vw - 13.25rem))',
           opacity: sheetOpen ? 0 : 1,
         }}
