@@ -215,10 +215,10 @@ export function SettingsScreen() {
             {perm === 'granted' ? (
               <Badge tone="success">
                 <Icon name="check" className="h-3 w-3" />
-                {t('notif.enabled')}
+                {t('notif.enabledShort')}
               </Badge>
             ) : perm === 'denied' ? (
-              <Badge tone="danger">{t('notif.blocked')}</Badge>
+              <Badge tone="danger">{t('notif.blockedShort')}</Badge>
             ) : (
               <button
                 type="button"
@@ -236,6 +236,9 @@ export function SettingsScreen() {
               </button>
             )}
           </div>
+          {perm === 'denied' && (
+            <p className="text-[11px] leading-relaxed text-danger">{t('notif.blockedHint')}</p>
+          )}
           <div className="flex flex-col gap-1.5">
             <p className="text-xs font-bold text-ink-soft">{t('set.notifyDays')}</p>
             <div className="flex items-center gap-1.5">
