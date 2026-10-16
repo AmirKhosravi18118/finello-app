@@ -52,6 +52,7 @@ export function AuthScreen({ onDone }: { onDone: () => void }) {
       const id = p.get('bank') ?? 'live'
       connectLiveBank({ id, name: p.get('name') ?? id })
       history.replaceState(null, '', location.pathname)
+      window.dispatchEvent(new CustomEvent('finello:bank-imported', { detail: 0 }))
       void importLiveTransactions().then((n) =>
         window.dispatchEvent(new CustomEvent('finello:bank-imported', { detail: n })),
       )

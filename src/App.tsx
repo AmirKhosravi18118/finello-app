@@ -59,7 +59,8 @@ export default function App() {
       const id = p.get('bank') ?? 'live'
       connectLiveBank({ id, name: p.get('name') ?? id })
       history.replaceState(null, '', location.pathname)
-      // first pull lands automatically — no manual "fetch" click needed
+      // refresh connected-bank lists immediately, then land the first pull
+      window.dispatchEvent(new CustomEvent('finello:bank-imported', { detail: 0 }))
       void importLiveTransactions().then((n) =>
         window.dispatchEvent(new CustomEvent('finello:bank-imported', { detail: n })),
       )
