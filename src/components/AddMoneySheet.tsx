@@ -6,6 +6,7 @@ import { CategoryGrid, IncomeTypeGrid } from './CategoryGrid'
 
 import { addCashTx } from '../data/editStore'
 import { todayLocalISO } from '../data/demo'
+import { notifyNow } from '../notifications/push'
 
 /** Explicit money-entry sheet (WP9): clear expense/income toggle.
  *  Income rows store a positive amount + incomeType; expenses are negated and left uncategorized. */
@@ -59,6 +60,10 @@ export function AddMoneySheet({
       categoryId: mode === 'expense' ? (categoryId ?? null) : null,
       incomeType: mode === 'income' ? (incomeType as never) : null,
     })
+    void notifyNow(
+      mode === 'income' ? t('cash.income') : t('cash.expense'),
+      `${name.trim()} · ${Number(amount).toFixed(2)} €`,
+    )
     onSaved?.()
     close()
   }

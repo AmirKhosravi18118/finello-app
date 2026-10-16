@@ -3,6 +3,7 @@ import { useI18n } from '../i18n/I18nContext'
 import { Icon, Modal } from './ui'
 import type { Payment } from '../data/demo'
 import { removeUserPayment, savePaymentEdit, tombstoneTx } from '../data/editStore'
+import { notifyNow } from '../notifications/push'
 
 export interface PaymentDraft {
   title: string
@@ -122,6 +123,7 @@ export function EditPaymentSheet({
                   dayOfMonth: draft.dayOfMonth,
                   recipient: draft.recipient.trim(),
                 })
+                void notifyNow(draft.title.trim(), `${draft.amount.toFixed(2)} € · ${t('qa.payment')}`)
                 onSaved()
                 onClose()
               }

@@ -63,6 +63,27 @@ export async function registerReminders(
   }
 }
 
+/** Instant local notification fired by the app itself the moment a
+ *  transaction is saved (Android always; iOS ≥16.4 in the installed PWA).
+ *  Goes through the service worker so it works on every platform. */
+export async function notifyNow(title: string, body: string, tag?: string): Promise<void> {
+  if (!('Notification' in window) || !('serviceWorker' in navigator)) return
+  if (Notification.permission !== 'granted') return
+  try {
+    const reg = await navigator.serviceWorker.getRegistration()
+    if (reg) {
+      await reg.showNotification(title, {
+        body,
+        icon: 'icon.svg',
+        badge: 'icon.svg',
+        tag: tag ?? `tx-${Date.now()}`,
+      })
+    }
+  } catch {
+    // notification display is best-effort; the save itself always succeeds
+  }
+}
+
 export async function unsubscribePush(): Promise<void> {
   if (!pushConfigured()) return
   try {

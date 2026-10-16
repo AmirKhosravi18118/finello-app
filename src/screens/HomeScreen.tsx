@@ -105,7 +105,8 @@ export function HomeScreen() {
   const payments = allPayments()
   const savings = getSavings()
 
-  // keep the closed-app push server in sync with upcoming payments (WP29)
+  // keep the closed-app push server in sync with upcoming payments (WP29):
+  // TWO reminders per payment — the day BEFORE (heads-up) and the due morning
   useEffect(() => {
     const window = 30
     const today = new Date().getDate()
@@ -114,13 +115,23 @@ export function HomeScreen() {
         const diff = p.dayOfMonth - today
         return diff >= 0 && diff <= window
       })
-      .map((p) => ({
-        title: p.title,
-        body: `${p.recipient} · ${p.amount} EUR`,
-        when: new Date(new Date().getFullYear(), new Date().getMonth(), p.dayOfMonth)
-          .toISOString()
-          .slice(0, 10),
-      }))
+      .flatMap((p) => {
+        const due = new Date(new Date().getFullYear(), new Date().getMonth(), p.dayOfMonth)
+        const dayBefore = new Date(due)
+        dayBefore.setDate(due.getDate() - 1)
+        return [
+          {
+            title: p.title,
+            body: `${p.recipient} · ${p.amount} EUR`,
+            when: dayBefore.toISOString().slice(0, 10),
+          },
+          {
+            title: p.title,
+            body: `${p.recipient} · ${p.amount} EUR`,
+            when: due.toISOString().slice(0, 10),
+          },
+        ]
+      })
     void registerReminders(items)
   }, [payments.length])
   const nextPayments = nearestPayments(payments, 3)

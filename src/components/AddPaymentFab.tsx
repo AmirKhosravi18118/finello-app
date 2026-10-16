@@ -3,6 +3,7 @@ import { useI18n } from '../i18n/I18nContext'
 import { Modal } from './ui'
 import type { CategoryId } from '../data/demo'
 import { addUserPayment } from '../data/editStore'
+import { notifyNow } from '../notifications/push'
 
 /** Add-payment sheet (CONTRACT §5 / DS2.0 §5): controlled modal — opened from the
  *  Home section actions, the Calendar header "+" or the nav quick-add menu
@@ -43,6 +44,7 @@ export function AddPaymentSheet({
       recipient: recipient.trim() || '—',
       categoryId: 'other' as CategoryId,
     })
+    void notifyNow(title.trim(), `${Number(amount).toFixed(2)} € · ${t('qa.payment')}`)
     onAdded?.()
     onClose()
   }
